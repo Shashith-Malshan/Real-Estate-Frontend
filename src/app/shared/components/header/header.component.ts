@@ -5,11 +5,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { UserResponseDTO, UserRole } from '../../models';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, MatIconModule, MatButtonModule],
   templateUrl: './header.component.html',
   styleUrl: './header.component.css'
 })

@@ -6,11 +6,13 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { PropertyService } from '../../../shared/services/property.service';
 import { PropertyDTO, PropertyCategory } from '../../../shared/models';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-browse-properties',
   standalone: true,
-  imports: [CommonModule, RouterLink, FormsModule],
+  imports: [CommonModule, RouterLink, FormsModule, MatIconModule, MatButtonModule],
   templateUrl: './browse.component.html',
   styleUrl: './browse.component.css'
 })
@@ -80,20 +82,20 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
       }
 
       // Category filter
-      if (this.selectedCategory && property.categoryId !== this.selectedCategory) {
+      if (this.selectedCategory && property.propertyCategoryId !== this.selectedCategory) {
         return false;
       }
 
       // Price range filter
-      if (this.minPrice && property.price < this.minPrice) {
+      if (this.minPrice && (property.price === undefined || property.price < this.minPrice)) {
         return false;
       }
-      if (this.maxPrice && property.price > this.maxPrice) {
+      if (this.maxPrice && (property.price === undefined || property.price > this.maxPrice)) {
         return false;
       }
 
       // Bedrooms filter
-      if (this.minBedrooms && property.bedrooms < this.minBedrooms) {
+      if (this.minBedrooms && (property.bedroomCount === undefined || property.bedroomCount < this.minBedrooms)) {
         return false;
       }
 

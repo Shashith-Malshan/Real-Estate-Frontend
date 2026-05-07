@@ -1,249 +1,144 @@
-<div class="min-h-screen flex items-center justify-center bg-linear-to-br from-primary-50 to-secondary-50 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="w-full max-w-md space-y-8 bg-white rounded-lg shadow-lg p-8">
+<div class="min-h-screen flex items-center justify-center bg-surface py-12 px-4 sm:px-6 lg:px-8">
+  <div class="w-full max-w-2xl space-y-8 bg-surface-container-lowest p-12 border border-neutral-200">
     <!-- Header -->
     <div class="text-center">
-      <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-linear-to-r from-primary-500 to-secondary-500 text-white font-bold text-lg">
-        RE
-      </div>
-      <h2 class="mt-6 text-3xl font-bold text-gray-900">Create Account</h2>
-      <p class="mt-2 text-gray-600">Join Real Estate Marketplace today</p>
+      <h2 class="display-lg text-neutral-900 tracking-wider">REGISTER</h2>
+      <p class="mt-2 caption text-neutral-500">Join the Estate Collective</p>
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage" class="rounded-lg bg-error-50 border border-error-300 p-4">
-      <p class="text-sm text-error-800">{{ errorMessage }}</p>
+    <div *ngIf="errorMessage" class="bg-error-container text-on-error-container p-4">
+      <p class="caption">{{ errorMessage }}</p>
     </div>
 
     <!-- Success Message -->
-    <div *ngIf="successMessage" class="rounded-lg bg-success-50 border border-success-300 p-4">
-      <p class="text-sm text-success-800">{{ successMessage }}</p>
+    <div *ngIf="successMessage" class="bg-primary-container text-on-primary-container p-4">
+      <p class="caption">{{ successMessage }}</p>
     </div>
 
     <!-- Register Form -->
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
       <!-- Role Selection -->
-      <div>
-        <label class="block text-sm font-medium text-gray-700 mb-2">Register As</label>
-        <div class="grid grid-cols-2 gap-3">
+      <div class="mb-6">
+        <p class="label-caps mb-4">I AM A</p>
+        <div class="flex gap-4">
           <button
             type="button"
             (click)="setRole(userRoles.BUYER)"
-            class="px-3 py-2 rounded-lg border-2 text-sm font-medium transition-colors"
+            class="flex-1 py-4 border transition-colors label-caps"
             [class]="selectedRole === userRoles.BUYER 
-              ? 'border-primary-500 bg-primary-50 text-primary-700' 
-              : 'border-gray-300 text-gray-700 hover:border-gray-400'"
+              ? 'border-primary bg-primary text-on-primary' 
+              : 'border-outline text-on-surface hover:border-primary'"
           >
-            👤 Buyer
+            BUYER
           </button>
           <button
             type="button"
             (click)="setRole(userRoles.SELLER)"
-            class="px-3 py-2 rounded-lg border-2 text-sm font-medium transition-colors"
+            class="flex-1 py-4 border transition-colors label-caps"
             [class]="selectedRole === userRoles.SELLER 
-              ? 'border-primary-500 bg-primary-50 text-primary-700' 
-              : 'border-gray-300 text-gray-700 hover:border-gray-400'"
+              ? 'border-primary bg-primary text-on-primary' 
+              : 'border-outline text-on-surface hover:border-primary'"
           >
-            🏠 Seller
+            SELLER
           </button>
         </div>
       </div>
 
       <!-- First Name & Last Name -->
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
-          <input
-            id="firstName"
-            type="text"
-            formControlName="firstName"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            [class.border-error-500]="firstName?.invalid && firstName?.touched"
-            placeholder="John"
-          />
-          <p *ngIf="firstName?.invalid && firstName?.touched" class="mt-1 text-xs text-error-600">
-            <span *ngIf="firstName?.errors?.['required']">Required</span>
-            <span *ngIf="firstName?.errors?.['minlength']">Min 2 chars</span>
-          </p>
-        </div>
-        <div>
-          <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
-          <input
-            id="lastName"
-            type="text"
-            formControlName="lastName"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            [class.border-error-500]="lastName?.invalid && lastName?.touched"
-            placeholder="Doe"
-          />
-          <p *ngIf="lastName?.invalid && lastName?.touched" class="mt-1 text-xs text-error-600">
-            <span *ngIf="lastName?.errors?.['required']">Required</span>
-            <span *ngIf="lastName?.errors?.['minlength']">Min 2 chars</span>
-          </p>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>First Name</mat-label>
+          <input matInput formControlName="firstName" type="text">
+          <mat-error *ngIf="firstName?.errors?.['required']">Required</mat-error>
+          <mat-error *ngIf="firstName?.errors?.['minlength']">Min 2 chars</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Last Name</mat-label>
+          <input matInput formControlName="lastName" type="text">
+          <mat-error *ngIf="lastName?.errors?.['required']">Required</mat-error>
+          <mat-error *ngIf="lastName?.errors?.['minlength']">Min 2 chars</mat-error>
+        </mat-form-field>
       </div>
 
-      <!-- Email -->
-      <div>
-        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-        <input
-          id="email"
-          type="email"
-          formControlName="email"
-          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-          [class.border-error-500]="email?.invalid && email?.touched"
-          placeholder="john@example.com"
-        />
-        <p *ngIf="email?.invalid && email?.touched" class="mt-1 text-xs text-error-600">
-          <span *ngIf="email?.errors?.['required']">Required</span>
-          <span *ngIf="email?.errors?.['email']">Invalid email</span>
-        </p>
-      </div>
+      <!-- Email & Username -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Email</mat-label>
+          <input matInput formControlName="email" type="email">
+          <mat-error *ngIf="email?.errors?.['required']">Required</mat-error>
+          <mat-error *ngIf="email?.errors?.['email']">Invalid email</mat-error>
+        </mat-form-field>
 
-      <!-- Username -->
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <input
-          id="username"
-          type="text"
-          formControlName="username"
-          class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-          [class.border-error-500]="username?.invalid && username?.touched"
-          placeholder="johndoe"
-        />
-        <p *ngIf="username?.invalid && username?.touched" class="mt-1 text-xs text-error-600">
-          <span *ngIf="username?.errors?.['required']">Required</span>
-          <span *ngIf="username?.errors?.['minlength']">Min 3 chars</span>
-        </p>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Username</mat-label>
+          <input matInput formControlName="username" type="text">
+          <mat-error *ngIf="username?.errors?.['required']">Required</mat-error>
+          <mat-error *ngIf="username?.errors?.['minlength']">Min 3 chars</mat-error>
+        </mat-form-field>
       </div>
 
       <!-- Contact & NIC -->
-      <div class="grid grid-cols-2 gap-3">
-        <div>
-          <label for="contact" class="block text-sm font-medium text-gray-700">Phone</label>
-          <input
-            id="contact"
-            type="tel"
-            formControlName="contact"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            [class.border-error-500]="contact?.invalid && contact?.touched"
-            placeholder="0771234567"
-          />
-          <p *ngIf="contact?.invalid && contact?.touched" class="mt-1 text-xs text-error-600">
-            <span *ngIf="contact?.errors?.['required']">Required</span>
-            <span *ngIf="contact?.errors?.['pattern']">10 digits</span>
-          </p>
-        </div>
-        <div>
-          <label for="nic" class="block text-sm font-medium text-gray-700">NIC</label>
-          <input
-            id="nic"
-            type="text"
-            formControlName="nic"
-            class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            [class.border-error-500]="nic?.invalid && nic?.touched"
-            placeholder="123456789"
-          />
-          <p *ngIf="nic?.invalid && nic?.touched" class="mt-1 text-xs text-error-600">
-            <span *ngIf="nic?.errors?.['required']">Required</span>
-            <span *ngIf="nic?.errors?.['minlength']">Min 9 chars</span>
-          </p>
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Phone</mat-label>
+          <input matInput formControlName="contact" type="tel">
+          <mat-error *ngIf="contact?.errors?.['required']">Required</mat-error>
+          <mat-error *ngIf="contact?.errors?.['pattern']">10 digits required</mat-error>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>NIC</mat-label>
+          <input matInput formControlName="nic" type="text">
+          <mat-error *ngIf="nic?.errors?.['required']">Required</mat-error>
+          <mat-error *ngIf="nic?.errors?.['minlength']">Min 9 chars</mat-error>
+        </mat-form-field>
       </div>
 
-      <!-- Password -->
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <div class="relative mt-1">
-          <input
-            id="password"
-            [type]="showPassword ? 'text' : 'password'"
-            formControlName="password"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            [class.border-error-500]="password?.invalid && password?.touched"
-            placeholder="••••••••"
-          />
-          <button
-            type="button"
-            (click)="togglePasswordVisibility()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-          >
-            <span *ngIf="!showPassword">👁️</span>
-            <span *ngIf="showPassword">👁️‍🗨️</span>
+      <!-- Password & Confirm Password -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Password</mat-label>
+          <input matInput formControlName="password" [type]="showPassword ? 'text' : 'password'">
+          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+            <mat-icon>{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
           </button>
-        </div>
-        <p *ngIf="password?.invalid && password?.touched" class="mt-1 text-xs text-error-600">
-          <span *ngIf="password?.errors?.['required']">Required</span>
-          <span *ngIf="password?.errors?.['minlength']">Min 6 chars</span>
-        </p>
-      </div>
+          <mat-error *ngIf="password?.errors?.['required']">Required</mat-error>
+          <mat-error *ngIf="password?.errors?.['minlength']">Min 6 chars</mat-error>
+        </mat-form-field>
 
-      <!-- Confirm Password -->
-      <div>
-        <label for="confirmPassword" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-        <div class="relative mt-1">
-          <input
-            id="confirmPassword"
-            [type]="showConfirmPassword ? 'text' : 'password'"
-            formControlName="confirmPassword"
-            class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
-            [class.border-error-500]="(confirmPassword?.invalid && confirmPassword?.touched) || passwordMismatch"
-            placeholder="••••••••"
-          />
-          <button
-            type="button"
-            (click)="toggleConfirmPasswordVisibility()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-          >
-            <span *ngIf="!showConfirmPassword">👁️</span>
-            <span *ngIf="showConfirmPassword">👁️‍🗨️</span>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput formControlName="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'">
+          <button mat-icon-button matSuffix type="button" (click)="toggleConfirmPasswordVisibility()">
+            <mat-icon>{{ showConfirmPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
           </button>
-        </div>
-        <p *ngIf="passwordMismatch" class="mt-1 text-xs text-error-600">
-          Passwords do not match
-        </p>
+          <mat-error *ngIf="passwordMismatch">Passwords do not match</mat-error>
+        </mat-form-field>
       </div>
 
       <!-- Terms & Conditions -->
-      <div class="flex items-start">
-        <input
-          id="termsAccepted"
-          type="checkbox"
-          formControlName="termsAccepted"
-          class="mt-1 h-4 w-4 text-primary-600 rounded border-gray-300"
-        />
-        <label for="termsAccepted" class="ml-2 text-sm text-gray-700">
-          I agree to the
-          <a href="#" class="font-medium text-primary-600 hover:text-primary-700">Terms of Service</a>
-          and
-          <a href="#" class="font-medium text-primary-600 hover:text-primary-700">Privacy Policy</a>
-        </label>
+      <div class="mt-4 mb-8 flex flex-col">
+        <mat-checkbox color="primary" formControlName="termsAccepted" class="caption">
+          I agree to the <a href="#" class="text-primary hover:underline">Terms of Service</a> and <a href="#" class="text-primary hover:underline">Privacy Policy</a>
+        </mat-checkbox>
+        <p *ngIf="termsAccepted?.invalid && termsAccepted?.touched" class="caption text-error mt-1">
+          You must accept the terms to continue
+        </p>
       </div>
-      <p *ngIf="termsAccepted?.invalid && termsAccepted?.touched" class="text-sm text-error-600">
-        You must accept the terms to continue
-      </p>
 
       <!-- Submit Button -->
-      <button
-        type="submit"
-        [disabled]="isLoading || registerForm.invalid"
-        class="w-full px-4 py-2 rounded-lg font-medium text-white transition-all duration-200"
-        [class]="isLoading || registerForm.invalid 
-          ? 'bg-gray-400 cursor-not-allowed' 
-          : 'bg-linear-to-r from-primary-500 to-secondary-500 hover:shadow-lg'"
-      >
-        <span *ngIf="!isLoading">Create Account</span>
-        <span *ngIf="isLoading" class="flex items-center justify-center">
-          <span class="animate-spin mr-2">⏳</span> Creating account...
-        </span>
+      <button mat-flat-button color="primary" class="w-full py-6 mt-8" type="submit" [disabled]="isLoading || registerForm.invalid">
+        <span *ngIf="!isLoading">CREATE ACCOUNT</span>
+        <span *ngIf="isLoading">CREATING ACCOUNT...</span>
       </button>
     </form>
 
     <!-- Sign In Link -->
-    <p class="text-center text-gray-600 text-sm">
+    <p class="text-center caption text-neutral-500 mt-8">
       Already have an account?
-      <a routerLink="/login" class="font-medium text-primary-600 hover:text-primary-700">
-        Sign in
-      </a>
+      <a routerLink="/login" class="text-primary hover:underline ml-1">Sign in</a>
     </p>
   </div>
 </div>

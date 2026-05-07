@@ -1,126 +1,67 @@
-<div class="min-h-screen flex items-center justify-center bg-linear-to-br from-primary-50 to-secondary-50 py-12 px-4 sm:px-6 lg:px-8">
-  <div class="w-full max-w-md space-y-8 bg-white rounded-lg shadow-lg p-8">
+<div class="min-h-screen flex items-center justify-center bg-surface py-12 px-4 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md space-y-8 bg-surface-container-lowest p-12 border border-neutral-200">
     <!-- Header -->
     <div class="text-center">
-      <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-linear-to-r from-primary-500 to-secondary-500 text-white font-bold text-lg">
-        RE
-      </div>
-      <h2 class="mt-6 text-3xl font-bold text-gray-900">Welcome Back</h2>
-      <p class="mt-2 text-gray-600">Sign in to your Real Estate account</p>
+      <h2 class="display-lg text-neutral-900 tracking-wider">LOG IN</h2>
+      <p class="mt-2 caption text-neutral-500">Access your portfolio</p>
     </div>
 
     <!-- Error Message -->
-    <div *ngIf="errorMessage" class="rounded-lg bg-error-50 border border-error-300 p-4">
-      <p class="text-sm text-error-800">{{ errorMessage }}</p>
+    <div *ngIf="errorMessage" class="bg-error-container text-on-error-container p-4">
+      <p class="caption">{{ errorMessage }}</p>
     </div>
 
     <!-- Login Form -->
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
-      <!-- Username Field -->
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
-        <input
-          id="username"
-          type="text"
-          formControlName="username"
-          autocomplete="username"
-          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-          [class.border-error-500]="username?.invalid && username?.touched"
-          placeholder="Enter your username"
-        />
-        <p *ngIf="username?.invalid && username?.touched" class="mt-1 text-sm text-error-600">
-          <span *ngIf="username?.errors?.['required']">Username is required</span>
-          <span *ngIf="username?.errors?.['minlength']">Username must be at least 3 characters</span>
-        </p>
-      </div>
+      
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" type="text" autocomplete="username">
+        <mat-error *ngIf="username?.errors?.['required']">Username is required</mat-error>
+        <mat-error *ngIf="username?.errors?.['minlength']">Minimum 3 characters</mat-error>
+      </mat-form-field>
 
-      <!-- Password Field -->
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-        <div class="relative mt-1">
-          <input
-            id="password"
-            [type]="showPassword ? 'text' : 'password'"
-            formControlName="password"
-            autocomplete="current-password"
-            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-            [class.border-error-500]="password?.invalid && password?.touched"
-            placeholder="Enter your password"
-          />
-          <button
-            type="button"
-            (click)="togglePasswordVisibility()"
-            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
-          >
-            <span *ngIf="!showPassword">👁️</span>
-            <span *ngIf="showPassword">👁️‍🗨️</span>
-          </button>
-        </div>
-        <p *ngIf="password?.invalid && password?.touched" class="mt-1 text-sm text-error-600">
-          <span *ngIf="password?.errors?.['required']">Password is required</span>
-          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
-        </p>
-      </div>
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" [type]="showPassword ? 'text' : 'password'" autocomplete="current-password">
+        <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+          <mat-icon>{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="password?.errors?.['required']">Password is required</mat-error>
+        <mat-error *ngIf="password?.errors?.['minlength']">Minimum 6 characters</mat-error>
+      </mat-form-field>
 
-      <!-- Remember Me & Forgot Password -->
       <div class="flex items-center justify-between">
-        <label class="flex items-center text-sm text-gray-700">
-          <input type="checkbox" class="rounded border-gray-300 h-4 w-4 text-primary-600" />
-          <span class="ml-2">Remember me</span>
-        </label>
-        <a href="#" class="text-sm font-medium text-primary-600 hover:text-primary-700">
-          Forgot password?
-        </a>
+        <mat-checkbox color="primary">Remember me</mat-checkbox>
+        <a href="#" class="caption text-primary hover:text-primary-container transition-colors">Forgot password?</a>
       </div>
 
-      <!-- Submit Button -->
-      <button
-        type="submit"
-        [disabled]="isLoading || loginForm.invalid"
-        class="w-full px-4 py-2 rounded-lg font-medium text-white transition-all duration-200"
-        [class]="isLoading || loginForm.invalid 
-          ? 'bg-gray-400 cursor-not-allowed' 
-          : 'bg-linear-to-r from-primary-500 to-secondary-500 hover:shadow-lg'"
-      >
-        <span *ngIf="!isLoading">Sign In</span>
-        <span *ngIf="isLoading" class="flex items-center justify-center">
-          <span class="animate-spin mr-2">⏳</span> Signing in...
-        </span>
+      <button mat-flat-button color="primary" class="w-full py-6 mt-4" type="submit" [disabled]="isLoading || loginForm.invalid">
+        <span *ngIf="!isLoading">SIGN IN</span>
+        <span *ngIf="isLoading">SIGNING IN...</span>
       </button>
+
     </form>
 
-    <!-- Sign Up Link -->
-    <p class="text-center text-gray-600">
+    <p class="text-center caption text-neutral-500 mt-8">
       Don't have an account?
-      <a routerLink="/register" class="font-medium text-primary-600 hover:text-primary-700">
-        Create one
-      </a>
+      <a routerLink="/register" class="text-primary hover:underline ml-1">Create one</a>
     </p>
 
-    <!-- Divider -->
-    <div class="relative">
-      <div class="absolute inset-0 flex items-center">
-        <div class="w-full border-t border-gray-300"></div>
-      </div>
-      <div class="relative flex justify-center text-sm">
-        <span class="px-2 bg-white text-gray-500">Or continue as</span>
-      </div>
-    </div>
-
     <!-- Demo Login Buttons -->
-    <div class="grid grid-cols-3 gap-3 text-center text-xs">
-      <button type="button" class="px-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-        <span class="block font-semibold">👤 Buyer</span>
-        <span class="block text-gray-600">demo</span>
-      </button>
-      <button type="button" class="px-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-        <span class="block font-semibold">🏠 Seller</span>
-        <span class="block text-gray-600">demo</span>
-      </button>
-      <button type="button" class="px-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-        <span class="block font-semibold">⚙️ Admin</span>
-        <span class="block text-gray-600">demo</span>
-      </button>
+    <div class="mt-8 pt-6 border-t border-neutral-200">
+      <p class="caption text-center text-neutral-400 mb-4">DEMO ACCESS</p>
+      <div class="grid grid-cols-3 gap-3 text-center text-xs">
+        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
+          <span class="block label-caps text-neutral-900">BUYER</span>
+        </button>
+        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
+          <span class="block label-caps text-neutral-900">SELLER</span>
+        </button>
+        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
+          <span class="block label-caps text-neutral-900">ADMIN</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>

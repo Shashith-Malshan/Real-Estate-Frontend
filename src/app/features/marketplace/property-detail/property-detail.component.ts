@@ -9,11 +9,22 @@ import { InquiryService } from '../../../shared/services/inquiry.service';
 import { VisitService } from '../../../shared/services/visit.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { PropertyDTO, InquiryCreateRequest, VisitCreateRequest, PropertyCategory } from '../../../shared/models';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-property-detail',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    MatIconModule, 
+    MatButtonModule, 
+    MatInputModule, 
+    MatFormFieldModule
+  ],
   templateUrl: './property-detail.component.html',
   styleUrl: './property-detail.component.css'
 })

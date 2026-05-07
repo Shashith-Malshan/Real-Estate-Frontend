@@ -6,11 +6,26 @@ import { Subject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
 import { AuthService } from '../../../shared/services/auth.service';
 import { UserRegistrationDTO, UserRole } from '../../../shared/models';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    ReactiveFormsModule, 
+    RouterLink,
+    MatInputModule,
+    MatFormFieldModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCheckboxModule
+  ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
