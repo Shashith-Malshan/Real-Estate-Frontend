@@ -1,0 +1,120 @@
+<header class="bg-white shadow-md sticky top-0 z-50">
+  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2">
+      <div class="w-8 h-8 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center">
+        <span class="text-white font-bold text-lg">RE</span>
+      </div>
+      <span class="text-xl font-semibold text-neutral-900 hidden sm:inline">Real Estate</span>
+    </a>
+
+    <!-- Navigation Links (Desktop) -->
+    <nav class="hidden md:flex items-center gap-6">
+      <a
+        href="/"
+        class="text-neutral-700 hover:text-primary-600 transition-colors"
+        (click)="closeMenu()"
+      >
+        Browse
+      </a>
+      <a
+        href="/properties"
+        class="text-neutral-700 hover:text-primary-600 transition-colors"
+        (click)="closeMenu()"
+      >
+        Properties
+      </a>
+      <a
+        href="/sell"
+        class="text-neutral-700 hover:text-primary-600 transition-colors"
+        (click)="closeMenu()"
+      >
+        Sell
+      </a>
+    </nav>
+
+    <!-- Auth Links -->
+    <div class="hidden md:flex items-center gap-4">
+      <a
+        href="/login"
+        class="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
+        (click)="closeMenu()"
+      >
+        Log In
+      </a>
+      <a
+        href="/register"
+        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
+        (click)="closeMenu()"
+      >
+        Sign Up
+      </a>
+    </div>
+
+    <!-- Mobile Menu Toggle -->
+    <button
+      class="md:hidden p-2 rounded-lg hover:bg-neutral-100 transition-colors"
+      (click)="toggleMenu()"
+      aria-label="Toggle menu"
+    >
+      <svg
+        class="w-6 h-6 text-neutral-900"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h16"
+        ></path>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div
+    *ngIf="isMenuOpen"
+    class="md:hidden border-t border-neutral-200 bg-white"
+  >
+    <div class="px-4 py-4 space-y-3">
+      <a
+        href="/"
+        class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
+        (click)="closeMenu()"
+      >
+        Browse
+      </a>
+      <a
+        href="/properties"
+        class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
+        (click)="closeMenu()"
+      >
+        Properties
+      </a>
+      <a
+        href="/sell"
+        class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
+        (click)="closeMenu()"
+      >
+        Sell
+      </a>
+      <hr class="my-3 border-neutral-200" />
+      <a
+        href="/login"
+        class="block py-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
+        (click)="closeMenu()"
+      >
+        Log In
+      </a>
+      <a
+        href="/register"
+        class="block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium text-center transition-colors"
+        (click)="closeMenu()"
+      >
+        Sign Up
+      </a>
+    </div>
+  </div>
+</header>
