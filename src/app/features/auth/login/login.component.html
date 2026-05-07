@@ -1,0 +1,126 @@
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-secondary-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md space-y-8 bg-white rounded-lg shadow-lg p-8">
+    <!-- Header -->
+    <div class="text-center">
+      <div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-bold text-lg">
+        RE
+      </div>
+      <h2 class="mt-6 text-3xl font-bold text-gray-900">Welcome Back</h2>
+      <p class="mt-2 text-gray-600">Sign in to your Real Estate account</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="rounded-lg bg-error-50 border border-error-300 p-4">
+      <p class="text-sm text-error-800">{{ errorMessage }}</p>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Username Field -->
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          autocomplete="username"
+          class="mt-1 w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+          [class.border-error-500]="username?.invalid && username?.touched"
+          placeholder="Enter your username"
+        />
+        <p *ngIf="username?.invalid && username?.touched" class="mt-1 text-sm text-error-600">
+          <span *ngIf="username?.errors?.['required']">Username is required</span>
+          <span *ngIf="username?.errors?.['minlength']">Username must be at least 3 characters</span>
+        </p>
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+        <div class="relative mt-1">
+          <input
+            id="password"
+            [type]="showPassword ? 'text' : 'password'"
+            formControlName="password"
+            autocomplete="current-password"
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+            [class.border-error-500]="password?.invalid && password?.touched"
+            placeholder="Enter your password"
+          />
+          <button
+            type="button"
+            (click)="togglePasswordVisibility()"
+            class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
+          >
+            <span *ngIf="!showPassword">👁️</span>
+            <span *ngIf="showPassword">👁️‍🗨️</span>
+          </button>
+        </div>
+        <p *ngIf="password?.invalid && password?.touched" class="mt-1 text-sm text-error-600">
+          <span *ngIf="password?.errors?.['required']">Password is required</span>
+          <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+        </p>
+      </div>
+
+      <!-- Remember Me & Forgot Password -->
+      <div class="flex items-center justify-between">
+        <label class="flex items-center text-sm text-gray-700">
+          <input type="checkbox" class="rounded border-gray-300 h-4 w-4 text-primary-600" />
+          <span class="ml-2">Remember me</span>
+        </label>
+        <a href="#" class="text-sm font-medium text-primary-600 hover:text-primary-700">
+          Forgot password?
+        </a>
+      </div>
+
+      <!-- Submit Button -->
+      <button
+        type="submit"
+        [disabled]="isLoading || loginForm.invalid"
+        class="w-full px-4 py-2 rounded-lg font-medium text-white transition-all duration-200"
+        [class]="isLoading || loginForm.invalid 
+          ? 'bg-gray-400 cursor-not-allowed' 
+          : 'bg-gradient-to-r from-primary-500 to-secondary-500 hover:shadow-lg'"
+      >
+        <span *ngIf="!isLoading">Sign In</span>
+        <span *ngIf="isLoading" class="flex items-center justify-center">
+          <span class="animate-spin mr-2">⏳</span> Signing in...
+        </span>
+      </button>
+    </form>
+
+    <!-- Sign Up Link -->
+    <p class="text-center text-gray-600">
+      Don't have an account?
+      <a routerLink="/register" class="font-medium text-primary-600 hover:text-primary-700">
+        Create one
+      </a>
+    </p>
+
+    <!-- Divider -->
+    <div class="relative">
+      <div class="absolute inset-0 flex items-center">
+        <div class="w-full border-t border-gray-300"></div>
+      </div>
+      <div class="relative flex justify-center text-sm">
+        <span class="px-2 bg-white text-gray-500">Or continue as</span>
+      </div>
+    </div>
+
+    <!-- Demo Login Buttons -->
+    <div class="grid grid-cols-3 gap-3 text-center text-xs">
+      <button type="button" class="px-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        <span class="block font-semibold">👤 Buyer</span>
+        <span class="block text-gray-600">demo</span>
+      </button>
+      <button type="button" class="px-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        <span class="block font-semibold">🏠 Seller</span>
+        <span class="block text-gray-600">demo</span>
+      </button>
+      <button type="button" class="px-2 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+        <span class="block font-semibold">⚙️ Admin</span>
+        <span class="block text-gray-600">demo</span>
+      </button>
+    </div>
+  </div>
+</div>

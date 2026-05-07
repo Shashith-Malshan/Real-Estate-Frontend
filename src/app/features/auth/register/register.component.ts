@@ -1,0 +1,172 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil, finalize } from 'rxjs/operators';
+import { AuthService } from '../../../shared/services/auth.service';
+import { UserRegistrationDTO, UserRole } from '../../../shared/models';
+
+@Component({
+  selector: 'app-register',
+  standalone: true,
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterLink],
+  templateUrl: './register.component.html',
+  styleUrl: './register.component.css'
+})
+export class RegisterComponent implements OnInit, OnDestroy {
+  registerForm!: FormGroup;
+  isLoading = false;
+  errorMessage = '';
+  successMessage = '';
+  showPassword = false;
+  showConfirmPassword = false;
+  selectedRole = UserRole.BUYER;
+  userRoles = UserRole;
+
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.initializeForm();
+
+    // Redirect if already logged in
+    if (this.authService.isAuthenticated()) {
+      this.router.navigate(['/dashboard']);
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private initializeForm(): void {
+    this.registerForm = this.formBuilder.group({
+      firstName: ['', [Validators.required, Validators.minLength(2)]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      username: ['', [Validators.required, Validators.minLength(3)]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
+      contact: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]],
+      nic: ['', [Validators.required, Validators.minLength(9)]],
+      role: [UserRole.BUYER, Validators.required],
+      termsAccepted: [false, [Validators.requiredTrue]]
+    }, {
+      validators: this.passwordMatchValidator
+    });
+  }
+
+  private passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if (!password || !confirmPassword) {
+      return null;
+    }
+
+    return password.value === confirmPassword.value ? null : { passwordMismatch: true };
+  }
+
+  onSubmit(): void {
+    if (this.registerForm.invalid) {
+      this.errorMessage = 'Please fill in all fields correctly';
+      return;
+    }
+
+    this.isLoading = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
+    const formValue = this.registerForm.value;
+    const registrationData: UserRegistrationDTO = {
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
+      email: formValue.email,
+      username: formValue.username,
+      password: formValue.password,
+      contact: formValue.contact,
+      nic: formValue.nic,
+      roleId: formValue.role
+    };
+
+    this.authService.register(registrationData)
+      .pipe(
+        takeUntil(this.destroy$),
+        finalize(() => this.isLoading = false)
+      )
+      .subscribe({
+        next: (response) => {
+          this.successMessage = 'Registration successful! Redirecting to dashboard...';
+          setTimeout(() => {
+            this.router.navigate(['/dashboard']);
+          }, 2000);
+        },
+        error: (error) => {
+          this.errorMessage = error?.error?.message || 'Registration failed. Please try again.';
+          console.error('Registration error:', error);
+        }
+      });
+  }
+
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleConfirmPasswordVisibility(): void {
+    this.showConfirmPassword = !this.showConfirmPassword;
+  }
+
+  setRole(role: UserRole): void {
+    this.selectedRole = role;
+    this.registerForm.patchValue({ role });
+  }
+
+  // Form control getters
+  get firstName() {
+    return this.registerForm.get('firstName');
+  }
+
+  get lastName() {
+    return this.registerForm.get('lastName');
+  }
+
+  get email() {
+    return this.registerForm.get('email');
+  }
+
+  get username() {
+    return this.registerForm.get('username');
+  }
+
+  get password() {
+    return this.registerForm.get('password');
+  }
+
+  get confirmPassword() {
+    return this.registerForm.get('confirmPassword');
+  }
+
+  get contact() {
+    return this.registerForm.get('contact');
+  }
+
+  get nic() {
+    return this.registerForm.get('nic');
+  }
+
+  get termsAccepted() {
+    return this.registerForm.get('termsAccepted');
+  }
+
+  get passwordMismatch(): boolean {
+    return (this.registerForm.hasError('passwordMismatch') ?? false) && 
+           ((this.password?.touched ?? false) || (this.confirmPassword?.touched ?? false));
+  }
+}
