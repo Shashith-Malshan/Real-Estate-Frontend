@@ -47,11 +47,11 @@ export class VisitService {
   }
 
   /**
-   * Get visits scheduled for seller (visits to their properties)
+   * Get pending visits for a property
    */
-  getScheduledVisitsForSeller(sellerId: number): Observable<VisitDTO[]> {
+  getPendingVisits(propertyId: number): Observable<VisitDTO[]> {
     return this.apiService.get<VisitDTO[]>(
-      `${this.endpoint}/seller/${sellerId}`
+      `${this.endpoint}/property/${propertyId}/pending`
     );
   }
 
@@ -59,7 +59,7 @@ export class VisitService {
    * Mark visit as completed
    */
   completeVisit(visitId: number): Observable<VisitDTO> {
-    return this.apiService.patch<VisitDTO>(
+    return this.apiService.put<VisitDTO>(
       `${this.endpoint}/${visitId}/complete`,
       {}
     );

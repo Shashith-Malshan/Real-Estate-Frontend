@@ -29,10 +29,7 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface AuthResponse {
-  user: UserResponseDTO;
-  token?: string;
-}
+
 
 export enum UserRole {
   ADMIN = 1,

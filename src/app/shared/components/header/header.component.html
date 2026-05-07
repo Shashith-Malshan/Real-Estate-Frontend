@@ -1,107 +1,81 @@
-<header class="bg-white shadow-md sticky top-0 z-50">
-  <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+<header class="bg-white sticky top-0 z-50">
+  <div class="container-max py-6 flex items-center justify-between">
     <!-- Logo -->
-    <a routerLink="/marketplace" class="flex items-center gap-2">
-      <div class="w-8 h-8 bg-linear-to-r from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center">
-        <span class="text-white font-bold text-lg">RE</span>
-      </div>
-      <span class="text-xl font-semibold text-neutral-900 hidden sm:inline">Real Estate</span>
+    <a routerLink="/marketplace" class="flex items-center">
+      <span class="text-2xl font-bold tracking-[0.15em] text-neutral-900" style="font-family: var(--font-family);">ESTATE</span>
     </a>
 
     <!-- Navigation Links (Desktop) -->
-    <nav class="hidden md:flex items-center gap-6">
+    <nav class="hidden md:flex items-center gap-12">
       <a
         routerLink="/marketplace"
-        routerLinkActive="text-primary-600"
+        routerLinkActive="border-b-[1px] border-neutral-900"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="text-neutral-700 hover:text-primary-600 transition-colors"
+        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors pb-1 border-b-[1px] border-transparent"
         (click)="closeMenu()"
       >
-        Browse
+        Marketplace
       </a>
       <a
-        routerLink="/marketplace/browse"
-        routerLinkActive="text-primary-600"
-        class="text-neutral-700 hover:text-primary-600 transition-colors"
+        routerLink="/services"
+        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors pb-1 border-b-[1px] border-transparent"
         (click)="closeMenu()"
       >
-        Properties
+        Services
       </a>
       <a
-        *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.SELLER"
-        routerLink="/seller"
-        routerLinkActive="text-primary-600"
-        class="text-neutral-700 hover:text-primary-600 transition-colors"
+        routerLink="/journal"
+        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors pb-1 border-b-[1px] border-transparent"
         (click)="closeMenu()"
       >
-        Dashboard
+        Journal
       </a>
       <a
-        *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.ADMIN"
-        routerLink="/admin"
-        routerLinkActive="text-primary-600"
-        class="text-neutral-700 hover:text-primary-600 transition-colors"
+        routerLink="/contact"
+        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors pb-1 border-b-[1px] border-transparent"
         (click)="closeMenu()"
       >
-        Admin
+        Contact
       </a>
     </nav>
 
-    <!-- Auth Links (Desktop) -->
+    <!-- Auth / Icons -->
     <div class="hidden md:flex items-center gap-4">
+      <button mat-icon-button class="text-neutral-700 hover:text-neutral-900 transition-colors">
+        <mat-icon style="font-size: 20px; width: 20px; height: 20px;">favorite_border</mat-icon>
+      </button>
+
       <ng-container *ngIf="!isAuthenticated">
         <a
           routerLink="/login"
-          class="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
+          mat-icon-button
+          class="text-neutral-700 hover:text-neutral-900 transition-colors"
           (click)="closeMenu()"
         >
-          Log In
-        </a>
-        <a
-          routerLink="/register"
-          class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
-          (click)="closeMenu()"
-        >
-          Sign Up
+          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">account_circle</mat-icon>
         </a>
       </ng-container>
 
       <ng-container *ngIf="isAuthenticated && currentUser">
         <a
-          routerLink="/dashboard"
-          class="px-4 py-2 text-neutral-700 hover:text-primary-600 font-medium transition-colors"
+          [routerLink]="currentUser.activeRoleId === UserRole.SELLER ? '/seller' : (currentUser.activeRoleId === UserRole.ADMIN ? '/admin' : '/dashboard')"
+          mat-icon-button
+          class="text-neutral-700 hover:text-neutral-900 transition-colors"
           (click)="closeMenu()"
         >
-          {{ currentUser.firstName }}
+          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">account_circle</mat-icon>
         </a>
-        <button
-          (click)="logout()"
-          class="px-4 py-2 bg-error-600 text-white rounded-lg hover:bg-error-700 font-medium transition-colors"
-        >
-          Logout
-        </button>
       </ng-container>
     </div>
 
     <!-- Mobile Menu Toggle -->
     <button
-      class="md:hidden p-2 rounded-lg hover:bg-neutral-100 transition-colors"
+      mat-icon-button
+      class="md:hidden text-neutral-900"
       (click)="toggleMenu()"
       aria-label="Toggle menu"
     >
-      <svg
-        class="w-6 h-6 text-neutral-900"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M4 6h16M4 12h16M4 18h16"
-        ></path>
-      </svg>
+      <mat-icon>menu</mat-icon>
     </button>
   </div>
 
@@ -110,73 +84,47 @@
     *ngIf="isMenuOpen"
     class="md:hidden border-t border-neutral-200 bg-white"
   >
-    <div class="px-4 py-4 space-y-3">
+    <div class="px-8 py-6 flex flex-col gap-6">
       <a
         routerLink="/marketplace"
-        routerLinkActive="text-primary-600"
+        routerLinkActive="text-neutral-900"
         [routerLinkActiveOptions]="{ exact: true }"
-        class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
+        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors"
         (click)="closeMenu()"
       >
-        Browse
+        Marketplace
       </a>
       <a
-        routerLink="/marketplace/browse"
-        routerLinkActive="text-primary-600"
-        class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
+        routerLink="/services"
+        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors"
         (click)="closeMenu()"
       >
-        Properties
+        Services
       </a>
-      <a
-        *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.SELLER"
-        routerLink="/seller"
-        routerLinkActive="text-primary-600"
-        class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
-        (click)="closeMenu()"
-      >
-        Dashboard
-      </a>
-      <a
-        *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.ADMIN"
-        routerLink="/admin"
-        routerLinkActive="text-primary-600"
-        class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
-        (click)="closeMenu()"
-      >
-        Admin
-      </a>
-
-      <hr class="my-3 border-neutral-200" />
+      
+      <hr class="border-neutral-200" />
 
       <ng-container *ngIf="!isAuthenticated">
         <a
           routerLink="/login"
-          class="block py-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
+          class="label-caps text-neutral-900 hover:text-primary-700 transition-colors"
           (click)="closeMenu()"
         >
-          Log In
-        </a>
-        <a
-          routerLink="/register"
-          class="block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium text-center transition-colors"
-          (click)="closeMenu()"
-        >
-          Sign Up
+          Log In / Register
         </a>
       </ng-container>
 
       <ng-container *ngIf="isAuthenticated && currentUser">
         <a
-          routerLink="/dashboard"
-          class="block py-2 text-neutral-700 hover:text-primary-600 font-medium transition-colors"
+          [routerLink]="currentUser.activeRoleId === UserRole.SELLER ? '/seller' : (currentUser.activeRoleId === UserRole.ADMIN ? '/admin' : '/dashboard')"
+          class="label-caps text-neutral-900 hover:text-primary-700 transition-colors"
           (click)="closeMenu()"
         >
           {{ currentUser.firstName }}'s Dashboard
         </a>
         <button
           (click)="logout()"
-          class="w-full px-4 py-2 bg-error-600 text-white rounded-lg hover:bg-error-700 font-medium transition-colors text-left"
+          class="label-caps text-error text-left"
         >
           Logout
         </button>

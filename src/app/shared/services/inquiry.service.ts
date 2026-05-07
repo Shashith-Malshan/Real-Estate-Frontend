@@ -47,30 +47,20 @@ export class InquiryService {
   }
 
   /**
-   * Get inquiries for seller (all inquiries on their properties)
+   * Get unanswered inquiries for a property
    */
-  getInquiriesForSeller(sellerId: number): Observable<InquiryDTO[]> {
+  getUnansweredInquiries(propertyId: number): Observable<InquiryDTO[]> {
     return this.apiService.get<InquiryDTO[]>(
-      `${this.endpoint}/seller/${sellerId}`
+      `${this.endpoint}/property/${propertyId}/unanswered`
     );
   }
 
   /**
-   * Reply to inquiry
+   * Mark inquiry as replied
    */
-  replyToInquiry(inquiryId: number, replyMessage: string): Observable<InquiryDTO> {
-    return this.apiService.post<InquiryDTO>(
+  replyToInquiry(inquiryId: number): Observable<InquiryDTO> {
+    return this.apiService.put<InquiryDTO>(
       `${this.endpoint}/${inquiryId}/reply`,
-      { message: replyMessage }
-    );
-  }
-
-  /**
-   * Mark inquiry as read/replied
-   */
-  markAsReplied(inquiryId: number): Observable<InquiryDTO> {
-    return this.apiService.patch<InquiryDTO>(
-      `${this.endpoint}/${inquiryId}/mark-replied`,
       {}
     );
   }

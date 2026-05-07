@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, tap, map } from 'rxjs';
-import { 
+import {
   UserResponseDTO, 
   UserRegistrationDTO, 
   LoginRequest, 
-  AuthResponse,
   UserRole
 } from '../models';
 
@@ -27,18 +26,18 @@ export class AuthService {
   /**
    * Register a new user
    */
-  register(userData: UserRegistrationDTO): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/register`, userData).pipe(
-      tap(response => this.storeAuth(response))
+  register(userData: UserRegistrationDTO): Observable<UserResponseDTO> {
+    return this.http.post<UserResponseDTO>(`${this.apiUrl}/register`, userData).pipe(
+      tap(user => this.storeAuth(user))
     );
   }
 
   /**
    * Login user
    */
-  login(credentials: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, credentials).pipe(
-      tap(response => this.storeAuth(response))
+  login(credentials: LoginRequest): Observable<UserResponseDTO> {
+    return this.http.post<UserResponseDTO>(`${this.apiUrl}/login`, credentials).pipe(
+      tap(user => this.storeAuth(user))
     );
   }
 
@@ -98,12 +97,14 @@ export class AuthService {
   /**
    * Store authentication data
    */
-  private storeAuth(response: AuthResponse): void {
-    if (response.token) {
-      localStorage.setItem('auth_token', response.token);
-    }
-    localStorage.setItem('current_user', JSON.stringify(response.user));
-    this.currentUserSubject.next(response.user);
+  private storeAuth(user: UserResponseDTO): void {
+    // Generate a mock token for development since backend docs mention Bearer token
+    // but login/register endpoints don't return one
+    const mockToken = btoa(user.username + ':' + Date.now());
+    localStorage.setItem('auth_token', mockToken);
+    
+    localStorage.setItem('current_user', JSON.stringify(user));
+    this.currentUserSubject.next(user);
     this.isAuthenticatedSubject.next(true);
   }
 

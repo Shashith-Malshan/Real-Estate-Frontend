@@ -43,11 +43,24 @@ export class PropertyService {
   }
 
   /**
-   * Search properties
+   * Search properties by advanced filters
    */
-  searchProperties(searchTerm: string, filters?: any): Observable<PropertyDTO[]> {
-    const params = { ...filters, search: searchTerm };
-    return this.apiService.get<PropertyDTO[]>(`${this.endpoint}/search`, params);
+  searchProperties(filters: { district?: string; categoryId?: number }): Observable<PropertyDTO[]> {
+    return this.apiService.get<PropertyDTO[]>(`${this.endpoint}/search`, filters);
+  }
+
+  /**
+   * Search properties by location string
+   */
+  searchByLocation(location: string): Observable<PropertyDTO[]> {
+    return this.apiService.get<PropertyDTO[]>(`${this.endpoint}/search/location`, { location });
+  }
+
+  /**
+   * Search properties by district
+   */
+  searchByDistrict(district: string): Observable<PropertyDTO[]> {
+    return this.apiService.get<PropertyDTO[]>(`${this.endpoint}/search/district`, { district });
   }
 
   /**
@@ -55,18 +68,11 @@ export class PropertyService {
    */
   getPropertiesByCategory(categoryId: PropertyCategory): Observable<PropertyDTO[]> {
     return this.apiService.get<PropertyDTO[]>(
-      `${this.endpoint}/category/${categoryId}`
+      `${this.endpoint}/search/category`, { categoryId }
     );
   }
 
-  /**
-   * Get properties by seller
-   */
-  getPropertiesBySeller(sellerId: number): Observable<PropertyDTO[]> {
-    return this.apiService.get<PropertyDTO[]>(
-      `${this.endpoint}/seller/${sellerId}`
-    );
-  }
+
 
   /**
    * Create new property
@@ -95,23 +101,5 @@ export class PropertyService {
     return this.apiService.delete<void>(`${this.endpoint}/${propertyId}`);
   }
 
-  /**
-   * Get featured properties
-   */
-  getFeaturedProperties(limit: number = 6): Observable<PropertyDTO[]> {
-    return this.apiService.get<PropertyDTO[]>(
-      `${this.endpoint}/featured`,
-      { limit }
-    );
-  }
 
-  /**
-   * Get recently added properties
-   */
-  getRecentProperties(limit: number = 6): Observable<PropertyDTO[]> {
-    return this.apiService.get<PropertyDTO[]>(
-      `${this.endpoint}/recent`,
-      { limit }
-    );
-  }
 }

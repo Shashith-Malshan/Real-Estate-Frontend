@@ -47,21 +47,9 @@ export class DealService {
   }
 
   /**
-   * Get all deals for a seller
+   * Delete deal
    */
-  getDealsBySeller(sellerId: number): Observable<DealDTO[]> {
-    return this.apiService.get<DealDTO[]>(
-      `${this.endpoint}/seller/${sellerId}`
-    );
-  }
-
-  /**
-   * Get all deals (admin only)
-   */
-  getAllDeals(filters?: {
-    page?: number;
-    pageSize?: number;
-  }): Observable<DealDTO[]> {
-    return this.apiService.get<DealDTO[]>(this.endpoint, filters);
+  deleteDeal(dealId: number): Observable<void> {
+    return this.apiService.delete<void>(`${this.endpoint}/${dealId}`);
   }
 }
