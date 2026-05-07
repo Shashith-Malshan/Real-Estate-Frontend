@@ -1,7 +1,7 @@
 <header class="bg-white shadow-md sticky top-0 z-50">
   <div class="container mx-auto px-4 py-4 flex items-center justify-between">
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-2">
+    <a routerLink="/marketplace" class="flex items-center gap-2">
       <div class="w-8 h-8 bg-gradient-to-r from-primary-600 to-secondary-600 rounded-lg flex items-center justify-center">
         <span class="text-white font-bold text-lg">RE</span>
       </div>
@@ -11,44 +11,76 @@
     <!-- Navigation Links (Desktop) -->
     <nav class="hidden md:flex items-center gap-6">
       <a
-        href="/"
+        routerLink="/marketplace"
+        routerLinkActive="text-primary-600"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="text-neutral-700 hover:text-primary-600 transition-colors"
         (click)="closeMenu()"
       >
         Browse
       </a>
       <a
-        href="/properties"
+        routerLink="/marketplace/browse"
+        routerLinkActive="text-primary-600"
         class="text-neutral-700 hover:text-primary-600 transition-colors"
         (click)="closeMenu()"
       >
         Properties
       </a>
       <a
-        href="/sell"
+        *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.SELLER"
+        routerLink="/seller"
+        routerLinkActive="text-primary-600"
         class="text-neutral-700 hover:text-primary-600 transition-colors"
         (click)="closeMenu()"
       >
-        Sell
+        Dashboard
+      </a>
+      <a
+        *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.ADMIN"
+        routerLink="/admin"
+        routerLinkActive="text-primary-600"
+        class="text-neutral-700 hover:text-primary-600 transition-colors"
+        (click)="closeMenu()"
+      >
+        Admin
       </a>
     </nav>
 
-    <!-- Auth Links -->
+    <!-- Auth Links (Desktop) -->
     <div class="hidden md:flex items-center gap-4">
-      <a
-        href="/login"
-        class="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
-        (click)="closeMenu()"
-      >
-        Log In
-      </a>
-      <a
-        href="/register"
-        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
-        (click)="closeMenu()"
-      >
-        Sign Up
-      </a>
+      <ng-container *ngIf="!isAuthenticated">
+        <a
+          routerLink="/login"
+          class="px-4 py-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
+          (click)="closeMenu()"
+        >
+          Log In
+        </a>
+        <a
+          routerLink="/register"
+          class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
+          (click)="closeMenu()"
+        >
+          Sign Up
+        </a>
+      </ng-container>
+
+      <ng-container *ngIf="isAuthenticated && currentUser">
+        <a
+          routerLink="/dashboard"
+          class="px-4 py-2 text-neutral-700 hover:text-primary-600 font-medium transition-colors"
+          (click)="closeMenu()"
+        >
+          {{ currentUser.firstName }}
+        </a>
+        <button
+          (click)="logout()"
+          class="px-4 py-2 bg-error-600 text-white rounded-lg hover:bg-error-700 font-medium transition-colors"
+        >
+          Logout
+        </button>
+      </ng-container>
     </div>
 
     <!-- Mobile Menu Toggle -->
@@ -80,41 +112,75 @@
   >
     <div class="px-4 py-4 space-y-3">
       <a
-        href="/"
+        routerLink="/marketplace"
+        routerLinkActive="text-primary-600"
+        [routerLinkActiveOptions]="{ exact: true }"
         class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
         (click)="closeMenu()"
       >
         Browse
       </a>
       <a
-        href="/properties"
+        routerLink="/marketplace/browse"
+        routerLinkActive="text-primary-600"
         class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
         (click)="closeMenu()"
       >
         Properties
       </a>
       <a
-        href="/sell"
+        *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.SELLER"
+        routerLink="/seller"
+        routerLinkActive="text-primary-600"
         class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
         (click)="closeMenu()"
       >
-        Sell
+        Dashboard
       </a>
+      <a
+        *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.ADMIN"
+        routerLink="/admin"
+        routerLinkActive="text-primary-600"
+        class="block py-2 text-neutral-700 hover:text-primary-600 transition-colors"
+        (click)="closeMenu()"
+      >
+        Admin
+      </a>
+
       <hr class="my-3 border-neutral-200" />
-      <a
-        href="/login"
-        class="block py-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
-        (click)="closeMenu()"
-      >
-        Log In
-      </a>
-      <a
-        href="/register"
-        class="block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium text-center transition-colors"
-        (click)="closeMenu()"
-      >
-        Sign Up
-      </a>
+
+      <ng-container *ngIf="!isAuthenticated">
+        <a
+          routerLink="/login"
+          class="block py-2 text-primary-600 hover:text-primary-700 font-medium transition-colors"
+          (click)="closeMenu()"
+        >
+          Log In
+        </a>
+        <a
+          routerLink="/register"
+          class="block px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium text-center transition-colors"
+          (click)="closeMenu()"
+        >
+          Sign Up
+        </a>
+      </ng-container>
+
+      <ng-container *ngIf="isAuthenticated && currentUser">
+        <a
+          routerLink="/dashboard"
+          class="block py-2 text-neutral-700 hover:text-primary-600 font-medium transition-colors"
+          (click)="closeMenu()"
+        >
+          {{ currentUser.firstName }}'s Dashboard
+        </a>
+        <button
+          (click)="logout()"
+          class="w-full px-4 py-2 bg-error-600 text-white rounded-lg hover:bg-error-700 font-medium transition-colors text-left"
+        >
+          Logout
+        </button>
+      </ng-container>
     </div>
   </div>
 </header>
