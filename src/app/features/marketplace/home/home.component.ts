@@ -7,7 +7,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <div class="min-h-screen bg-gradient-to-br from-primary-50 to-secondary-50">
+    <div class="min-h-screen bg-linear-to-br from-primary-50 to-secondary-50">
       <!-- Hero Section -->
       <section class="py-20 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto text-center">
@@ -19,7 +19,7 @@ import { RouterLink } from '@angular/router';
           </p>
           <div class="flex flex-col sm:flex-row gap-4 justify-center">
             <a routerLink="/marketplace/browse" 
-               class="px-8 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow">
+               class="px-8 py-3 bg-linear-to-r from-primary-500 to-secondary-500 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow">
               Browse Properties
             </a>
             <a routerLink="/register" 
@@ -62,7 +62,7 @@ import { RouterLink } from '@angular/router';
             Create an account and start your property search today.
           </p>
           <a routerLink="/register"
-             class="inline-block px-8 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow">
+             class="inline-block px-8 py-3 bg-linear-to-r from-primary-500 to-secondary-500 text-white rounded-lg font-semibold hover:shadow-lg transition-shadow">
             Register Now
           </a>
         </div>

@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-error-50 to-warning-50">
+    <div class="min-h-screen flex items-center justify-center bg-linear-to-br from-error-50 to-warning-50">
       <div class="text-center">
         <div class="text-6xl mb-4">🔒</div>
         <h1 class="text-4xl font-bold text-gray-900 mb-4">Access Denied</h1>
