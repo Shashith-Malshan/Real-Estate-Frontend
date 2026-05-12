@@ -33,6 +33,7 @@ export interface PropertyDTO {
   plotCount?: number;
   unitPrice?: number;
   sellerId?: number;
+  imageUrls?: string[];
 }
 
 export interface PropertyCreateDTO {
@@ -53,6 +54,7 @@ export interface PropertyCreateDTO {
   plotCount?: number;
   unitPrice?: number;
   imagePaths?: string[];
+  imageDataList?: string[];
 }
 
 export interface PropertyUpdateDTO extends Partial<PropertyCreateDTO> {

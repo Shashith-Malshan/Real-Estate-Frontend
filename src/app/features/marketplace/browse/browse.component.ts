@@ -163,6 +163,15 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
     return property.price ?? 0;
   }
 
+  getPropertyImage(property: PropertyDTO): string {
+    // Use first uploaded image if available, otherwise use placeholder
+    if (property.imageUrls && property.imageUrls.length > 0) {
+      return property.imageUrls[0];
+    }
+    // Fallback to placeholder image
+    return 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80';
+  }
+
   formatPrice(price: number): string {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',

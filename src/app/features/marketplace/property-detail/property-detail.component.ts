@@ -32,6 +32,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   property: PropertyDTO | null = null;
   isLoading = true;
   errorMessage: string | null = null;
+  selectedImageIndex = 0;
 
   getPropertyPrice(property: PropertyDTO | null): number {
     return property?.price ?? 0;
@@ -142,6 +143,19 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
       currency: 'USD',
       minimumFractionDigits: 0
     }).format(price);
+  }
+
+  getPropertyHeroImage(): string {
+    // Display selected image or first image, with fallback to placeholder
+    if (this.property?.imageUrls && this.property.imageUrls.length > 0) {
+      return this.property.imageUrls[this.selectedImageIndex] || this.property.imageUrls[0];
+    }
+    // Fallback to placeholder image
+    return 'https://images.unsplash.com/photo-1613490908575-9b7e7abafb1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80';
+  }
+
+  selectImage(index: number): void {
+    this.selectedImageIndex = index;
   }
 
   toggleInquiryForm(): void {

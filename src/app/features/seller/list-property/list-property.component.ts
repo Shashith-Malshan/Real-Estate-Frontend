@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { PropertyService } from '../../../shared/services/property.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { PropertyCreateDTO, PropertyCategory } from '../../../shared/models';
@@ -35,7 +36,8 @@ export const SRI_LANKA_DISTRICTS = [
     MatButtonModule,
     MatIconModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule
   ],
   templateUrl: './list-property.component.html',
   styleUrl: './list-property.component.css'
@@ -44,6 +46,10 @@ export class ListPropertyComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   isSubmitting = false;
   errorMessage: string | null = null;
+  imageValidationError: string | null = null;
+  selectedFiles: File[] = [];
+  private readonly ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+  private readonly MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 
   districts = SRI_LANKA_DISTRICTS;
   PropertyCategory = PropertyCategory;
@@ -149,41 +155,115 @@ export class ListPropertyComponent implements OnInit, OnDestroy {
     this.isSubmitting = true;
     this.errorMessage = null;
 
-    const formValue = this.form.value;
-    const categoryId: number = formValue.propertyCategoryId;
+    // Convert selected files to base64 and submit
+    this.convertFilesToBase64(this.selectedFiles).then((base64Images) => {
+      const formValue = this.form.value;
+      const categoryId: number = formValue.propertyCategoryId;
 
-    const dto: PropertyCreateDTO = {
-      title: formValue.title,
-      description: formValue.description,
-      location: formValue.location,
-      district: formValue.district,
-      propertyCategoryId: categoryId,
-      sellerId: currentUser.sellerId
-    };
+      const dto: PropertyCreateDTO = {
+        title: formValue.title,
+        description: formValue.description,
+        location: formValue.location,
+        district: formValue.district,
+        propertyCategoryId: categoryId,
+        sellerId: currentUser.sellerId,
+        imageDataList: base64Images.length > 0 ? base64Images : undefined
+      };
 
-    // Merge category-specific fields
-    if (categoryId === PropertyCategory.RESIDENTIAL && formValue.residential) {
-      Object.assign(dto, formValue.residential);
-    } else if (categoryId === PropertyCategory.COMMERCIAL && formValue.commercial) {
-      Object.assign(dto, formValue.commercial);
-    } else if (categoryId === PropertyCategory.LAND && formValue.land) {
-      Object.assign(dto, formValue.land);
+      // Merge category-specific fields
+      if (categoryId === PropertyCategory.RESIDENTIAL && formValue.residential) {
+        Object.assign(dto, formValue.residential);
+      } else if (categoryId === PropertyCategory.COMMERCIAL && formValue.commercial) {
+        Object.assign(dto, formValue.commercial);
+      } else if (categoryId === PropertyCategory.LAND && formValue.land) {
+        Object.assign(dto, formValue.land);
+      }
+
+      this.propertyService.createProperty(dto)
+        .pipe(
+          takeUntil(this.destroy$),
+          finalize(() => this.isSubmitting = false)
+        )
+        .subscribe({
+          next: () => {
+            this.snackBar.open('Property listed successfully!', 'Close', { duration: 5000 });
+            this.router.navigate(['/seller']);
+          },
+          error: (err) => {
+            this.errorMessage = err?.error?.message || 'Server error — please try again.';
+          }
+        });
+    }).catch((err) => {
+      this.isSubmitting = false;
+      this.errorMessage = 'Error processing images. Please try again.';
+      console.error('Image conversion error:', err);
+    });
+  }
+
+  onImagesSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const files = input.files;
+
+    this.imageValidationError = null;
+
+    if (!files || files.length === 0) {
+      return;
     }
 
-    this.propertyService.createProperty(dto)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => this.isSubmitting = false)
-      )
-      .subscribe({
-        next: () => {
-          this.snackBar.open('Property listed successfully!', 'Close', { duration: 5000 });
-          this.router.navigate(['/seller']);
-        },
-        error: (err) => {
-          this.errorMessage = err?.error?.message || 'Server error — please try again.';
-        }
-      });
+    // Validate files
+    const validFiles: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      if (!this.ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        this.imageValidationError = `Invalid file type: "${file.name}". Only JPG, PNG, GIF, and WebP are allowed.`;
+        return;
+      }
+
+      if (file.size > this.MAX_FILE_SIZE) {
+        this.imageValidationError = `File "${file.name}" is too large. Max size is 10MB.`;
+        return;
+      }
+
+      validFiles.push(file);
+    }
+
+    // Check total number of images
+    if (this.selectedFiles.length + validFiles.length > 10) {
+      this.imageValidationError = 'Maximum 10 images allowed per property.';
+      return;
+    }
+
+    // Add valid files to selected list
+    this.selectedFiles = [...this.selectedFiles, ...validFiles];
+
+    // Reset file input
+    input.value = '';
+  }
+
+  removeFile(index: number): void {
+    this.selectedFiles.splice(index, 1);
+    this.imageValidationError = null;
+  }
+
+  private async convertFilesToBase64(files: File[]): Promise<string[]> {
+    const base64Strings: string[] = [];
+
+    for (const file of files) {
+      const base64 = await this.fileToBase64(file);
+      base64Strings.push(base64);
+    }
+
+    return base64Strings;
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+    });
   }
 
   getControl(name: string): AbstractControl | null {

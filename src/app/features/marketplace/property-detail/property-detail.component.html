@@ -34,13 +34,33 @@
   <!-- Property Content -->
   <div *ngIf="property && !isLoading">
     
-    <!-- Hero Image (Full width or contained based on preference, let's go full width for high impact) -->
-    <div class="w-full h-[60vh] md:h-[75vh] bg-neutral-200 mb-16 overflow-hidden">
-      <img 
-        [src]="'https://images.unsplash.com/photo-1613490908575-9b7e7abafb1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80'" 
-        alt="Property Hero" 
-        class="w-full h-full object-cover"
-      >
+    <!-- Hero Image Section -->
+    <div class="w-full bg-neutral-200 mb-8 overflow-hidden">
+      <div class="h-[60vh] md:h-[75vh] w-full overflow-hidden">
+        <img 
+          [src]="getPropertyHeroImage()" 
+          alt="Property Hero" 
+          class="w-full h-full object-cover"
+        >
+      </div>
+    </div>
+
+    <!-- Image Thumbnails (if multiple images) -->
+    <div *ngIf="property.imageUrls && property.imageUrls.length > 1" class="container-max mb-16">
+      <div class="flex gap-4 overflow-x-auto pb-4">
+        <div 
+          *ngFor="let image of property.imageUrls; let i = index"
+          (click)="selectImage(i)"
+          class="flex-shrink-0 cursor-pointer border-2 transition-colors"
+          [class]="selectedImageIndex === i ? 'border-neutral-900' : 'border-transparent hover:border-neutral-400'"
+        >
+          <img 
+            [src]="image" 
+            alt="Property thumbnail" 
+            class="w-20 h-20 object-cover"
+          >
+        </div>
+      </div>
     </div>
 
     <div class="container-max grid grid-cols-1 lg:grid-cols-12 gap-16">
