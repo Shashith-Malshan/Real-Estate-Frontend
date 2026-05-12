@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { Subject } from 'rxjs';
-import { takeUntil, finalize } from 'rxjs/operators';
+import { takeUntil, finalize, timeout } from 'rxjs/operators';
 import { AuthService } from '../../../shared/services/auth.service';
 import { UserRegistrationDTO, UserRole } from '../../../shared/models';
 import { MatInputModule } from '@angular/material/input';
@@ -52,7 +52,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     // Redirect if already logged in
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      const currentUser = this.authService.getCurrentUser();
+      this.router.navigateByUrl(this.authService.getDashboardRouteForRole(currentUser?.activeRoleId));
     }
   }
 
@@ -114,16 +115,27 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.authService.register(registrationData)
       .pipe(
         takeUntil(this.destroy$),
+        timeout(15000),
         finalize(() => this.isLoading = false)
       )
       .subscribe({
         next: (response) => {
-          this.successMessage = 'Registration successful! Redirecting to dashboard...';
+          this.successMessage = 'Registration successful! Redirecting to your dashboard...';
           setTimeout(() => {
-            this.router.navigate(['/dashboard']);
+            this.router.navigateByUrl(this.authService.getDashboardRouteForRole(response.activeRoleId));
           }, 2000);
         },
         error: (error) => {
+          if (error?.name === 'TimeoutError') {
+            this.errorMessage = 'Registration request timed out. Please verify the backend is running and try again.';
+            return;
+          }
+
+          if (error?.status === 0) {
+            this.errorMessage = 'Cannot reach backend. Check API server status and CORS/security configuration.';
+            return;
+          }
+
           this.errorMessage = error?.error?.message || 'Registration failed. Please try again.';
           console.error('Registration error:', error);
         }

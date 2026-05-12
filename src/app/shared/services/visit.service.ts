@@ -71,4 +71,11 @@ export class VisitService {
   cancelVisit(visitId: number): Observable<void> {
     return this.apiService.delete<void>(`${this.endpoint}/${visitId}`);
   }
+
+  /**
+   * Delete visit (alias for cancelVisit)
+   */
+  deleteVisit(visitId: number): Observable<void> {
+    return this.cancelVisit(visitId);
+  }
 }

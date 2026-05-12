@@ -11,6 +11,8 @@ export interface UserResponseDTO {
   nic: string;
   activeRoleId: number;
   roleName: string;
+  token?: string;
+  sellerId?: number;
 }
 
 export interface UserRegistrationDTO {
@@ -32,13 +34,13 @@ export interface LoginRequest {
 
 
 export enum UserRole {
-  ADMIN = 1,
-  BUYER = 3,
-  SELLER = 4
+  BUYER = 1,
+  ADMIN = 2,
+  SELLER = 3
 }
 
 export const RoleNames: Record<number, string> = {
-  1: 'ADMIN',
-  3: 'BUYER',
-  4: 'SELLER'
+  1: 'BUYER',
+  2: 'ADMIN',
+  3: 'SELLER'
 };

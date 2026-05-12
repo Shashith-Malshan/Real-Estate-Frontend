@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MatIconModule } from '@angular/material/icon';
 import { InquiryService } from '../../../shared/services/inquiry.service';
 import { VisitService } from '../../../shared/services/visit.service';
 import { DealService } from '../../../shared/services/deal.service';
@@ -12,7 +13,7 @@ import { InquiryDTO, VisitDTO, DealDTO } from '../../../shared/models';
 @Component({
   selector: 'app-buyer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, MatIconModule],
   templateUrl: './buyer-dashboard.component.html',
   styleUrl: './buyer-dashboard.component.css'
 })
@@ -63,38 +64,34 @@ export class BuyerDashboardComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = null;
 
-    // Get user ID from auth service currentUser$ observable
-    this.authService.currentUser$
+    const user = this.authService.getCurrentUser();
+    if (!user || !user.userId) {
+      this.errorMessage = 'User not authenticated';
+      this.isLoading = false;
+      return;
+    }
+
+    const userId = user.userId;
+
+    // Load all data in parallel
+    forkJoin({
+      inquiries: this.inquiryService.getInquiriesByCustomer(userId),
+      visits: this.visitService.getVisitsByCustomer(userId),
+      deals: this.dealService.getDealsByCustomer(userId)
+    })
       .pipe(takeUntil(this.destroy$))
-      .subscribe((user) => {
-        if (!user || !user.userId) {
-          this.errorMessage = 'User not authenticated';
+      .subscribe({
+        next: (data) => {
+          this.inquiries = data.inquiries;
+          this.visits = data.visits;
+          this.deals = data.deals;
           this.isLoading = false;
-          return;
+        },
+        error: (err) => {
+          this.errorMessage = 'Failed to load dashboard data. Please try again.';
+          console.error('Error loading dashboard data:', err);
+          this.isLoading = false;
         }
-
-        const userId = user.userId;
-
-        // Load all data in parallel
-        forkJoin({
-          inquiries: this.inquiryService.getInquiriesByCustomer(userId),
-          visits: this.visitService.getVisitsByCustomer(userId),
-          deals: this.dealService.getDealsByCustomer(userId)
-        })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe({
-            next: (data) => {
-              this.inquiries = data.inquiries;
-              this.visits = data.visits;
-              this.deals = data.deals;
-              this.isLoading = false;
-            },
-            error: (err) => {
-              this.errorMessage = 'Failed to load dashboard data. Please try again.';
-              console.error('Error loading dashboard data:', err);
-              this.isLoading = false;
-            }
-          });
       });
   }
 

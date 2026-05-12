@@ -32,6 +32,7 @@ export interface PropertyDTO {
   floorSize?: number;
   plotCount?: number;
   unitPrice?: number;
+  sellerId?: number;
 }
 
 export interface PropertyCreateDTO {
@@ -40,6 +41,7 @@ export interface PropertyCreateDTO {
   location: string;
   district: string;
   propertyCategoryId: number;
+  sellerId?: number;
   price?: number;
   bedroomCount?: number;
   bathroomCount?: number;

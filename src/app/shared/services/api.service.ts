@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class ApiService {
-  private readonly baseUrl = 'http://localhost:8080/api'; // Update with actual backend URL
+  private readonly baseUrl = '/api';
 
   constructor(private http: HttpClient) {}
 

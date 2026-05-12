@@ -1,134 +1,137 @@
-<header class="bg-white sticky top-0 z-50">
-  <div class="container-max py-6 flex items-center justify-between">
+<header class="bg-white shadow-sm sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
+
     <!-- Logo -->
-    <a routerLink="/marketplace" class="flex items-center">
-      <span class="text-2xl font-bold tracking-[0.15em] text-neutral-900" style="font-family: var(--font-family);">ESTATE</span>
+    <a routerLink="/" class="flex items-center gap-2">
+      <mat-icon class="text-blue-700" style="font-size:28px;width:28px;height:28px;">home_work</mat-icon>
+      <span class="text-xl font-extrabold tracking-tight text-gray-900">ESTATE<span class="text-blue-700">LK</span></span>
     </a>
 
-    <!-- Navigation Links (Desktop) -->
-    <nav class="hidden md:flex items-center gap-12">
-      <a
-        routerLink="/marketplace"
-        routerLinkActive="border-b-[1px] border-neutral-900"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors pb-1 border-b-[1px] border-transparent"
-        (click)="closeMenu()"
-      >
-        Marketplace
-      </a>
-      <a
-        routerLink="/services"
-        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors pb-1 border-b-[1px] border-transparent"
-        (click)="closeMenu()"
-      >
-        Services
-      </a>
-      <a
-        routerLink="/journal"
-        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors pb-1 border-b-[1px] border-transparent"
-        (click)="closeMenu()"
-      >
-        Journal
-      </a>
-      <a
-        routerLink="/contact"
-        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors pb-1 border-b-[1px] border-transparent"
-        (click)="closeMenu()"
-      >
-        Contact
-      </a>
-    </nav>
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex items-center gap-6">
 
-    <!-- Auth / Icons -->
-    <div class="hidden md:flex items-center gap-4">
-      <button mat-icon-button class="text-neutral-700 hover:text-neutral-900 transition-colors">
-        <mat-icon style="font-size: 20px; width: 20px; height: 20px;">favorite_border</mat-icon>
-      </button>
-
+      <!-- Unauthenticated -->
       <ng-container *ngIf="!isAuthenticated">
-        <a
-          routerLink="/login"
-          mat-icon-button
-          class="text-neutral-700 hover:text-neutral-900 transition-colors"
-          (click)="closeMenu()"
-        >
-          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">account_circle</mat-icon>
-        </a>
+        <a routerLink="/" routerLinkActive="text-blue-700 font-semibold" [routerLinkActiveOptions]="{exact:true}"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">Home</a>
+        <a routerLink="/marketplace/browse" routerLinkActive="text-blue-700 font-semibold"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">Browse</a>
+        <a routerLink="/login" mat-stroked-button color="primary" class="text-sm">Login</a>
+        <a routerLink="/register" mat-flat-button color="primary" class="text-sm">Register</a>
       </ng-container>
 
-      <ng-container *ngIf="isAuthenticated && currentUser">
-        <a
-          [routerLink]="currentUser.activeRoleId === UserRole.SELLER ? '/seller' : (currentUser.activeRoleId === UserRole.ADMIN ? '/admin' : '/dashboard')"
-          mat-icon-button
-          class="text-neutral-700 hover:text-neutral-900 transition-colors"
-          (click)="closeMenu()"
-        >
-          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">account_circle</mat-icon>
-        </a>
-      </ng-container>
-    </div>
-
-    <!-- Mobile Menu Toggle -->
-    <button
-      mat-icon-button
-      class="md:hidden text-neutral-900"
-      (click)="toggleMenu()"
-      aria-label="Toggle menu"
-    >
-      <mat-icon>menu</mat-icon>
-    </button>
-  </div>
-
-  <!-- Mobile Menu -->
-  <div
-    *ngIf="isMenuOpen"
-    class="md:hidden border-t border-neutral-200 bg-white"
-  >
-    <div class="px-8 py-6 flex flex-col gap-6">
-      <a
-        routerLink="/marketplace"
-        routerLinkActive="text-neutral-900"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors"
-        (click)="closeMenu()"
-      >
-        Marketplace
-      </a>
-      <a
-        routerLink="/services"
-        class="label-caps text-neutral-500 hover:text-neutral-900 transition-colors"
-        (click)="closeMenu()"
-      >
-        Services
-      </a>
-      
-      <hr class="border-neutral-200" />
-
-      <ng-container *ngIf="!isAuthenticated">
-        <a
-          routerLink="/login"
-          class="label-caps text-neutral-900 hover:text-primary-700 transition-colors"
-          (click)="closeMenu()"
-        >
-          Log In / Register
-        </a>
+      <!-- BUYER role -->
+      <ng-container *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.BUYER">
+        <a routerLink="/" routerLinkActive="text-blue-700 font-semibold" [routerLinkActiveOptions]="{exact:true}"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">Home</a>
+        <a routerLink="/marketplace/browse" routerLinkActive="text-blue-700 font-semibold"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">Browse</a>
+        <a routerLink="/dashboard" routerLinkActive="text-blue-700 font-semibold"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">My Dashboard</a>
       </ng-container>
 
-      <ng-container *ngIf="isAuthenticated && currentUser">
-        <a
-          [routerLink]="currentUser.activeRoleId === UserRole.SELLER ? '/seller' : (currentUser.activeRoleId === UserRole.ADMIN ? '/admin' : '/dashboard')"
-          class="label-caps text-neutral-900 hover:text-primary-700 transition-colors"
-          (click)="closeMenu()"
-        >
-          {{ currentUser.firstName }}'s Dashboard
-        </a>
+      <!-- SELLER role -->
+      <ng-container *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.SELLER">
+        <a routerLink="/" routerLinkActive="text-blue-700 font-semibold" [routerLinkActiveOptions]="{exact:true}"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">Home</a>
+        <a routerLink="/seller" routerLinkActive="text-blue-700 font-semibold"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">My Dashboard</a>
+        <a routerLink="/seller/list-property" routerLinkActive="text-blue-700 font-semibold"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">List Property</a>
+      </ng-container>
+
+      <!-- ADMIN role -->
+      <ng-container *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.ADMIN">
+        <a routerLink="/admin" routerLinkActive="text-blue-700 font-semibold"
+           class="text-sm text-gray-600 hover:text-blue-700 transition-colors">Admin Dashboard</a>
+      </ng-container>
+
+      <!-- Role Switcher (BUYER + SELLER) -->
+      <ng-container *ngIf="isAuthenticated && canToggleRoles()">
         <button
-          (click)="logout()"
-          class="label-caps text-error text-left"
+          mat-stroked-button
+          color="primary"
+          class="text-xs"
+          (click)="switchRole()"
+          [disabled]="isSwitchingRole"
         >
+          <mat-spinner *ngIf="isSwitchingRole" diameter="14" class="inline-block mr-1"></mat-spinner>
+          <mat-icon *ngIf="!isSwitchingRole" style="font-size:16px;width:16px;height:16px;" class="mr-1">swap_horiz</mat-icon>
+          {{ currentUser?.activeRoleId === UserRole.BUYER ? 'Buyer' : 'Seller' }}
+        </button>
+      </ng-container>
+
+      <!-- User info + Logout -->
+      <ng-container *ngIf="isAuthenticated && currentUser">
+        <span class="text-sm text-gray-700 font-medium">{{ currentUser.firstName }}</span>
+        <button mat-stroked-button color="warn" class="text-xs" (click)="logout()">
+          <mat-icon style="font-size:16px;width:16px;height:16px;" class="mr-1">logout</mat-icon>
           Logout
         </button>
       </ng-container>
+
+    </nav>
+
+    <!-- Mobile Menu Toggle -->
+    <button mat-icon-button class="md:hidden" (click)="toggleMenu()" aria-label="Toggle menu">
+      <mat-icon>{{ isMenuOpen ? 'close' : 'menu' }}</mat-icon>
+    </button>
+  </div>
+
+  <!-- Role Switch Error -->
+  <div *ngIf="switchRoleError" class="bg-red-50 border-t border-red-200 px-4 py-2 text-sm text-red-700 text-center">
+    {{ switchRoleError }}
+    <button class="ml-2 underline text-xs" (click)="switchRoleError = null">Dismiss</button>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div *ngIf="isMenuOpen" class="md:hidden border-t border-gray-100 bg-white">
+    <div class="px-6 py-5 flex flex-col gap-4">
+
+      <!-- Unauthenticated -->
+      <ng-container *ngIf="!isAuthenticated">
+        <a routerLink="/" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">Home</a>
+        <a routerLink="/marketplace/browse" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">Browse</a>
+        <hr class="border-gray-100">
+        <a routerLink="/login" class="text-sm font-semibold text-blue-700" (click)="closeMenu()">Login</a>
+        <a routerLink="/register" class="text-sm font-semibold text-blue-700" (click)="closeMenu()">Register</a>
+      </ng-container>
+
+      <!-- BUYER -->
+      <ng-container *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.BUYER">
+        <a routerLink="/" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">Home</a>
+        <a routerLink="/marketplace/browse" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">Browse</a>
+        <a routerLink="/dashboard" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">My Dashboard</a>
+      </ng-container>
+
+      <!-- SELLER -->
+      <ng-container *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.SELLER">
+        <a routerLink="/" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">Home</a>
+        <a routerLink="/seller" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">My Dashboard</a>
+        <a routerLink="/seller/list-property" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">List Property</a>
+      </ng-container>
+
+      <!-- ADMIN -->
+      <ng-container *ngIf="isAuthenticated && currentUser?.activeRoleId === UserRole.ADMIN">
+        <a routerLink="/admin" class="text-sm text-gray-700 hover:text-blue-700" (click)="closeMenu()">Admin Dashboard</a>
+      </ng-container>
+
+      <hr class="border-gray-100">
+
+      <!-- Role Switcher -->
+      <ng-container *ngIf="isAuthenticated && canToggleRoles()">
+        <button type="button" class="text-sm text-blue-700 text-left font-medium"
+          (click)="switchRole(); closeMenu()" [disabled]="isSwitchingRole">
+          Switch to {{ currentUser?.activeRoleId === UserRole.BUYER ? 'Seller' : 'Buyer' }} mode
+        </button>
+      </ng-container>
+
+      <!-- User + Logout -->
+      <ng-container *ngIf="isAuthenticated && currentUser">
+        <span class="text-sm text-gray-500">Logged in as <strong>{{ currentUser.firstName }}</strong></span>
+        <button type="button" class="text-sm text-red-600 text-left font-medium" (click)="logout()">Logout</button>
+      </ng-container>
+
     </div>
   </div>
 </header>

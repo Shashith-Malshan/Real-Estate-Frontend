@@ -1,14 +1,15 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-unauthorized',
   standalone: true,
-  imports: [RouterLink],
+  imports: [RouterLink, MatIconModule],
   template: `
     <div class="min-h-screen flex items-center justify-center bg-linear-to-br from-error-50 to-warning-50">
       <div class="text-center">
-        <div class="text-6xl mb-4">🔒</div>
+        <mat-icon class="text-6xl mb-4" style="font-size: 80px; width: 80px; height: 80px;">lock</mat-icon>
         <h1 class="text-4xl font-bold text-gray-900 mb-4">Access Denied</h1>
         <p class="text-lg text-gray-600 mb-8">
           You don't have permission to access this resource.

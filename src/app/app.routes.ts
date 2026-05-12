@@ -7,6 +7,12 @@ import { RoleGuard } from './shared/guards/role.guard';
 import { UserRole } from './shared/models';
 
 export const routes: Routes = [
+  // Home page
+  {
+    path: '',
+    loadComponent: () => import('./features/marketplace/home/home.component').then(m => m.HomeComponent)
+  },
+
   // Auth routes (no guard needed, available to all)
   {
     path: 'login',
@@ -26,7 +32,8 @@ export const routes: Routes = [
   // Buyer Dashboard (authenticated)
   {
     path: 'dashboard',
-    canActivate: [AuthGuard],
+    canActivate: [RoleGuard],
+    data: { roles: [UserRole.BUYER] },
     loadChildren: () => import('./features/dashboard/dashboard.routes').then(m => m.DASHBOARD_ROUTES)
   },
 
@@ -54,13 +61,6 @@ export const routes: Routes = [
   {
     path: 'not-found',
     component: NotFoundComponent
-  },
-
-  // Default redirect
-  {
-    path: '',
-    redirectTo: '/marketplace',
-    pathMatch: 'full'
   },
 
   // Wildcard route (must be last)

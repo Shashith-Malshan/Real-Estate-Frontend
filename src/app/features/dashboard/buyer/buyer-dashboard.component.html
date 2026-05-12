@@ -3,14 +3,15 @@
     <!-- Header -->
     <div class="mb-8 flex justify-between items-center">
       <div>
-        <h1 class="text-4xl font-bold text-neutral-900">Welcome, {{ userName }}! 👋</h1>
+        <h1 class="text-4xl font-bold text-neutral-900 flex items-center gap-2">Welcome, {{ userName }}! <mat-icon>waving_hand</mat-icon></h1>
         <p class="text-neutral-600 mt-1">Manage your property inquiries, visits, and deals</p>
       </div>
       <button
         (click)="refreshData()"
-        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center gap-2"
       >
-        🔄 Refresh
+        <mat-icon style="font-size: 20px; width: 20px; height: 20px;">refresh</mat-icon>
+        Refresh
       </button>
     </div>
 
@@ -28,7 +29,7 @@
       <div class="bg-white rounded-lg shadow-sm p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-bold text-neutral-900">Inquiries</h3>
-          <div class="text-3xl">💬</div>
+          <mat-icon style="font-size: 40px; width: 40px; height: 40px;">mail</mat-icon>
         </div>
         <p class="text-4xl font-bold text-primary-600 mb-2">{{ inquiries.length }}</p>
         <p class="text-sm text-neutral-600">
@@ -40,7 +41,7 @@
       <div class="bg-white rounded-lg shadow-sm p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-bold text-neutral-900">Scheduled Visits</h3>
-          <div class="text-3xl">📅</div>
+          <mat-icon style="font-size: 40px; width: 40px; height: 40px;">calendar_today</mat-icon>
         </div>
         <p class="text-4xl font-bold text-secondary-600 mb-2">{{ visits.length }}</p>
         <p class="text-sm text-neutral-600">
@@ -52,7 +53,7 @@
       <div class="bg-white rounded-lg shadow-sm p-6">
         <div class="flex items-center justify-between mb-4">
           <h3 class="text-lg font-bold text-neutral-900">Active Deals</h3>
-          <div class="text-3xl">🤝</div>
+          <mat-icon style="font-size: 40px; width: 40px; height: 40px;">handshake</mat-icon>
         </div>
         <p class="text-4xl font-bold text-success-600 mb-2">{{ deals.length }}</p>
         <p class="text-sm text-neutral-600">Active negotiations</p>
@@ -77,27 +78,30 @@
           [class.border-b-2]="activeTab === 'inquiries'"
           [class.border-primary-600]="activeTab === 'inquiries'"
           [class.text-primary-600]="activeTab === 'inquiries'"
-          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors"
+          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
         >
-          💬 Inquiries ({{ inquiries.length }})
+          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">mail</mat-icon>
+          Inquiries ({{ inquiries.length }})
         </button>
         <button
           (click)="setActiveTab('visits')"
           [class.border-b-2]="activeTab === 'visits'"
           [class.border-primary-600]="activeTab === 'visits'"
           [class.text-primary-600]="activeTab === 'visits'"
-          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors"
+          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
         >
-          📅 Visits ({{ visits.length }})
+          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">calendar_today</mat-icon>
+          Visits ({{ visits.length }})
         </button>
         <button
           (click)="setActiveTab('deals')"
           [class.border-b-2]="activeTab === 'deals'"
           [class.border-primary-600]="activeTab === 'deals'"
           [class.text-primary-600]="activeTab === 'deals'"
-          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors"
+          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
         >
-          🤝 Deals ({{ deals.length }})
+          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">handshake</mat-icon>
+          Deals ({{ deals.length }})
         </button>
       </div>
 
@@ -106,7 +110,7 @@
         <!-- Inquiries Tab -->
         <div *ngIf="activeTab === 'inquiries'">
           <div *ngIf="inquiries.length === 0" class="text-center py-12">
-            <div class="text-6xl mb-4">💭</div>
+            <mat-icon style="font-size: 80px; width: 80px; height: 80px;" class="mx-auto mb-4">mail_outline</mat-icon>
             <h3 class="text-2xl font-bold text-neutral-900 mb-2">No Inquiries Yet</h3>
             <p class="text-neutral-600">Start exploring properties to send inquiries</p>
             <a
@@ -128,7 +132,7 @@
                   [class.text-success-700]="inquiry.isReplied"
                   class="px-3 py-1 rounded-full text-sm font-medium"
                 >
-                  {{ inquiry.isReplied ? '✓ Replied' : '⏳ Pending' }}
+                  <span class="flex items-center gap-1"><mat-icon style="font-size: 16px; width: 16px; height: 16px;">{{ inquiry.isReplied ? 'check_circle' : 'schedule' }}</mat-icon>{{ inquiry.isReplied ? 'Replied' : 'Pending' }}</span>
                 </span>
               </div>
               <p class="text-neutral-600 mb-2 line-clamp-2">{{ inquiry.message }}</p>
@@ -140,7 +144,7 @@
         <!-- Visits Tab -->
         <div *ngIf="activeTab === 'visits'">
           <div *ngIf="visits.length === 0" class="text-center py-12">
-            <div class="text-6xl mb-4">📅</div>
+            <mat-icon style="font-size: 80px; width: 80px; height: 80px;" class="mx-auto mb-4">event_note</mat-icon>
             <h3 class="text-2xl font-bold text-neutral-900 mb-2">No Visits Scheduled</h3>
             <p class="text-neutral-600">Schedule a visit to properties you're interested in</p>
             <a
@@ -162,11 +166,11 @@
                   [class.text-success-700]="visit.isVisited"
                   class="px-3 py-1 rounded-full text-sm font-medium"
                 >
-                  {{ visit.isVisited ? '✓ Completed' : '📍 Scheduled' }}
+                  <span class="flex items-center gap-1"><mat-icon style="font-size: 16px; width: 16px; height: 16px;">{{ visit.isVisited ? 'check_circle' : 'location_on' }}</mat-icon>{{ visit.isVisited ? 'Completed' : 'Scheduled' }}</span>
                 </span>
               </div>
-              <p class="text-neutral-600 mb-2">
-                📅 {{ formatDate(visit.visitPlannedDate) }}
+              <p class="text-neutral-600 mb-2 flex items-center gap-1">
+                <mat-icon style="font-size: 16px; width: 16px; height: 16px;">calendar_today</mat-icon> {{ formatDate(visit.visitPlannedDate) }}
               </p>
               <button class="px-4 py-1 text-sm bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors">
                 View Details
@@ -178,7 +182,7 @@
         <!-- Deals Tab -->
         <div *ngIf="activeTab === 'deals'">
           <div *ngIf="deals.length === 0" class="text-center py-12">
-            <div class="text-6xl mb-4">🤝</div>
+            <mat-icon style="font-size: 80px; width: 80px; height: 80px;" class="mx-auto mb-4">handshake</mat-icon>
             <h3 class="text-2xl font-bold text-neutral-900 mb-2">No Active Deals</h3>
             <p class="text-neutral-600">Deals will appear here once you initiate negotiations</p>
             <a
@@ -193,8 +197,8 @@
             <div *ngFor="let deal of deals" class="border border-neutral-200 rounded-lg p-4 hover:shadow-md transition-shadow">
               <div class="flex items-start justify-between mb-2">
                 <h3 class="font-bold text-neutral-900">Deal ID: {{ deal.dealId }}</h3>
-                <span class="px-3 py-1 bg-success-100 text-success-700 rounded-full text-sm font-medium">
-                  ✓ Active
+                <span class="px-3 py-1 bg-success-100 text-success-700 rounded-full text-sm font-medium flex items-center gap-1">
+                  <mat-icon style="font-size: 16px; width: 16px; height: 16px;">check_circle</mat-icon>Active
                 </span>
               </div>
               <div class="grid grid-cols-2 gap-4 mb-2">

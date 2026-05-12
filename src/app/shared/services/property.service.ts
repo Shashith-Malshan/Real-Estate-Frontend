@@ -75,6 +75,13 @@ export class PropertyService {
 
 
   /**
+   * Get properties by seller ID
+   */
+  getPropertiesBySeller(sellerId: number): Observable<PropertyDTO[]> {
+    return this.apiService.get<PropertyDTO[]>(`${this.endpoint}/seller/${sellerId}`);
+  }
+
+  /**
    * Create new property
    */
   createProperty(propertyData: PropertyCreateDTO): Observable<PropertyDTO> {

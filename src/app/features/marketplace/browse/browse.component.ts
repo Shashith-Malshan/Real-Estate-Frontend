@@ -2,8 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { Subject, Observable } from 'rxjs';
+import { takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { PropertyService } from '../../../shared/services/property.service';
 import { PropertyDTO, PropertyCategory } from '../../../shared/models';
 import { MatIconModule } from '@angular/material/icon';
@@ -38,9 +38,20 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
 
+  private searchSubject = new Subject<string>();
+
   constructor(private propertyService: PropertyService) {}
 
   ngOnInit(): void {
+    // Setup search debounce
+    this.searchSubject.pipe(
+      takeUntil(this.destroy$),
+      debounceTime(400),
+      distinctUntilChanged()
+    ).subscribe(() => {
+      this.loadProperties();
+    });
+
     this.loadProperties();
   }
 
@@ -53,8 +64,17 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = null;
 
-    this.propertyService
-      .getAllProperties()
+    let request$: Observable<PropertyDTO[]>;
+
+    if (this.searchTerm) {
+      request$ = this.propertyService.searchByLocation(this.searchTerm);
+    } else if (this.selectedCategory) {
+      request$ = this.propertyService.getPropertiesByCategory(this.selectedCategory);
+    } else {
+      request$ = this.propertyService.getAllProperties();
+    }
+
+    request$
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
@@ -72,13 +92,11 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
 
   applyFilters(): void {
     this.filteredProperties = this.properties.filter((property) => {
-      // Search term filter (title, location)
-      if (this.searchTerm) {
-        const term = this.searchTerm.toLowerCase();
-        const matchesSearch =
-          property.title.toLowerCase().includes(term) ||
-          property.location.toLowerCase().includes(term);
-        if (!matchesSearch) return false;
+      // Local fallback for title search if searchByLocation didn't cover it
+      if (this.searchTerm && !property.location.toLowerCase().includes(this.searchTerm.toLowerCase())) {
+        if (!property.title.toLowerCase().includes(this.searchTerm.toLowerCase())) {
+          return false;
+        }
       }
 
       // Category filter
@@ -104,11 +122,11 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
   }
 
   onSearchChange(): void {
-    this.applyFilters();
+    this.searchSubject.next(this.searchTerm);
   }
 
   onCategoryChange(): void {
-    this.applyFilters();
+    this.loadProperties();
   }
 
   onPriceChange(): void {
@@ -125,7 +143,7 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
     this.minPrice = null;
     this.maxPrice = null;
     this.minBedrooms = null;
-    this.applyFilters();
+    this.loadProperties();
   }
 
   getCategoryName(categoryId: number): string {

@@ -12,7 +12,7 @@ export const SELLER_ROUTES: Routes = [
     data: { roles: [UserRole.SELLER] }
   },
   {
-    path: 'list',
+    path: 'list-property',
     component: ListPropertyComponent,
     canActivate: [RoleGuard],
     data: { roles: [UserRole.SELLER] }

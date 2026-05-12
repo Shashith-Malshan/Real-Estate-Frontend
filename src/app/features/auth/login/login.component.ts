@@ -48,7 +48,8 @@ export class LoginComponent implements OnInit, OnDestroy {
 
     // Redirect if already logged in
     if (this.authService.isAuthenticated()) {
-      this.router.navigate(['/dashboard']);
+      const currentUser = this.authService.getCurrentUser();
+      this.router.navigateByUrl(this.authService.getDashboardRouteForRole(currentUser?.activeRoleId));
     }
   }
 
@@ -86,8 +87,8 @@ export class LoginComponent implements OnInit, OnDestroy {
           const redirectUrl = sessionStorage.getItem('redirectUrl');
           sessionStorage.removeItem('redirectUrl');
 
-          const navigateTo = redirectUrl || '/dashboard';
-          this.router.navigate([navigateTo]);
+          const navigateTo = this.authService.getPostLoginRoute(response.activeRoleId, redirectUrl);
+          this.router.navigateByUrl(navigateTo);
         },
         error: (error) => {
           this.errorMessage = error?.error?.message || 'Login failed. Please check your credentials.';
