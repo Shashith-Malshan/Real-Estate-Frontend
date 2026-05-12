@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -74,7 +74,8 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
     private inquiryService: InquiryService,
     private visitService: VisitService,
     private authService: AuthService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private cdr: ChangeDetectorRef
   ) {
     this.inquiryForm = this.formBuilder.group({
       message: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]]
@@ -123,11 +124,13 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
         next: (data) => {
           this.property = data;
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.errorMessage = 'Failed to load property details. Please try again.';
           console.error('Error loading property:', err);
           this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -146,12 +149,34 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   }
 
   getPropertyHeroImage(): string {
-    // Display selected image or first image, with fallback to placeholder
     if (this.property?.imageUrls && this.property.imageUrls.length > 0) {
-      return this.property.imageUrls[this.selectedImageIndex] || this.property.imageUrls[0];
+      const selected = this.property.imageUrls[this.selectedImageIndex] || this.property.imageUrls[0];
+      return this.normalizeImageUrl(selected);
     }
-    // Fallback to placeholder image
-    return 'https://images.unsplash.com/photo-1613490908575-9b7e7abafb1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80';
+    return this.normalizeImageUrl('');
+  }
+
+  getNormalizedImage(imageValue: string): string {
+    return this.normalizeImageUrl(imageValue);
+  }
+
+  private normalizeImageUrl(imageValue: string): string {
+    const placeholder = 'https://images.unsplash.com/photo-1613490908575-9b7e7abafb1a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80';
+    const normalized = (imageValue || '').trim();
+
+    if (!normalized) {
+      return placeholder;
+    }
+
+    if (
+      normalized.startsWith('data:image/') ||
+      normalized.startsWith('http://') ||
+      normalized.startsWith('https://')
+    ) {
+      return normalized;
+    }
+
+    return `data:image/jpeg;base64,${normalized}`;
   }
 
   selectImage(index: number): void {

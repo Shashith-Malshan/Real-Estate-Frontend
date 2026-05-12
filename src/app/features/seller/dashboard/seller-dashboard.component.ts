@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Subject, forkJoin, of } from 'rxjs';
@@ -78,6 +78,7 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
     private dealService: DealService,
     private authService: AuthService,
     private snackBar: MatSnackBar
+    , private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -110,10 +111,12 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
           this.properties = props;
           this.propertiesLoading = false;
           this.loadAggregatedData(props);
+          this.cdr.detectChanges();
         },
         error: () => {
           this.propertiesLoading = false;
           this.propertiesError = 'Failed to load your properties. Please try again.';
+          this.cdr.detectChanges();
         }
       });
   }
@@ -155,10 +158,12 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
           inquiries.map(inq => ({ ...inq, propertyTitle: properties[i].title }))
         );
         this.inquiriesLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.inquiriesLoading = false;
         this.inquiriesError = 'Failed to load inquiries.';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -180,10 +185,12 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
           visits.map(v => ({ ...v, propertyTitle: properties[i].title }))
         );
         this.visitsLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.visitsLoading = false;
         this.visitsError = 'Failed to load visits.';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -205,10 +212,12 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
           deals.map(d => ({ ...d, propertyTitle: properties[i].title }))
         );
         this.dealsLoading = false;
+        this.cdr.detectChanges();
       },
       error: () => {
         this.dealsLoading = false;
         this.dealsError = 'Failed to load deals.';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -233,9 +242,11 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
         next: () => {
           this.properties = this.properties.filter(p => p.propertyId !== id);
           this.snackBar.open('Property deleted.', 'Close', { duration: 3000 });
+          this.cdr.detectChanges();
         },
         error: () => {
           this.snackBar.open('Failed to delete property. Please try again.', 'Dismiss', { duration: 5000 });
+          this.cdr.detectChanges();
         }
       });
   }
@@ -249,10 +260,12 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
           const idx = this.inquiries.findIndex(i => i.inquiryId === inquiryId);
           if (idx !== -1) {
             this.inquiries[idx] = { ...this.inquiries[idx], isReplied: updated.isReplied };
+            this.cdr.detectChanges();
           }
         },
         error: () => {
           this.snackBar.open('Failed to mark inquiry as replied.', 'Dismiss', { duration: 5000 });
+          this.cdr.detectChanges();
         }
       });
   }
@@ -275,9 +288,11 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.inquiries = this.inquiries.filter(i => i.inquiryId !== id);
+          this.cdr.detectChanges();
         },
         error: () => {
           this.snackBar.open('Failed to delete inquiry.', 'Dismiss', { duration: 5000 });
+          this.cdr.detectChanges();
         }
       });
   }
@@ -291,10 +306,12 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
           const idx = this.visits.findIndex(v => v.visitId === visitId);
           if (idx !== -1) {
             this.visits[idx] = { ...this.visits[idx], isVisited: updated.isVisited };
+            this.cdr.detectChanges();
           }
         },
         error: () => {
           this.snackBar.open('Failed to mark visit as completed.', 'Dismiss', { duration: 5000 });
+          this.cdr.detectChanges();
         }
       });
   }

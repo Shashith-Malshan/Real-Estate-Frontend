@@ -22,3 +22,13 @@ button:focus {
   outline: 2px solid var(--color-primary-500);
   outline-offset: 2px;
 }
+
+.mobile-menu-toggle {
+  display: inline-flex;
+}
+
+@media (min-width: 768px) {
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+}

@@ -55,7 +55,7 @@
           [class]="selectedImageIndex === i ? 'border-neutral-900' : 'border-transparent hover:border-neutral-400'"
         >
           <img 
-            [src]="image" 
+            [src]="getNormalizedImage(image)" 
             alt="Property thumbnail" 
             class="w-20 h-20 object-cover"
           >

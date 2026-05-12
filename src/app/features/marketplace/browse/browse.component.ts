@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -40,7 +40,10 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
 
   private searchSubject = new Subject<string>();
 
-  constructor(private propertyService: PropertyService) {}
+  constructor(
+    private propertyService: PropertyService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     // Setup search debounce
@@ -81,11 +84,13 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
           this.properties = data;
           this.applyFilters();
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.errorMessage = 'Failed to load properties. Please try again.';
           console.error('Error loading properties:', err);
           this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -164,12 +169,29 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
   }
 
   getPropertyImage(property: PropertyDTO): string {
-    // Use first uploaded image if available, otherwise use placeholder
     if (property.imageUrls && property.imageUrls.length > 0) {
-      return property.imageUrls[0];
+      return this.normalizeImageUrl(property.imageUrls[0]);
     }
-    // Fallback to placeholder image
-    return 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80';
+    return this.normalizeImageUrl('');
+  }
+
+  private normalizeImageUrl(imageValue: string): string {
+    const placeholder = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80';
+    const normalized = (imageValue || '').trim();
+
+    if (!normalized) {
+      return placeholder;
+    }
+
+    if (
+      normalized.startsWith('data:image/') ||
+      normalized.startsWith('http://') ||
+      normalized.startsWith('https://')
+    ) {
+      return normalized;
+    }
+
+    return `data:image/jpeg;base64,${normalized}`;
   }
 
   formatPrice(price: number): string {
