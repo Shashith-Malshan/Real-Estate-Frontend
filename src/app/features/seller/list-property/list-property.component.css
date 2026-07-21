@@ -1,0 +1,19 @@
+/* List property form styles */
+mat-form-field {
+  display: block;
+}
+
+/* File upload area styles */
+.border-2 {
+  transition: all 0.3s ease;
+}
+
+.border-2:hover {
+  border-color: #3b82f6;
+  background-color: #f0f9ff;
+}
+
+mat-icon {
+  vertical-align: middle;
+}
+

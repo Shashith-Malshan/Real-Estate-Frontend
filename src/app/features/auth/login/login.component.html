@@ -1,0 +1,67 @@
+<div class="min-h-screen flex items-center justify-center bg-surface py-12 px-4 sm:px-6 lg:px-8">
+  <div class="w-full max-w-md space-y-8 bg-surface-container-lowest p-12 border border-neutral-200">
+    <!-- Header -->
+    <div class="text-center">
+      <h2 class="display-lg text-neutral-900 tracking-wider">LOG IN</h2>
+      <p class="mt-2 caption text-neutral-500">Access your portfolio</p>
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage" class="bg-error-container text-on-error-container p-4">
+      <p class="caption">{{ errorMessage }}</p>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" type="text" autocomplete="username">
+        <mat-error *ngIf="username?.errors?.['required']">Username is required</mat-error>
+        <mat-error *ngIf="username?.errors?.['minlength']">Minimum 3 characters</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="w-full">
+        <mat-label>Password</mat-label>
+        <input matInput formControlName="password" [type]="showPassword ? 'text' : 'password'" autocomplete="current-password">
+        <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
+          <mat-icon>{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="password?.errors?.['required']">Password is required</mat-error>
+        <mat-error *ngIf="password?.errors?.['minlength']">Minimum 6 characters</mat-error>
+      </mat-form-field>
+
+      <div class="flex items-center justify-between">
+        <mat-checkbox color="primary">Remember me</mat-checkbox>
+        <a href="#" class="caption text-primary hover:text-primary-container transition-colors">Forgot password?</a>
+      </div>
+
+      <button mat-flat-button color="primary" class="w-full py-6 mt-4" type="submit" [disabled]="isLoading || loginForm.invalid">
+        <span *ngIf="!isLoading">SIGN IN</span>
+        <span *ngIf="isLoading">SIGNING IN...</span>
+      </button>
+
+    </form>
+
+    <p class="text-center caption text-neutral-500 mt-8">
+      Don't have an account?
+      <a routerLink="/register" class="text-primary hover:underline ml-1">Create one</a>
+    </p>
+
+    <!-- Demo Login Buttons -->
+    <div class="mt-8 pt-6 border-t border-neutral-200">
+      <p class="caption text-center text-neutral-400 mb-4">DEMO ACCESS</p>
+      <div class="grid grid-cols-3 gap-3 text-center text-xs">
+        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
+          <span class="block label-caps text-neutral-900">BUYER</span>
+        </button>
+        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
+          <span class="block label-caps text-neutral-900">SELLER</span>
+        </button>
+        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
+          <span class="block label-caps text-neutral-900">ADMIN</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

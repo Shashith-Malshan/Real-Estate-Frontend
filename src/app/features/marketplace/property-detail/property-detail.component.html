@@ -1,0 +1,217 @@
+<div class="bg-surface min-h-screen pb-24">
+  
+  <!-- Back Navigation -->
+  <div class="container-max py-8">
+    <button (click)="goBack()" class="flex items-center gap-2 label-caps text-neutral-500 hover:text-neutral-900 transition-colors">
+      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">arrow_back</mat-icon>
+      BACK TO MARKETPLACE
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="isLoading" class="container-max animate-pulse">
+    <div class="w-full h-[60vh] bg-neutral-200 mb-16"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
+      <div class="lg:col-span-8">
+        <div class="h-10 bg-neutral-200 w-1/3 mb-6"></div>
+        <div class="h-6 bg-neutral-200 w-1/4 mb-12"></div>
+        <div class="h-24 bg-neutral-200 w-full mb-12"></div>
+      </div>
+      <div class="lg:col-span-4">
+        <div class="h-96 bg-neutral-200 w-full"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error State -->
+  <div *ngIf="errorMessage && !isLoading" class="container-max py-12">
+    <div class="bg-error-container text-on-error-container p-6 caption border border-error-container flex flex-col items-start gap-4">
+      <p>{{ errorMessage }}</p>
+      <button (click)="loadProperty()" class="label-caps underline">Try again</button>
+    </div>
+  </div>
+
+  <!-- Property Content -->
+  <div *ngIf="property && !isLoading">
+    
+    <!-- Hero Image Section -->
+    <div class="w-full bg-neutral-200 mb-8 overflow-hidden">
+      <div class="h-[60vh] md:h-[75vh] w-full overflow-hidden">
+        <img 
+          [src]="getPropertyHeroImage()" 
+          alt="Property Hero" 
+          class="w-full h-full object-cover"
+        >
+      </div>
+    </div>
+
+    <!-- Image Thumbnails (if multiple images) -->
+    <div *ngIf="property.imageUrls && property.imageUrls.length > 1" class="container-max mb-16">
+      <div class="flex gap-4 overflow-x-auto pb-4">
+        <div 
+          *ngFor="let image of property.imageUrls; let i = index"
+          (click)="selectImage(i)"
+          class="flex-shrink-0 cursor-pointer border-2 transition-colors"
+          [class]="selectedImageIndex === i ? 'border-neutral-900' : 'border-transparent hover:border-neutral-400'"
+        >
+          <img 
+            [src]="getNormalizedImage(image)" 
+            alt="Property thumbnail" 
+            class="w-20 h-20 object-cover"
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="container-max grid grid-cols-1 lg:grid-cols-12 gap-16">
+      
+      <!-- Main Content (Left) -->
+      <div class="lg:col-span-8">
+        
+        <!-- Headers -->
+        <div class="mb-12">
+          <p class="label-caps text-neutral-500 mb-4 tracking-widest">{{ property.categoryName | uppercase }}</p>
+          <h1 class="display-lg text-neutral-900 mb-4">{{ property.title }}</h1>
+          <p class="body-lg text-neutral-500 flex items-center gap-2">
+            <mat-icon style="font-size: 20px; width: 20px; height: 20px;">location_on</mat-icon>
+            {{ property.location }}
+          </p>
+        </div>
+
+        <!-- Key Metrics -->
+        <div class="flex flex-wrap gap-x-16 gap-y-8 py-8 border-t border-b border-neutral-200 mb-16">
+          <div>
+            <p class="display-md text-neutral-900 tracking-wide">{{ formatPrice(getPropertyPrice(property)) }}</p>
+            <p class="label-caps text-neutral-500 mt-2">LISTING PRICE</p>
+          </div>
+          <div>
+            <p class="display-md text-neutral-900 tracking-wide">{{ getPropertyBedrooms(property) }}</p>
+            <p class="label-caps text-neutral-500 mt-2">BEDS</p>
+          </div>
+          <div>
+            <p class="display-md text-neutral-900 tracking-wide">{{ getPropertyBathrooms(property) }}</p>
+            <p class="label-caps text-neutral-500 mt-2">BATHS</p>
+          </div>
+          <div>
+            <p class="body-lg text-neutral-900 tracking-wide">{{ property.floorSize || 'N/A' }}</p>
+            <p class="label-caps text-neutral-500 mt-2">SQFT</p>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-16">
+          <h2 class="label-caps text-neutral-900 mb-6 tracking-widest">OVERVIEW</h2>
+          <p class="body-lg text-neutral-600 leading-relaxed max-w-3xl">
+            An architectural masterpiece situated in the most desirable neighborhood. 
+            This property redefines modern living with its flawless integration of indoor and outdoor spaces.
+            Featuring floor-to-ceiling glass, custom finishes, and breathtaking views, this is a rare opportunity 
+            to acquire a property of this caliber.
+          </p>
+        </div>
+
+        <!-- Details Grid -->
+        <div class="mb-16">
+          <h2 class="label-caps text-neutral-900 mb-6 tracking-widest">PROPERTY DETAILS</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12 border-t border-neutral-200 pt-6">
+            <div class="flex justify-between border-b border-neutral-100 pb-2">
+              <span class="label-caps text-neutral-500">PROPERTY ID</span>
+              <span class="body-md text-neutral-900 font-medium">{{ property.propertyId }}</span>
+            </div>
+            <div class="flex justify-between border-b border-neutral-100 pb-2">
+              <span class="label-caps text-neutral-500">CATEGORY</span>
+              <span class="body-md text-neutral-900 font-medium">{{ property.categoryName }}</span>
+            </div>
+            <div class="flex justify-between border-b border-neutral-100 pb-2">
+              <span class="label-caps text-neutral-500">VISITS</span>
+              <span class="body-md text-neutral-900 font-medium">{{ property.visitCount }}</span>
+            </div>
+            <div class="flex justify-between border-b border-neutral-100 pb-2">
+              <span class="label-caps text-neutral-500">INQUIRIES</span>
+              <span class="body-md text-neutral-900 font-medium">{{ property.inquiryCount }}</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Sidebar (Right) -->
+      <div class="lg:col-span-4">
+        <div class="bg-surface-container-lowest p-8 border border-neutral-200 sticky top-24">
+          
+          <h3 class="label-caps text-neutral-900 mb-8 tracking-widest">ACQUIRE THIS PROPERTY</h3>
+          
+          <div class="flex flex-col gap-4 mb-8">
+            <button 
+              (click)="toggleInquiryForm()"
+              class="w-full py-4 border border-neutral-900 text-neutral-900 label-caps tracking-widest hover:bg-neutral-900 hover:text-surface transition-colors"
+              [class.bg-neutral-900]="showInquiryForm"
+              [class.text-surface]="showInquiryForm"
+            >
+              SEND INQUIRY
+            </button>
+            <button 
+              (click)="toggleVisitForm()"
+              class="w-full py-4 border border-neutral-200 text-neutral-900 label-caps tracking-widest hover:border-neutral-900 transition-colors"
+              [class.border-neutral-900]="showVisitForm"
+            >
+              SCHEDULE A VIEWING
+            </button>
+          </div>
+
+          <!-- Success/Error Messages -->
+          <div *ngIf="submitSuccess" class="mb-6 p-4 bg-primary-container text-on-primary-container caption">
+            {{ submitSuccess }}
+          </div>
+          <div *ngIf="submitError" class="mb-6 p-4 bg-error-container text-on-error-container caption">
+            {{ submitError }}
+          </div>
+
+          <!-- Inquiry Form -->
+          <div *ngIf="showInquiryForm" class="border-t border-neutral-200 pt-6 animate-fade-in">
+            <p class="caption text-neutral-500 mb-6">Connect directly with our brokerage team regarding this listing.</p>
+            <form [formGroup]="inquiryForm" (ngSubmit)="submitInquiry()">
+              <mat-form-field appearance="outline" class="w-full mb-2">
+                <mat-label>Message</mat-label>
+                <textarea matInput formControlName="message" rows="4" placeholder="I am interested in learning more about..."></textarea>
+                <mat-error *ngIf="inquiryForm.get('message')?.hasError('required')">Message is required</mat-error>
+                <mat-error *ngIf="inquiryForm.get('message')?.hasError('minlength')">Min 10 characters</mat-error>
+              </mat-form-field>
+
+              <button 
+                mat-flat-button color="primary" 
+                class="w-full py-6" 
+                type="submit" 
+                [disabled]="inquiryForm.invalid || isSubmittingInquiry"
+              >
+                {{ isSubmittingInquiry ? 'SENDING...' : 'SUBMIT INQUIRY' }}
+              </button>
+            </form>
+          </div>
+
+          <!-- Visit Form -->
+          <div *ngIf="showVisitForm" class="border-t border-neutral-200 pt-6 animate-fade-in">
+            <p class="caption text-neutral-500 mb-6">Arrange a private tour of this property.</p>
+            <form [formGroup]="visitForm" (ngSubmit)="submitVisit()">
+              <mat-form-field appearance="outline" class="w-full mb-2">
+                <mat-label>Preferred Date & Time</mat-label>
+                <input matInput type="datetime-local" formControlName="visitPlannedDate">
+                <mat-error *ngIf="visitForm.get('visitPlannedDate')?.hasError('required')">Date is required</mat-error>
+              </mat-form-field>
+
+              <button 
+                mat-flat-button color="primary" 
+                class="w-full py-6" 
+                type="submit" 
+                [disabled]="visitForm.invalid || isSubmittingVisit"
+              >
+                {{ isSubmittingVisit ? 'SCHEDULING...' : 'CONFIRM VIEWING' }}
+              </button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>

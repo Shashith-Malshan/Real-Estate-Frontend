@@ -1,0 +1,34 @@
+/* Header Component Styles */
+header {
+  backdrop-filter: blur(10px);
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 768px) {
+  header {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+  }
+}
+
+/* Smooth transitions */
+a,
+button {
+  transition: all var(--transition-normal);
+}
+
+a:focus,
+button:focus {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+.mobile-menu-toggle {
+  display: inline-flex;
+}
+
+@media (min-width: 768px) {
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+}

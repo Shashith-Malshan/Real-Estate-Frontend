@@ -1,0 +1,31 @@
+/* Root App Component Styles */
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* Main Layout Container */
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.min-h-screen {
+  min-height: 100vh;
+}
+
+.flex-1 {
+  flex: 1 1 0%;
+}
+
+.w-full {
+  width: 100%;
+}
+
+/* Background Color */
+.bg-neutral-50 {
+  background-color: #f9fafb;
+}
