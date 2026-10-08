@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -52,7 +52,8 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
 
   constructor(
     private adminService: AdminService,
-    private snackBar: MatSnackBar
+    private snackBar: MatSnackBar,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -73,10 +74,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
         next: (data) => {
           this.metrics = data;
           this.metricsLoading = false;
+          this.cdr.detectChanges();
         },
         error: () => {
           this.metricsError = 'Failed to load system metrics.';
           this.metricsLoading = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -91,10 +94,12 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
           this.users = users;
           this.applyFilter();
           this.usersLoading = false;
+          this.cdr.detectChanges();
         },
         error: () => {
           this.usersError = 'Failed to load users.';
           this.usersLoading = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -162,11 +167,9 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   }
 
   formatPrice(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(amount);
+    return `Rs. ${new Intl.NumberFormat('en-LK', {
+      maximumFractionDigits: 0
+    }).format(amount)}`;
   }
 
   getFullName(user: UserResponseDTO): string {

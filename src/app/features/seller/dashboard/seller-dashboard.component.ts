@@ -36,8 +36,7 @@ interface DealWithProperty extends DealDTO {
     MatIconModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatTabsModule
+    MatProgressSpinnerModule
   ],
   templateUrl: './seller-dashboard.component.html',
   styleUrl: './seller-dashboard.component.css'
@@ -67,6 +66,7 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
   confirmDeletePropertyId: number | null = null;
   confirmDeleteInquiryId: number | null = null;
 
+  selectedTabIndex = 0;
   userName = '';
 
   private destroy$ = new Subject<void>();
@@ -324,11 +324,9 @@ export class SellerDashboardComponent implements OnInit, OnDestroy {
   // --- Formatting ---
   formatPrice(amount: number | undefined): string {
     if (amount == null) return '—';
-    return new Intl.NumberFormat('en-LK', {
-      style: 'currency',
-      currency: 'LKR',
-      minimumFractionDigits: 2
-    }).format(amount);
+    return `Rs. ${new Intl.NumberFormat('en-LK', {
+      maximumFractionDigits: 0
+    }).format(amount)}`;
   }
 
   formatDate(date: string | Date | undefined): string {

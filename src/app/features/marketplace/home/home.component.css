@@ -1,1 +1,94 @@
-/* Home component styles */
+/* =============================================
+   HERO
+   ============================================= */
+.hero-section {
+  background-color: #0f172a;
+}
+
+/* Glassmorphic badge */
+.glass-badge {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Glassmorphic outline button */
+.glass-btn {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+}
+.glass-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Glassmorphic search bar */
+.glass-search-bar {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.glass-search-bar select option {
+  background-color: #1e293b;
+  color: white;
+}
+
+/* Scroll dot animation */
+@keyframes scrollDot {
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(12px); opacity: 0; }
+}
+.animate-scroll-dot {
+  animation: scrollDot 1.5s ease-in-out infinite;
+}
+
+/* =============================================
+   STATS SECTION
+   ============================================= */
+.stats-gradient {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 40%, #4338ca 100%);
+}
+
+/* Glassmorphic stat cards */
+.glass-stat-card {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* =============================================
+   HOW IT WORKS CARDS
+   ============================================= */
+.how-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+.how-card:hover {
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10);
+}
+
+/* =============================================
+   CTA SECTION
+   ============================================= */
+.cta-gradient {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 50%, #312e81 100%);
+}
+
+/* Glassmorphic CTA card */
+.glass-cta-card {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3),
+              inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}

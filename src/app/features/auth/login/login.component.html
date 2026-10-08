@@ -1,67 +1,130 @@
-<div class="min-h-screen flex items-center justify-center bg-surface py-12 px-4 sm:px-6 lg:px-8">
-  <div class="w-full max-w-md space-y-8 bg-surface-container-lowest p-12 border border-neutral-200">
-    <!-- Header -->
-    <div class="text-center">
-      <h2 class="display-lg text-neutral-900 tracking-wider">LOG IN</h2>
-      <p class="mt-2 caption text-neutral-500">Access your portfolio</p>
+<!-- Full-screen background -->
+<div class="auth-page">
+
+  <!-- Background image + dark overlay -->
+  <div class="auth-bg">
+    <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
+         alt="" class="auth-bg-img" />
+    <div class="auth-bg-overlay"></div>
+  </div>
+
+  <!-- Subtle blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Centered content -->
+  <div class="auth-container">
+
+    <!-- Logo — above the card on the dark bg -->
+    <div class="flex items-center justify-center gap-2 mb-6">
+      <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg">
+        <mat-icon class="text-white" style="font-size:20px;width:20px;height:20px;">home_work</mat-icon>
+      </div>
+      <span class="text-2xl font-extrabold tracking-tight text-white">ESTATE<span class="text-blue-400">LK</span></span>
     </div>
 
-    <!-- Error Message -->
-    <div *ngIf="errorMessage" class="bg-error-container text-on-error-container p-4">
-      <p class="caption">{{ errorMessage }}</p>
-    </div>
+    <!-- Glass card -->
+    <div class="glass-card" data-aos="fade-up" data-aos-duration="600">
 
-    <!-- Login Form -->
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-6">
-      
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Username</mat-label>
-        <input matInput formControlName="username" type="text" autocomplete="username">
-        <mat-error *ngIf="username?.errors?.['required']">Username is required</mat-error>
-        <mat-error *ngIf="username?.errors?.['minlength']">Minimum 3 characters</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>Password</mat-label>
-        <input matInput formControlName="password" [type]="showPassword ? 'text' : 'password'" autocomplete="current-password">
-        <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
-          <mat-icon>{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
-        </button>
-        <mat-error *ngIf="password?.errors?.['required']">Password is required</mat-error>
-        <mat-error *ngIf="password?.errors?.['minlength']">Minimum 6 characters</mat-error>
-      </mat-form-field>
-
-      <div class="flex items-center justify-between">
-        <mat-checkbox color="primary">Remember me</mat-checkbox>
-        <a href="#" class="caption text-primary hover:text-primary-container transition-colors">Forgot password?</a>
+      <!-- Heading -->
+      <div class="text-center mb-8">
+        <h1 class="text-2xl font-bold text-white mb-1">Welcome Back</h1>
+        <p class="text-white/60 text-sm">Sign in to your account</p>
       </div>
 
-      <button mat-flat-button color="primary" class="w-full py-6 mt-4" type="submit" [disabled]="isLoading || loginForm.invalid">
-        <span *ngIf="!isLoading">SIGN IN</span>
-        <span *ngIf="isLoading">SIGNING IN...</span>
-      </button>
+      <!-- Error -->
+      <div *ngIf="errorMessage"
+           class="flex items-center gap-2 p-3 mb-5 bg-red-500/20 border border-red-400/30 rounded-xl text-red-200 text-sm">
+        <mat-icon style="font-size:18px;width:18px;height:18px;" class="shrink-0">error_outline</mat-icon>
+        {{ errorMessage }}
+      </div>
 
-    </form>
+      <!-- Form -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="space-y-4">
 
-    <p class="text-center caption text-neutral-500 mt-8">
-      Don't have an account?
-      <a routerLink="/register" class="text-primary hover:underline ml-1">Create one</a>
-    </p>
+        <!-- Username -->
+        <div class="input-group">
+          <label class="input-label">Username</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">person_outline</mat-icon>
+            <input
+              formControlName="username"
+              type="text"
+              autocomplete="username"
+              placeholder="Enter your username"
+              class="glass-input"
+            />
+          </div>
+          <p *ngIf="username?.touched && username?.errors?.['required']" class="input-error">Username is required</p>
+          <p *ngIf="username?.touched && username?.errors?.['minlength']" class="input-error">Minimum 3 characters</p>
+        </div>
 
-    <!-- Demo Login Buttons -->
-    <div class="mt-8 pt-6 border-t border-neutral-200">
-      <p class="caption text-center text-neutral-400 mb-4">DEMO ACCESS</p>
-      <div class="grid grid-cols-3 gap-3 text-center text-xs">
-        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
-          <span class="block label-caps text-neutral-900">BUYER</span>
+        <!-- Password -->
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <div class="input-wrapper">
+            <mat-icon class="input-icon">lock_outline</mat-icon>
+            <input
+              formControlName="password"
+              [type]="showPassword ? 'text' : 'password'"
+              autocomplete="current-password"
+              placeholder="Enter your password"
+              class="glass-input pr-12"
+            />
+            <button type="button" (click)="togglePasswordVisibility()" class="input-eye-btn">
+              <mat-icon style="font-size:18px;width:18px;height:18px;">{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+            </button>
+          </div>
+          <p *ngIf="password?.touched && password?.errors?.['required']" class="input-error">Password is required</p>
+          <p *ngIf="password?.touched && password?.errors?.['minlength']" class="input-error">Minimum 6 characters</p>
+        </div>
+
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="isLoading || loginForm.invalid"
+          class="auth-submit-btn mt-2">
+          <span *ngIf="!isLoading" class="flex items-center justify-center gap-2">
+            <mat-icon style="font-size:18px;width:18px;height:18px;">login</mat-icon>
+            Sign In
+          </span>
+          <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
+            <span class="btn-spinner"></span>
+            Signing in...
+          </span>
         </button>
-        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
-          <span class="block label-caps text-neutral-900">SELLER</span>
+
+      </form>
+
+      <!-- Divider -->
+      <div class="flex items-center gap-3 my-6">
+        <div class="flex-1 h-px bg-white/15"></div>
+        <span class="text-white/40 text-xs font-medium">OR DEMO ACCESS</span>
+        <div class="flex-1 h-px bg-white/15"></div>
+      </div>
+
+      <!-- Demo Buttons -->
+      <div class="grid grid-cols-3 gap-2">
+        <button type="button" class="demo-btn">
+          <mat-icon style="font-size:14px;width:14px;height:14px;">person</mat-icon>
+          Buyer
         </button>
-        <button type="button" class="px-2 py-3 border border-neutral-200 hover:bg-surface-container transition-colors">
-          <span class="block label-caps text-neutral-900">ADMIN</span>
+        <button type="button" class="demo-btn">
+          <mat-icon style="font-size:14px;width:14px;height:14px;">storefront</mat-icon>
+          Seller
+        </button>
+        <button type="button" class="demo-btn">
+          <mat-icon style="font-size:14px;width:14px;height:14px;">admin_panel_settings</mat-icon>
+          Admin
         </button>
       </div>
+
+      <!-- Register link -->
+      <p class="text-center text-white/50 text-sm mt-6">
+        Don't have an account?
+        <a routerLink="/register" class="text-blue-400 hover:text-blue-300 font-semibold ml-1 transition-colors">Create one</a>
+      </p>
+
     </div>
   </div>
 </div>

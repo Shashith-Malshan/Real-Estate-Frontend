@@ -1,144 +1,203 @@
-<div class="min-h-screen flex items-center justify-center bg-surface py-12 px-4 sm:px-6 lg:px-8">
-  <div class="w-full max-w-2xl space-y-8 bg-surface-container-lowest p-12 border border-neutral-200">
-    <!-- Header -->
-    <div class="text-center">
-      <h2 class="display-lg text-neutral-900 tracking-wider">REGISTER</h2>
-      <p class="mt-2 caption text-neutral-500">Join the Estate Collective</p>
+<!-- Full-screen background -->
+<div class="auth-page">
+
+  <!-- Background image + dark overlay -->
+  <div class="auth-bg">
+    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1920&q=80"
+         alt="" class="auth-bg-img" />
+    <div class="auth-bg-overlay"></div>
+  </div>
+
+  <!-- Subtle blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+
+  <!-- Centered content -->
+  <div class="auth-container py-10">
+
+    <!-- Logo -->
+    <div class="flex items-center justify-center gap-2 mb-6">
+      <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg">
+        <mat-icon class="text-white" style="font-size:20px;width:20px;height:20px;">home_work</mat-icon>
+      </div>
+      <span class="text-2xl font-extrabold tracking-tight text-white">ESTATE<span class="text-blue-400">LK</span></span>
     </div>
 
-    <!-- Error Message -->
-    <div *ngIf="errorMessage" class="bg-error-container text-on-error-container p-4">
-      <p class="caption">{{ errorMessage }}</p>
-    </div>
+    <!-- Glass card -->
+    <div class="glass-card" data-aos="fade-up" data-aos-duration="600">
 
-    <!-- Success Message -->
-    <div *ngIf="successMessage" class="bg-primary-container text-on-primary-container p-4">
-      <p class="caption">{{ successMessage }}</p>
-    </div>
+      <!-- Heading -->
+      <div class="text-center mb-6">
+        <h1 class="text-2xl font-bold text-white mb-1">Create Your Account</h1>
+        <p class="text-white/60 text-sm">Join Sri Lanka's premier real estate platform</p>
+      </div>
 
-    <!-- Register Form -->
-    <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
-      <!-- Role Selection -->
-      <div class="mb-6">
-        <p class="label-caps mb-4">I AM A</p>
-        <div class="flex gap-4">
-          <button
-            type="button"
-            (click)="setRole(userRoles.BUYER)"
-            class="flex-1 py-4 border transition-colors label-caps"
-            [class]="selectedRole === userRoles.BUYER 
-              ? 'border-primary bg-primary text-on-primary' 
-              : 'border-outline text-on-surface hover:border-primary'"
-          >
-            BUYER
-          </button>
-          <button
-            type="button"
-            (click)="setRole(userRoles.SELLER)"
-            class="flex-1 py-4 border transition-colors label-caps"
-            [class]="selectedRole === userRoles.SELLER 
-              ? 'border-primary bg-primary text-on-primary' 
-              : 'border-outline text-on-surface hover:border-primary'"
-          >
-            SELLER
-          </button>
+      <!-- Error -->
+      <div *ngIf="errorMessage"
+           class="flex items-center gap-2 p-3 mb-4 bg-red-500/20 border border-red-400/30 rounded-xl text-red-200 text-sm">
+        <mat-icon style="font-size:18px;width:18px;height:18px;" class="shrink-0">error_outline</mat-icon>
+        {{ errorMessage }}
+      </div>
+
+      <!-- Success -->
+      <div *ngIf="successMessage"
+           class="flex items-center gap-2 p-3 mb-4 bg-green-500/20 border border-green-400/30 rounded-xl text-green-200 text-sm">
+        <mat-icon style="font-size:18px;width:18px;height:18px;" class="shrink-0">check_circle</mat-icon>
+        {{ successMessage }}
+      </div>
+
+      <!-- Form -->
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-4">
+
+        <!-- Role Selection -->
+        <div>
+          <label class="input-label block mb-2">I am a</label>
+          <div class="grid grid-cols-2 gap-3">
+            <button type="button" (click)="setRole(userRoles.BUYER)"
+              class="role-btn" [class.role-btn-active]="selectedRole === userRoles.BUYER">
+              <mat-icon style="font-size:18px;width:18px;height:18px;">person</mat-icon>
+              Buyer
+            </button>
+            <button type="button" (click)="setRole(userRoles.SELLER)"
+              class="role-btn" [class.role-btn-active]="selectedRole === userRoles.SELLER">
+              <mat-icon style="font-size:18px;width:18px;height:18px;">storefront</mat-icon>
+              Seller
+            </button>
+          </div>
         </div>
-      </div>
 
-      <!-- First Name & Last Name -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>First Name</mat-label>
-          <input matInput formControlName="firstName" type="text">
-          <mat-error *ngIf="firstName?.errors?.['required']">Required</mat-error>
-          <mat-error *ngIf="firstName?.errors?.['minlength']">Min 2 chars</mat-error>
-        </mat-form-field>
+        <!-- First Name & Last Name -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="input-group">
+            <label class="input-label">First Name</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">badge</mat-icon>
+              <input formControlName="firstName" type="text" placeholder="First name" class="glass-input" />
+            </div>
+            <p *ngIf="firstName?.touched && firstName?.errors?.['required']" class="input-error">Required</p>
+            <p *ngIf="firstName?.touched && firstName?.errors?.['minlength']" class="input-error">Min 2 chars</p>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Last Name</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">badge</mat-icon>
+              <input formControlName="lastName" type="text" placeholder="Last name" class="glass-input" />
+            </div>
+            <p *ngIf="lastName?.touched && lastName?.errors?.['required']" class="input-error">Required</p>
+          </div>
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Last Name</mat-label>
-          <input matInput formControlName="lastName" type="text">
-          <mat-error *ngIf="lastName?.errors?.['required']">Required</mat-error>
-          <mat-error *ngIf="lastName?.errors?.['minlength']">Min 2 chars</mat-error>
-        </mat-form-field>
-      </div>
+        <!-- Email & Username -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="input-group">
+            <label class="input-label">Email</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">mail_outline</mat-icon>
+              <input formControlName="email" type="email" placeholder="your@email.com" class="glass-input" />
+            </div>
+            <p *ngIf="email?.touched && email?.errors?.['required']" class="input-error">Required</p>
+            <p *ngIf="email?.touched && email?.errors?.['email']" class="input-error">Invalid email</p>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Username</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">person_outline</mat-icon>
+              <input formControlName="username" type="text" placeholder="Choose a username" class="glass-input" />
+            </div>
+            <p *ngIf="username?.touched && username?.errors?.['required']" class="input-error">Required</p>
+            <p *ngIf="username?.touched && username?.errors?.['minlength']" class="input-error">Min 3 chars</p>
+          </div>
+        </div>
 
-      <!-- Email & Username -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Email</mat-label>
-          <input matInput formControlName="email" type="email">
-          <mat-error *ngIf="email?.errors?.['required']">Required</mat-error>
-          <mat-error *ngIf="email?.errors?.['email']">Invalid email</mat-error>
-        </mat-form-field>
+        <!-- Contact & NIC -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="input-group">
+            <label class="input-label">Phone</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">phone</mat-icon>
+              <input formControlName="contact" type="tel" placeholder="0771234567" class="glass-input" />
+            </div>
+            <p *ngIf="contact?.touched && contact?.errors?.['required']" class="input-error">Required</p>
+            <p *ngIf="contact?.touched && contact?.errors?.['pattern']" class="input-error">10 digits required</p>
+          </div>
+          <div class="input-group">
+            <label class="input-label">NIC</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">credit_card</mat-icon>
+              <input formControlName="nic" type="text" placeholder="NIC number" class="glass-input" />
+            </div>
+            <p *ngIf="nic?.touched && nic?.errors?.['required']" class="input-error">Required</p>
+            <p *ngIf="nic?.touched && nic?.errors?.['minlength']" class="input-error">Min 9 chars</p>
+          </div>
+        </div>
 
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Username</mat-label>
-          <input matInput formControlName="username" type="text">
-          <mat-error *ngIf="username?.errors?.['required']">Required</mat-error>
-          <mat-error *ngIf="username?.errors?.['minlength']">Min 3 chars</mat-error>
-        </mat-form-field>
-      </div>
+        <!-- Password & Confirm -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="input-group">
+            <label class="input-label">Password</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">lock_outline</mat-icon>
+              <input formControlName="password" [type]="showPassword ? 'text' : 'password'"
+                     placeholder="Min 6 characters" class="glass-input pr-12" />
+              <button type="button" (click)="togglePasswordVisibility()" class="input-eye-btn">
+                <mat-icon style="font-size:18px;width:18px;height:18px;">{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+              </button>
+            </div>
+            <p *ngIf="password?.touched && password?.errors?.['required']" class="input-error">Required</p>
+            <p *ngIf="password?.touched && password?.errors?.['minlength']" class="input-error">Min 6 chars</p>
+          </div>
+          <div class="input-group">
+            <label class="input-label">Confirm Password</label>
+            <div class="input-wrapper">
+              <mat-icon class="input-icon">lock_outline</mat-icon>
+              <input formControlName="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'"
+                     placeholder="Repeat password" class="glass-input pr-12" />
+              <button type="button" (click)="toggleConfirmPasswordVisibility()" class="input-eye-btn">
+                <mat-icon style="font-size:18px;width:18px;height:18px;">{{ showConfirmPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
+              </button>
+            </div>
+            <p *ngIf="passwordMismatch" class="input-error">Passwords do not match</p>
+          </div>
+        </div>
 
-      <!-- Contact & NIC -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Phone</mat-label>
-          <input matInput formControlName="contact" type="tel">
-          <mat-error *ngIf="contact?.errors?.['required']">Required</mat-error>
-          <mat-error *ngIf="contact?.errors?.['pattern']">10 digits required</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>NIC</mat-label>
-          <input matInput formControlName="nic" type="text">
-          <mat-error *ngIf="nic?.errors?.['required']">Required</mat-error>
-          <mat-error *ngIf="nic?.errors?.['minlength']">Min 9 chars</mat-error>
-        </mat-form-field>
-      </div>
-
-      <!-- Password & Confirm Password -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Password</mat-label>
-          <input matInput formControlName="password" [type]="showPassword ? 'text' : 'password'">
-          <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()">
-            <mat-icon>{{ showPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
-          </button>
-          <mat-error *ngIf="password?.errors?.['required']">Required</mat-error>
-          <mat-error *ngIf="password?.errors?.['minlength']">Min 6 chars</mat-error>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="w-full">
-          <mat-label>Confirm Password</mat-label>
-          <input matInput formControlName="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'">
-          <button mat-icon-button matSuffix type="button" (click)="toggleConfirmPasswordVisibility()">
-            <mat-icon>{{ showConfirmPassword ? 'visibility' : 'visibility_off' }}</mat-icon>
-          </button>
-          <mat-error *ngIf="passwordMismatch">Passwords do not match</mat-error>
-        </mat-form-field>
-      </div>
-
-      <!-- Terms & Conditions -->
-      <div class="mt-4 mb-8 flex flex-col">
-        <mat-checkbox color="primary" formControlName="termsAccepted" class="caption">
-          I agree to the <a href="#" class="text-primary hover:underline">Terms of Service</a> and <a href="#" class="text-primary hover:underline">Privacy Policy</a>
-        </mat-checkbox>
-        <p *ngIf="termsAccepted?.invalid && termsAccepted?.touched" class="caption text-error mt-1">
+        <!-- Terms -->
+        <div class="flex items-start gap-3 pt-1">
+          <input type="checkbox" formControlName="termsAccepted" id="terms"
+                 class="mt-0.5 w-4 h-4 cursor-pointer accent-blue-500" />
+          <label for="terms" class="text-white/60 text-sm cursor-pointer leading-relaxed">
+            I agree to the
+            <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors">Terms of Service</a>
+            and
+            <a href="#" class="text-blue-400 hover:text-blue-300 transition-colors">Privacy Policy</a>
+          </label>
+        </div>
+        <p *ngIf="termsAccepted?.invalid && termsAccepted?.touched" class="input-error -mt-2">
           You must accept the terms to continue
         </p>
-      </div>
 
-      <!-- Submit Button -->
-      <button mat-flat-button color="primary" class="w-full py-6 mt-8" type="submit" [disabled]="isLoading || registerForm.invalid">
-        <span *ngIf="!isLoading">CREATE ACCOUNT</span>
-        <span *ngIf="isLoading">CREATING ACCOUNT...</span>
-      </button>
-    </form>
+        <!-- Submit -->
+        <button
+          type="submit"
+          [disabled]="isLoading || registerForm.invalid"
+          class="auth-submit-btn mt-2">
+          <span *ngIf="!isLoading" class="flex items-center justify-center gap-2">
+            <mat-icon style="font-size:18px;width:18px;height:18px;">person_add</mat-icon>
+            Create Account
+          </span>
+          <span *ngIf="isLoading" class="flex items-center justify-center gap-2">
+            <span class="btn-spinner"></span>
+            Creating account...
+          </span>
+        </button>
 
-    <!-- Sign In Link -->
-    <p class="text-center caption text-neutral-500 mt-8">
-      Already have an account?
-      <a routerLink="/login" class="text-primary hover:underline ml-1">Sign in</a>
-    </p>
+      </form>
+
+      <!-- Login link -->
+      <p class="text-center text-white/50 text-sm mt-6">
+        Already have an account?
+        <a routerLink="/login" class="text-blue-400 hover:text-blue-300 font-semibold ml-1 transition-colors">Sign in</a>
+      </p>
+
+    </div>
   </div>
 </div>

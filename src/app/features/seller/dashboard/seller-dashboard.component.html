@@ -1,106 +1,155 @@
-<div class="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
-  <div class="max-w-7xl mx-auto">
+<div class="min-h-screen seller-bg pb-16">
 
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Seller Dashboard</h1>
-      <p class="text-gray-600 mt-1">Welcome back, {{ userName }}!</p>
+  <!-- ===== HEADER BANNER ===== -->
+  <div class="seller-hero px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div>
+        <p class="text-blue-200 text-sm font-semibold uppercase tracking-widest mb-1">Seller Dashboard</p>
+        <h1 class="text-3xl font-extrabold text-white">Welcome back, {{ userName }}! 👋</h1>
+        <p class="text-blue-200 mt-1 text-sm">Manage your listings, inquiries, visits and deals</p>
+      </div>
+      <a routerLink="/seller/list-property"
+        class="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 border border-white/25 text-white text-sm font-semibold hover:bg-white/25 transition-all backdrop-blur-sm">
+        <mat-icon style="font-size:18px;width:18px;height:18px;">add_home</mat-icon>
+        List Property
+      </a>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12">
+
+    <!-- ===== STAT CARDS (glass) ===== -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="0">
+        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-3">
+          <mat-icon class="text-blue-600" style="font-size:20px;width:20px;height:20px;">home_work</mat-icon>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">{{ propertiesError ? '—' : properties.length }}</p>
+        <p class="text-xs text-gray-500 mt-1 font-semibold uppercase tracking-wider">Properties</p>
+      </div>
+
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="60">
+        <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center mb-3">
+          <mat-icon class="text-purple-600" style="font-size:20px;width:20px;height:20px;">mail</mat-icon>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">{{ inquiriesError ? '—' : inquiries.length }}</p>
+        <p class="text-xs text-gray-500 mt-1 font-semibold uppercase tracking-wider">Inquiries</p>
+      </div>
+
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="120">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center mb-3">
+          <mat-icon class="text-amber-600" style="font-size:20px;width:20px;height:20px;">event</mat-icon>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">{{ visitsError ? '—' : pendingVisitsCount }}</p>
+        <p class="text-xs text-gray-500 mt-1 font-semibold uppercase tracking-wider">Pending Visits</p>
+      </div>
+
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="180">
+        <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center mb-3">
+          <mat-icon class="text-green-600" style="font-size:20px;width:20px;height:20px;">handshake</mat-icon>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">{{ dealsError ? '—' : deals.length }}</p>
+        <p class="text-xs text-gray-500 mt-1 font-semibold uppercase tracking-wider">Deals</p>
+      </div>
+
     </div>
 
-    <!-- Stat Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-blue-500">
-        <p class="text-sm text-gray-500 font-medium">My Properties</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">
-          {{ propertiesError ? '—' : properties.length }}
-        </p>
-      </div>
-      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-purple-500">
-        <p class="text-sm text-gray-500 font-medium">Total Inquiries</p>
-        <p class="text-3xl font-bold text-purple-600 mt-1">
-          {{ inquiriesError ? '—' : inquiries.length }}
-        </p>
-      </div>
-      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-amber-500">
-        <p class="text-sm text-gray-500 font-medium">Scheduled Visits</p>
-        <p class="text-3xl font-bold text-amber-600 mt-1">
-          {{ visitsError ? '—' : pendingVisitsCount }}
-        </p>
-      </div>
-      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-green-500">
-        <p class="text-sm text-gray-500 font-medium">Deals</p>
-        <p class="text-3xl font-bold text-green-600 mt-1">
-          {{ dealsError ? '—' : deals.length }}
-        </p>
-      </div>
-    </div>
+    <!-- ===== TABS ===== -->
+    <div class="dashboard-card" data-aos="fade-up" data-aos-delay="220">
 
-    <!-- Tabs -->
-    <mat-tab-group animationDuration="200ms" class="bg-white rounded-xl shadow">
+      <!-- Tab Bar -->
+      <div class="flex overflow-x-auto border-b border-gray-100 hide-scrollbar">
+        <button class="tab-btn" [class.tab-active]="selectedTabIndex === 0" (click)="selectedTabIndex = 0">
+          <mat-icon style="font-size:17px;width:17px;height:17px;">home_work</mat-icon>
+          My Listings
+          <span class="tab-count">{{ properties.length }}</span>
+        </button>
+        <button class="tab-btn" [class.tab-active]="selectedTabIndex === 1" (click)="selectedTabIndex = 1">
+          <mat-icon style="font-size:17px;width:17px;height:17px;">mail</mat-icon>
+          Inquiries
+          <span class="tab-count">{{ inquiries.length }}</span>
+        </button>
+        <button class="tab-btn" [class.tab-active]="selectedTabIndex === 2" (click)="selectedTabIndex = 2">
+          <mat-icon style="font-size:17px;width:17px;height:17px;">event</mat-icon>
+          Visits
+          <span class="tab-count">{{ visits.length }}</span>
+        </button>
+        <button class="tab-btn" [class.tab-active]="selectedTabIndex === 3" (click)="selectedTabIndex = 3">
+          <mat-icon style="font-size:17px;width:17px;height:17px;">handshake</mat-icon>
+          Deals
+          <span class="tab-count">{{ deals.length }}</span>
+        </button>
+      </div>
 
-      <!-- ===== MY LISTINGS TAB ===== -->
-      <mat-tab label="My Listings">
-        <div class="p-6">
-          <div class="flex items-center justify-between mb-4">
-            <h2 class="text-xl font-semibold text-gray-800">My Properties</h2>
-            <a routerLink="/seller/list-property" mat-flat-button color="primary" class="text-sm">
-              + List New Property
+      <div class="p-6">
+
+        <!-- ===== MY LISTINGS ===== -->
+        <div *ngIf="selectedTabIndex === 0">
+          <div class="flex items-center justify-between mb-5">
+            <h2 class="text-base font-bold text-gray-900">My Properties</h2>
+            <a routerLink="/seller/list-property"
+               class="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white text-sm font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-sm">
+              <mat-icon style="font-size:16px;width:16px;height:16px;">add</mat-icon>
+              List New
             </a>
           </div>
 
           <!-- Loading -->
           <div *ngIf="propertiesLoading" class="flex justify-center py-12">
-            <mat-spinner diameter="40"></mat-spinner>
+            <div class="spinner"></div>
           </div>
 
           <!-- Error -->
-          <div *ngIf="!propertiesLoading && propertiesError" class="text-center py-12">
-            <mat-icon class="text-red-400 text-5xl mb-3" style="font-size:48px;width:48px;height:48px;">error_outline</mat-icon>
-            <p class="text-gray-600 mb-4">{{ propertiesError }}</p>
-            <button mat-stroked-button color="warn" (click)="retryLoadProperties()">Retry</button>
+          <div *ngIf="!propertiesLoading && propertiesError" class="empty-state">
+            <div class="empty-icon-wrap bg-red-50">
+              <mat-icon class="text-red-300" style="font-size:36px;width:36px;height:36px;">error_outline</mat-icon>
+            </div>
+            <h3 class="empty-title">Failed to Load</h3>
+            <p class="empty-sub">{{ propertiesError }}</p>
+            <button (click)="retryLoadProperties()" class="empty-cta-outline">Retry</button>
           </div>
 
           <!-- Empty -->
-          <div *ngIf="!propertiesLoading && !propertiesError && properties.length === 0" class="text-center py-12 text-gray-500">
-            <mat-icon style="font-size:48px;width:48px;height:48px;" class="mb-3">home_work</mat-icon>
-            <p>You haven't listed any properties yet.</p>
-            <a routerLink="/seller/list-property" mat-flat-button color="primary" class="mt-4">List Your First Property</a>
+          <div *ngIf="!propertiesLoading && !propertiesError && properties.length === 0" class="empty-state">
+            <div class="empty-icon-wrap bg-blue-50">
+              <mat-icon class="text-blue-300" style="font-size:36px;width:36px;height:36px;">home_work</mat-icon>
+            </div>
+            <h3 class="empty-title">No Listings Yet</h3>
+            <p class="empty-sub">Start by listing your first property</p>
+            <a routerLink="/seller/list-property" class="empty-cta">List Your First Property</a>
           </div>
 
           <!-- Table -->
           <div *ngIf="!propertiesLoading && !propertiesError && properties.length > 0" class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-              <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+            <table class="dash-table">
+              <thead>
                 <tr>
-                  <th class="px-4 py-3">Title</th>
-                  <th class="px-4 py-3">Category</th>
-                  <th class="px-4 py-3">Location</th>
-                  <th class="px-4 py-3">District</th>
-                  <th class="px-4 py-3">Price</th>
-                  <th class="px-4 py-3">Status</th>
-                  <th class="px-4 py-3">Actions</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Location</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
-                <tr *ngFor="let p of properties" class="hover:bg-gray-50">
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ p.title }}</td>
-                  <td class="px-4 py-3 text-gray-600">{{ p.categoryName }}</td>
-                  <td class="px-4 py-3 text-gray-600">{{ p.location }}</td>
-                  <td class="px-4 py-3 text-gray-600">{{ p.district }}</td>
-                  <td class="px-4 py-3 text-gray-700">{{ getPropertyPrice(p) }}</td>
-                  <td class="px-4 py-3">
-                    <span *ngIf="p.status" class="px-2 py-1 rounded-full text-xs font-medium"
-                      [class.bg-green-100]="p.status === 'completed'"
-                      [class.text-green-700]="p.status === 'completed'"
-                      [class.bg-amber-100]="p.status === 'ongoing'"
-                      [class.text-amber-700]="p.status === 'ongoing'">
+              <tbody>
+                <tr *ngFor="let p of properties">
+                  <td class="font-semibold text-gray-900">{{ p.title }}</td>
+                  <td>{{ p.categoryName }}</td>
+                  <td>{{ p.location }}<span *ngIf="p.district">, {{ p.district }}</span></td>
+                  <td class="font-semibold text-blue-700">{{ getPropertyPrice(p) }}</td>
+                  <td>
+                    <span *ngIf="p.status" class="status-badge"
+                      [class.badge-success]="p.status === 'completed'"
+                      [class.badge-warn]="p.status === 'ongoing'">
                       {{ p.status | titlecase }}
                     </span>
-                    <span *ngIf="!p.status" class="text-gray-400">—</span>
+                    <span *ngIf="!p.status" class="text-gray-400 text-xs">—</span>
                   </td>
-                  <td class="px-4 py-3">
-                    <button mat-icon-button color="warn" (click)="confirmDeleteProperty(p.propertyId)" title="Delete">
-                      <mat-icon>delete</mat-icon>
+                  <td>
+                    <button class="icon-btn-danger" (click)="confirmDeleteProperty(p.propertyId)" title="Delete">
+                      <mat-icon style="font-size:18px;width:18px;height:18px;">delete</mat-icon>
                     </button>
                   </td>
                 </tr>
@@ -108,104 +157,103 @@
             </table>
           </div>
         </div>
-      </mat-tab>
 
-      <!-- ===== INQUIRIES TAB ===== -->
-      <mat-tab label="Inquiries">
-        <div class="p-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-4">Buyer Inquiries</h2>
+        <!-- ===== INQUIRIES ===== -->
+        <div *ngIf="selectedTabIndex === 1">
+          <h2 class="text-base font-bold text-gray-900 mb-5">Buyer Inquiries</h2>
 
           <div *ngIf="inquiriesLoading" class="flex justify-center py-12">
-            <mat-spinner diameter="40"></mat-spinner>
+            <div class="spinner"></div>
           </div>
 
-          <div *ngIf="!inquiriesLoading && inquiriesError" class="text-center py-12 text-red-500">
-            <p>{{ inquiriesError }}</p>
+          <div *ngIf="!inquiriesLoading && inquiriesError" class="text-center py-8 text-red-500 text-sm">{{ inquiriesError }}</div>
+
+          <div *ngIf="!inquiriesLoading && !inquiriesError && inquiries.length === 0" class="empty-state">
+            <div class="empty-icon-wrap bg-purple-50">
+              <mat-icon class="text-purple-300" style="font-size:36px;width:36px;height:36px;">chat_bubble_outline</mat-icon>
+            </div>
+            <h3 class="empty-title">No Inquiries Yet</h3>
+            <p class="empty-sub">Inquiries from buyers will appear here</p>
           </div>
 
-          <div *ngIf="!inquiriesLoading && !inquiriesError && inquiries.length === 0" class="text-center py-12 text-gray-500">
-            <mat-icon style="font-size:48px;width:48px;height:48px;" class="mb-3">chat_bubble_outline</mat-icon>
-            <p>No inquiries yet.</p>
-          </div>
-
-          <div *ngIf="!inquiriesLoading && !inquiriesError && inquiries.length > 0" class="space-y-4">
-            <div *ngFor="let inq of inquiries" class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
+          <div *ngIf="!inquiriesLoading && !inquiriesError && inquiries.length > 0" class="space-y-3">
+            <a *ngFor="let inq of inquiries"
+               [routerLink]="['/marketplace/property', inq.propertyId]"
+               class="list-card group block">
               <div class="flex items-start justify-between gap-4">
                 <div class="flex-1 min-w-0">
-                  <p class="text-xs text-gray-500 mb-1">
-                    <span class="font-medium text-gray-700">{{ inq.propertyTitle }}</span>
-                    &nbsp;·&nbsp;{{ formatDate(inq.inquiryDate) }}
-                  </p>
-                  <p class="text-gray-800 text-sm">{{ inq.message }}</p>
+                  <div class="flex items-center gap-2 mb-1">
+                    <mat-icon class="text-purple-400" style="font-size:14px;width:14px;height:14px;">home</mat-icon>
+                    <span class="text-xs font-bold text-gray-700">{{ inq.propertyTitle }}</span>
+                    <span class="text-gray-300">·</span>
+                    <span class="text-xs text-gray-400">{{ formatDate(inq.inquiryDate) }}</span>
+                  </div>
+                  <p class="text-sm text-gray-600 line-clamp-2">{{ inq.message }}</p>
                 </div>
                 <div class="flex items-center gap-2 shrink-0">
-                  <span class="px-2 py-1 rounded-full text-xs font-medium"
-                    [class.bg-amber-100]="!inq.isReplied"
-                    [class.text-amber-700]="!inq.isReplied"
-                    [class.bg-green-100]="inq.isReplied"
-                    [class.text-green-700]="inq.isReplied">
+                  <span class="status-badge" [class.badge-warn]="!inq.isReplied" [class.badge-success]="inq.isReplied">
                     {{ inq.isReplied ? 'Replied' : 'Pending' }}
                   </span>
-                  <button mat-stroked-button color="primary" class="text-xs"
-                    *ngIf="!inq.isReplied"
-                    (click)="markInquiryReplied(inq.inquiryId)">
+                  <button *ngIf="!inq.isReplied"
+                    class="action-btn-sm"
+                    (click)="markInquiryReplied(inq.inquiryId); $event.stopPropagation()">
                     Mark Replied
                   </button>
-                  <button mat-icon-button color="warn" (click)="confirmDeleteInquiry(inq.inquiryId)" title="Delete">
-                    <mat-icon>delete</mat-icon>
+                  <button class="icon-btn-danger"
+                    (click)="confirmDeleteInquiry(inq.inquiryId); $event.stopPropagation()" title="Delete">
+                    <mat-icon style="font-size:16px;width:16px;height:16px;">delete</mat-icon>
                   </button>
                 </div>
               </div>
-            </div>
+            </a>
           </div>
         </div>
-      </mat-tab>
 
-      <!-- ===== VISITS TAB ===== -->
-      <mat-tab label="Visits">
-        <div class="p-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-4">Scheduled Visits</h2>
+        <!-- ===== VISITS ===== -->
+        <div *ngIf="selectedTabIndex === 2">
+          <h2 class="text-base font-bold text-gray-900 mb-5">Scheduled Visits</h2>
 
           <div *ngIf="visitsLoading" class="flex justify-center py-12">
-            <mat-spinner diameter="40"></mat-spinner>
+            <div class="spinner"></div>
           </div>
 
-          <div *ngIf="!visitsLoading && visitsError" class="text-center py-12 text-red-500">
-            <p>{{ visitsError }}</p>
-          </div>
+          <div *ngIf="!visitsLoading && visitsError" class="text-center py-8 text-red-500 text-sm">{{ visitsError }}</div>
 
-          <div *ngIf="!visitsLoading && !visitsError && visits.length === 0" class="text-center py-12 text-gray-500">
-            <mat-icon style="font-size:48px;width:48px;height:48px;" class="mb-3">event_available</mat-icon>
-            <p>No visits scheduled.</p>
+          <div *ngIf="!visitsLoading && !visitsError && visits.length === 0" class="empty-state">
+            <div class="empty-icon-wrap bg-amber-50">
+              <mat-icon class="text-amber-300" style="font-size:36px;width:36px;height:36px;">event_available</mat-icon>
+            </div>
+            <h3 class="empty-title">No Visits Scheduled</h3>
+            <p class="empty-sub">Buyer visit requests will appear here</p>
           </div>
 
           <div *ngIf="!visitsLoading && !visitsError && visits.length > 0" class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-              <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+            <table class="dash-table">
+              <thead>
                 <tr>
-                  <th class="px-4 py-3">Property</th>
-                  <th class="px-4 py-3">Planned Date</th>
-                  <th class="px-4 py-3">Status</th>
-                  <th class="px-4 py-3">Actions</th>
+                  <th>Property</th>
+                  <th>Planned Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
-                <tr *ngFor="let v of visits" class="hover:bg-gray-50">
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ v.propertyTitle }}</td>
-                  <td class="px-4 py-3 text-gray-600">{{ formatDate(v.visitPlannedDate) }}</td>
-                  <td class="px-4 py-3">
-                    <span class="px-2 py-1 rounded-full text-xs font-medium"
-                      [class.bg-amber-100]="!v.isVisited"
-                      [class.text-amber-700]="!v.isVisited"
-                      [class.bg-green-100]="v.isVisited"
-                      [class.text-green-700]="v.isVisited">
+              <tbody>
+                <tr *ngFor="let v of visits"
+                    class="cursor-pointer"
+                    [routerLink]="['/marketplace/property', v.propertyId]">
+                  <td class="font-semibold text-gray-900">{{ v.propertyTitle }}</td>
+                  <td>{{ formatDate(v.visitPlannedDate) }}</td>
+                  <td>
+                    <span class="status-badge"
+                      [class.badge-warn]="!v.isVisited"
+                      [class.badge-success]="v.isVisited">
                       {{ v.isVisited ? 'Completed' : 'Scheduled' }}
                     </span>
                   </td>
-                  <td class="px-4 py-3">
-                    <button mat-stroked-button color="primary" class="text-xs"
-                      *ngIf="!v.isVisited"
-                      (click)="markVisitCompleted(v.visitId)">
+                  <td>
+                    <button *ngIf="!v.isVisited"
+                      class="action-btn-sm"
+                      (click)="markVisitCompleted(v.visitId); $event.stopPropagation()">
                       Mark Completed
                     </button>
                     <span *ngIf="v.isVisited" class="text-gray-400 text-xs">Done</span>
@@ -215,74 +263,76 @@
             </table>
           </div>
         </div>
-      </mat-tab>
 
-      <!-- ===== DEALS TAB ===== -->
-      <mat-tab label="Deals">
-        <div class="p-6">
-          <h2 class="text-xl font-semibold text-gray-800 mb-4">Deals</h2>
+        <!-- ===== DEALS ===== -->
+        <div *ngIf="selectedTabIndex === 3">
+          <h2 class="text-base font-bold text-gray-900 mb-5">Deals</h2>
 
           <div *ngIf="dealsLoading" class="flex justify-center py-12">
-            <mat-spinner diameter="40"></mat-spinner>
+            <div class="spinner"></div>
           </div>
 
-          <div *ngIf="!dealsLoading && dealsError" class="text-center py-12 text-red-500">
-            <p>{{ dealsError }}</p>
-          </div>
+          <div *ngIf="!dealsLoading && dealsError" class="text-center py-8 text-red-500 text-sm">{{ dealsError }}</div>
 
-          <div *ngIf="!dealsLoading && !dealsError && deals.length === 0" class="text-center py-12 text-gray-500">
-            <mat-icon style="font-size:48px;width:48px;height:48px;" class="mb-3">handshake</mat-icon>
-            <p>No deals yet.</p>
+          <div *ngIf="!dealsLoading && !dealsError && deals.length === 0" class="empty-state">
+            <div class="empty-icon-wrap bg-green-50">
+              <mat-icon class="text-green-300" style="font-size:36px;width:36px;height:36px;">handshake</mat-icon>
+            </div>
+            <h3 class="empty-title">No Deals Yet</h3>
+            <p class="empty-sub">Completed deals will appear here</p>
           </div>
 
           <div *ngIf="!dealsLoading && !dealsError && deals.length > 0" class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-              <thead class="bg-gray-50 text-gray-600 uppercase text-xs">
+            <table class="dash-table">
+              <thead>
                 <tr>
-                  <th class="px-4 py-3">Property</th>
-                  <th class="px-4 py-3">Agreed Amount</th>
-                  <th class="px-4 py-3">Deal Date</th>
+                  <th>Property</th>
+                  <th>Agreed Amount</th>
+                  <th>Deal Date</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-gray-100">
-                <tr *ngFor="let d of deals" class="hover:bg-gray-50">
-                  <td class="px-4 py-3 font-medium text-gray-900">{{ d.propertyTitle }}</td>
-                  <td class="px-4 py-3 text-green-700 font-semibold">{{ formatPrice(d.agreedTotalAmount) }}</td>
-                  <td class="px-4 py-3 text-gray-600">{{ formatDate(d.dealDate) }}</td>
+              <tbody>
+                <tr *ngFor="let d of deals">
+                  <td class="font-semibold text-gray-900">{{ d.propertyTitle }}</td>
+                  <td class="font-bold text-green-600">{{ formatPrice(d.agreedTotalAmount) }}</td>
+                  <td>{{ formatDate(d.dealDate) }}</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
-      </mat-tab>
 
-    </mat-tab-group>
-
-  </div>
-</div>
-
-<!-- Delete Property Confirmation Dialog -->
-<div *ngIf="confirmDeletePropertyId !== null"
-  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-  <div class="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
-    <h3 class="text-lg font-semibold text-gray-900 mb-2">Delete Property?</h3>
-    <p class="text-gray-600 text-sm mb-6">This action cannot be undone. All associated inquiries, visits, and images will also be removed.</p>
-    <div class="flex gap-3 justify-end">
-      <button mat-stroked-button (click)="cancelDeleteProperty()">Cancel</button>
-      <button mat-flat-button color="warn" (click)="executeDeleteProperty()">Delete</button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Delete Inquiry Confirmation Dialog -->
-<div *ngIf="confirmDeleteInquiryId !== null"
-  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-  <div class="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
-    <h3 class="text-lg font-semibold text-gray-900 mb-2">Delete Inquiry?</h3>
-    <p class="text-gray-600 text-sm mb-6">This will permanently remove the inquiry.</p>
-    <div class="flex gap-3 justify-end">
-      <button mat-stroked-button (click)="cancelDeleteInquiry()">Cancel</button>
-      <button mat-flat-button color="warn" (click)="executeDeleteInquiry()">Delete</button>
+<!-- ===== DELETE PROPERTY DIALOG ===== -->
+<div *ngIf="confirmDeletePropertyId !== null" class="modal-overlay">
+  <div class="modal-card" data-aos="zoom-in">
+    <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+      <mat-icon class="text-red-500" style="font-size:24px;width:24px;height:24px;">delete_forever</mat-icon>
+    </div>
+    <h3 class="text-lg font-bold text-gray-900 text-center mb-2">Delete Property?</h3>
+    <p class="text-sm text-gray-500 text-center mb-6">This action cannot be undone. All associated inquiries, visits, and images will also be removed.</p>
+    <div class="flex gap-3">
+      <button class="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors" (click)="cancelDeleteProperty()">Cancel</button>
+      <button class="flex-1 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition-colors" (click)="executeDeleteProperty()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== DELETE INQUIRY DIALOG ===== -->
+<div *ngIf="confirmDeleteInquiryId !== null" class="modal-overlay">
+  <div class="modal-card">
+    <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+      <mat-icon class="text-red-500" style="font-size:24px;width:24px;height:24px;">delete_forever</mat-icon>
+    </div>
+    <h3 class="text-lg font-bold text-gray-900 text-center mb-2">Delete Inquiry?</h3>
+    <p class="text-sm text-gray-500 text-center mb-6">This will permanently remove the inquiry.</p>
+    <div class="flex gap-3">
+      <button class="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors" (click)="cancelDeleteInquiry()">Cancel</button>
+      <button class="flex-1 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition-colors" (click)="executeDeleteInquiry()">Delete</button>
     </div>
   </div>
 </div>

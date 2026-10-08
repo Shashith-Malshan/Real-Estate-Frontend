@@ -1,123 +1,165 @@
-<div class="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
-  <div class="max-w-7xl mx-auto">
+<div class="min-h-screen admin-bg pb-16">
 
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
-      <p class="text-gray-500 mt-1">Platform overview and user management</p>
+  <!-- ===== HEADER BANNER ===== -->
+  <div class="admin-hero px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div>
+        <p class="text-blue-200 text-sm font-semibold uppercase tracking-widest mb-1">Admin Dashboard</p>
+        <h1 class="text-3xl font-extrabold text-white">Platform Overview</h1>
+        <p class="text-blue-200 mt-1 text-sm">Monitor metrics and manage users</p>
+      </div>
+      <div class="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 border border-white/25 backdrop-blur-sm">
+        <mat-icon class="text-white" style="font-size:18px;width:18px;height:18px;">admin_panel_settings</mat-icon>
+        <span class="text-white text-sm font-semibold">Admin</span>
+      </div>
     </div>
+  </div>
 
-    <!-- Metrics Cards -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-blue-500">
-        <p class="text-sm text-gray-500 font-medium">Total Users</p>
-        <p class="text-3xl font-bold text-blue-600 mt-1">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12">
+
+    <!-- ===== METRIC CARDS — solid white ===== -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+
+      <!-- Total Users -->
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="0">
+        <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center mb-3">
+          <mat-icon class="text-blue-600" style="font-size:20px;width:20px;height:20px;">people</mat-icon>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">
           <span *ngIf="metricsLoading" class="text-gray-300">—</span>
           <span *ngIf="!metricsLoading">{{ metrics?.totalUsers ?? '—' }}</span>
         </p>
+        <p class="text-xs text-gray-500 mt-1 font-semibold uppercase tracking-wider">Total Users</p>
       </div>
-      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-purple-500">
-        <p class="text-sm text-gray-500 font-medium">Total Properties</p>
-        <p class="text-3xl font-bold text-purple-600 mt-1">
+
+      <!-- Total Properties -->
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="60">
+        <div class="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center mb-3">
+          <mat-icon class="text-purple-600" style="font-size:20px;width:20px;height:20px;">home_work</mat-icon>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">
           <span *ngIf="metricsLoading" class="text-gray-300">—</span>
           <span *ngIf="!metricsLoading">{{ metrics?.totalProperties ?? '—' }}</span>
         </p>
+        <p class="text-xs text-gray-500 mt-1 font-semibold uppercase tracking-wider">Properties</p>
       </div>
-      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-green-500">
-        <p class="text-sm text-gray-500 font-medium">Total Deals</p>
-        <p class="text-3xl font-bold text-green-600 mt-1">
+
+      <!-- Total Deals -->
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="120">
+        <div class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center mb-3">
+          <mat-icon class="text-green-600" style="font-size:20px;width:20px;height:20px;">handshake</mat-icon>
+        </div>
+        <p class="text-3xl font-extrabold text-gray-900">
           <span *ngIf="metricsLoading" class="text-gray-300">—</span>
           <span *ngIf="!metricsLoading">{{ metrics?.totalDeals ?? '—' }}</span>
         </p>
+        <p class="text-xs text-gray-500 mt-1 font-semibold uppercase tracking-wider">Total Deals</p>
       </div>
-      <div class="bg-white rounded-xl shadow p-5 border-t-4 border-amber-500">
-        <p class="text-sm text-gray-500 font-medium">Platform Revenue</p>
-        <p class="text-2xl font-bold text-amber-600 mt-1">
+
+      <!-- Platform Revenue -->
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="180">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center mb-3">
+          <mat-icon class="text-amber-600" style="font-size:20px;width:20px;height:20px;">payments</mat-icon>
+        </div>
+        <p class="text-lg font-extrabold text-gray-900 leading-tight">
           <span *ngIf="metricsLoading" class="text-gray-300">—</span>
           <span *ngIf="!metricsLoading">{{ metrics ? formatPrice(metrics.platformRevenue) : '—' }}</span>
         </p>
+        <p class="text-xs text-gray-500 mt-1 font-semibold uppercase tracking-wider">Revenue</p>
       </div>
+
     </div>
 
-    <!-- User Management -->
-    <div class="bg-white rounded-xl shadow overflow-hidden">
-      <div class="p-6 border-b border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <!-- ===== USER MANAGEMENT TABLE ===== -->
+    <div class="dashboard-card" data-aos="fade-up" data-aos-delay="220">
+
+      <!-- Card Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-6 border-b border-gray-100">
         <div>
-          <h2 class="text-xl font-semibold text-gray-800">User Management</h2>
-          <p class="text-sm text-gray-500 mt-0.5">{{ filteredUsers.length }} user(s) found</p>
+          <h2 class="text-base font-bold text-gray-900">User Management</h2>
+          <p class="text-xs text-gray-500 mt-0.5">{{ filteredUsers.length }} user(s) found</p>
         </div>
-        <!-- Search -->
         <div class="relative">
-          <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" style="font-size:18px;width:18px;height:18px;">search</mat-icon>
+          <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" style="font-size:16px;width:16px;height:16px;">search</mat-icon>
           <input
             type="text"
             [(ngModel)]="searchQuery"
             (input)="onSearchChange()"
             placeholder="Search by name or email..."
-            class="pl-9 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
-          >
+            class="pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent w-64 transition"
+          />
         </div>
       </div>
 
       <!-- Loading -->
       <div *ngIf="usersLoading" class="flex justify-center py-16">
-        <mat-spinner diameter="40"></mat-spinner>
+        <div class="admin-spinner"></div>
       </div>
 
       <!-- Error -->
-      <div *ngIf="!usersLoading && usersError" class="text-center py-16 text-red-500">
-        <mat-icon style="font-size:48px;width:48px;height:48px;" class="mb-3">error_outline</mat-icon>
-        <p>{{ usersError }}</p>
-        <button mat-stroked-button color="warn" class="mt-4" (click)="loadUsers()">Retry</button>
+      <div *ngIf="!usersLoading && usersError" class="flex flex-col items-center py-16 text-center">
+        <div class="w-14 h-14 rounded-full bg-red-50 flex items-center justify-center mb-4">
+          <mat-icon class="text-red-400" style="font-size:28px;width:28px;height:28px;">error_outline</mat-icon>
+        </div>
+        <p class="text-gray-600 text-sm mb-4">{{ usersError }}</p>
+        <button class="px-5 py-2 rounded-xl border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition-colors" (click)="loadUsers()">Retry</button>
       </div>
 
-      <!-- Empty State -->
-      <div *ngIf="!usersLoading && !usersError && users.length === 0" class="text-center py-16 text-gray-500">
-        <mat-icon style="font-size:48px;width:48px;height:48px;" class="mb-3">people_outline</mat-icon>
-        <p>No users registered yet.</p>
+      <!-- Empty -->
+      <div *ngIf="!usersLoading && !usersError && users.length === 0" class="flex flex-col items-center py-16 text-center">
+        <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <mat-icon class="text-gray-400" style="font-size:28px;width:28px;height:28px;">people_outline</mat-icon>
+        </div>
+        <p class="text-gray-500 text-sm">No users registered yet.</p>
       </div>
 
-      <!-- No Search Results -->
-      <div *ngIf="!usersLoading && !usersError && users.length > 0 && filteredUsers.length === 0" class="text-center py-16 text-gray-500">
-        <mat-icon style="font-size:48px;width:48px;height:48px;" class="mb-3">search_off</mat-icon>
-        <p>No users match your search.</p>
+      <!-- No search results -->
+      <div *ngIf="!usersLoading && !usersError && users.length > 0 && filteredUsers.length === 0" class="flex flex-col items-center py-16 text-center">
+        <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+          <mat-icon class="text-gray-400" style="font-size:28px;width:28px;height:28px;">search_off</mat-icon>
+        </div>
+        <p class="text-gray-500 text-sm">No users match your search.</p>
       </div>
 
       <!-- Table -->
       <div *ngIf="!usersLoading && !usersError && filteredUsers.length > 0" class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
-          <thead class="bg-gray-50 text-gray-600 uppercase text-xs border-b border-gray-100">
+        <table class="dash-table">
+          <thead>
             <tr>
-              <th class="px-5 py-3">ID</th>
-              <th class="px-5 py-3">Full Name</th>
-              <th class="px-5 py-3">Email</th>
-              <th class="px-5 py-3">Contact</th>
-              <th class="px-5 py-3">NIC</th>
-              <th class="px-5 py-3">Role</th>
-              <th class="px-5 py-3">Actions</th>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Contact</th>
+              <th>NIC</th>
+              <th>Role</th>
+              <th>Actions</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-gray-50">
-            <tr *ngFor="let user of pagedUsers" class="hover:bg-gray-50 transition-colors">
-              <td class="px-5 py-3 text-gray-400 font-mono text-xs">{{ user.userId }}</td>
-              <td class="px-5 py-3 font-medium text-gray-900">{{ getFullName(user) }}</td>
-              <td class="px-5 py-3 text-gray-600">{{ user.email }}</td>
-              <td class="px-5 py-3 text-gray-600">{{ user.contact }}</td>
-              <td class="px-5 py-3 text-gray-600 font-mono text-xs">{{ user.nic }}</td>
-              <td class="px-5 py-3">
-                <span *ngIf="user.roleName" class="px-2 py-1 rounded-full text-xs font-medium"
-                  [class.bg-blue-100]="user.roleName === 'BUYER'"
-                  [class.text-blue-700]="user.roleName === 'BUYER'"
-                  [class.bg-green-100]="user.roleName === 'SELLER'"
-                  [class.text-green-700]="user.roleName === 'SELLER'"
-                  [class.bg-red-100]="user.roleName === 'ADMIN'"
-                  [class.text-red-700]="user.roleName === 'ADMIN'">
+          <tbody>
+            <tr *ngFor="let user of pagedUsers">
+              <td class="font-mono text-xs text-gray-400">#{{ user.userId }}</td>
+              <td>
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                    {{ user.firstName.charAt(0).toUpperCase() }}
+                  </div>
+                  <span class="font-semibold text-gray-900">{{ getFullName(user) }}</span>
+                </div>
+              </td>
+              <td class="text-gray-600">{{ user.email }}</td>
+              <td class="text-gray-600">{{ user.contact }}</td>
+              <td class="font-mono text-xs text-gray-500">{{ user.nic }}</td>
+              <td>
+                <span *ngIf="user.roleName" class="role-badge"
+                  [class.role-buyer]="user.roleName === 'BUYER'"
+                  [class.role-seller]="user.roleName === 'SELLER'"
+                  [class.role-admin]="user.roleName === 'ADMIN'">
                   {{ user.roleName }}
                 </span>
               </td>
-              <td class="px-5 py-3">
-                <button mat-icon-button color="warn" (click)="openDeleteConfirm(user)" title="Delete user">
-                  <mat-icon>delete</mat-icon>
+              <td>
+                <button class="icon-btn-danger" (click)="openDeleteConfirm(user)" title="Delete user">
+                  <mat-icon style="font-size:18px;width:18px;height:18px;">delete</mat-icon>
                 </button>
               </td>
             </tr>
@@ -125,13 +167,13 @@
         </table>
 
         <!-- Pagination -->
-        <div *ngIf="totalPages > 1" class="flex items-center justify-between px-5 py-4 border-t border-gray-100">
-          <p class="text-sm text-gray-500">
-            Page {{ currentPage + 1 }} of {{ totalPages }}
-          </p>
+        <div *ngIf="totalPages > 1" class="flex items-center justify-between px-6 py-4 border-t border-gray-100">
+          <p class="text-xs text-gray-500">Page <span class="font-semibold text-gray-700">{{ currentPage + 1 }}</span> of {{ totalPages }}</p>
           <div class="flex gap-2">
-            <button mat-stroked-button [disabled]="currentPage === 0" (click)="prevPage()">Previous</button>
-            <button mat-stroked-button [disabled]="currentPage >= totalPages - 1" (click)="nextPage()">Next</button>
+            <button class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              [disabled]="currentPage === 0" (click)="prevPage()">Previous</button>
+            <button class="px-4 py-2 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              [disabled]="currentPage >= totalPages - 1" (click)="nextPage()">Next</button>
           </div>
         </div>
       </div>
@@ -140,20 +182,20 @@
   </div>
 </div>
 
-<!-- Delete Confirmation Dialog -->
-<div *ngIf="confirmDeleteUser !== null"
-  class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-  <div class="bg-white rounded-xl shadow-xl p-6 max-w-sm w-full mx-4">
-    <h3 class="text-lg font-semibold text-gray-900 mb-2">Delete User?</h3>
-    <p class="text-gray-600 text-sm mb-1">
-      You are about to permanently delete:
-    </p>
-    <p class="font-semibold text-gray-900 mb-1">{{ getFullName(confirmDeleteUser) }}</p>
-    <p class="text-gray-500 text-sm mb-6">{{ confirmDeleteUser.email }}</p>
-    <p class="text-red-600 text-xs mb-6">This action cannot be undone.</p>
-    <div class="flex gap-3 justify-end">
-      <button mat-stroked-button (click)="cancelDelete()">Cancel</button>
-      <button mat-flat-button color="warn" (click)="executeDelete()">Delete</button>
+<!-- ===== DELETE USER DIALOG ===== -->
+<div *ngIf="confirmDeleteUser !== null" class="modal-overlay">
+  <div class="modal-card">
+    <div class="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
+      <mat-icon class="text-red-500" style="font-size:24px;width:24px;height:24px;">person_remove</mat-icon>
+    </div>
+    <h3 class="text-lg font-bold text-gray-900 text-center mb-1">Delete User?</h3>
+    <p class="text-sm text-gray-500 text-center mb-1">You are about to permanently delete:</p>
+    <p class="text-sm font-bold text-gray-900 text-center">{{ getFullName(confirmDeleteUser) }}</p>
+    <p class="text-xs text-gray-400 text-center mb-2">{{ confirmDeleteUser.email }}</p>
+    <p class="text-xs text-red-500 text-center mb-6">This action cannot be undone.</p>
+    <div class="flex gap-3">
+      <button class="flex-1 py-2.5 rounded-xl border border-gray-200 text-gray-700 font-semibold text-sm hover:bg-gray-50 transition-colors" (click)="cancelDelete()">Cancel</button>
+      <button class="flex-1 py-2.5 rounded-xl bg-red-600 text-white font-bold text-sm hover:bg-red-700 transition-colors" (click)="executeDelete()">Delete</button>
     </div>
   </div>
 </div>

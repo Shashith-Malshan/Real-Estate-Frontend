@@ -36,6 +36,17 @@ export class PropertyService {
   }
 
   /**
+   * Get latest N properties ordered by creation (propertyId descending), optionally filtered by category
+   */
+  getLatestProperties(limit: number = 6, categoryId?: number): Observable<PropertyDTO[]> {
+    const params: any = { limit };
+    if (categoryId !== undefined) {
+      params.categoryId = categoryId;
+    }
+    return this.apiService.get<PropertyDTO[]>(`${this.endpoint}/latest`, params);
+  }
+
+  /**
    * Get property by ID
    */
   getPropertyById(propertyId: number): Observable<PropertyDTO> {

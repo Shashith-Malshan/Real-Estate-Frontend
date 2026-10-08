@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Subject, forkJoin } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil, filter, tap } from 'rxjs/operators';
 import { MatIconModule } from '@angular/material/icon';
 import { InquiryService } from '../../../shared/services/inquiry.service';
 import { VisitService } from '../../../shared/services/visit.service';
@@ -32,6 +32,8 @@ export class BuyerDashboardComponent implements OnInit, OnDestroy {
 
   // User info
   userName = '';
+  private currentCustomerId: number | null = null;
+  private dashboardDataLoaded = false;
 
   private destroy$ = new Subject<void>();
 
@@ -39,23 +41,32 @@ export class BuyerDashboardComponent implements OnInit, OnDestroy {
     private inquiryService: InquiryService,
     private visitService: VisitService,
     private dealService: DealService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    // Get user name
+    // Get user name and load dashboard data once user is available
     this.authService.currentUser$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((user) => {
-        if (user) {
+      .pipe(
+        filter(user => !!user),
+        tap((user) => {
           this.userName = user.firstName;
-        }
-      });
-
-    this.loadDashboardData();
+          this.currentCustomerId = user.customerId ?? null;
+          // Load dashboard data only once when user becomes available
+          if (!this.dashboardDataLoaded) {
+            this.dashboardDataLoaded = true;
+            this.loadDashboardData();
+          }
+          this.cdr.detectChanges();
+        }),
+        takeUntil(this.destroy$)
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {
+    this.dashboardDataLoaded = false;
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -64,20 +75,17 @@ export class BuyerDashboardComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = null;
 
-    const user = this.authService.getCurrentUser();
-    if (!user || !user.userId) {
+    if (!this.currentCustomerId) {
       this.errorMessage = 'User not authenticated';
       this.isLoading = false;
       return;
     }
 
-    const userId = user.userId;
-
     // Load all data in parallel
     forkJoin({
-      inquiries: this.inquiryService.getInquiriesByCustomer(userId),
-      visits: this.visitService.getVisitsByCustomer(userId),
-      deals: this.dealService.getDealsByCustomer(userId)
+      inquiries: this.inquiryService.getInquiriesByCustomer(this.currentCustomerId),
+      visits: this.visitService.getVisitsByCustomer(this.currentCustomerId),
+      deals: this.dealService.getDealsByCustomer(this.currentCustomerId)
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -86,11 +94,13 @@ export class BuyerDashboardComponent implements OnInit, OnDestroy {
           this.visits = data.visits;
           this.deals = data.deals;
           this.isLoading = false;
+          this.cdr.detectChanges();
         },
         error: (err) => {
           this.errorMessage = 'Failed to load dashboard data. Please try again.';
           console.error('Error loading dashboard data:', err);
           this.isLoading = false;
+          this.cdr.detectChanges();
         }
       });
   }
@@ -123,11 +133,9 @@ export class BuyerDashboardComponent implements OnInit, OnDestroy {
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(price);
+    return `Rs. ${new Intl.NumberFormat('en-LK', {
+      maximumFractionDigits: 0
+    }).format(price)}`;
   }
 
   refreshData(): void {

@@ -85,7 +85,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
     if (!this.canToggleRoles() || !this.currentUser) {
       return null;
     }
-
     return this.currentUser.activeRoleId === UserRole.BUYER ? UserRole.SELLER : UserRole.BUYER;
   }
 

@@ -1,217 +1,326 @@
-<div class="bg-surface min-h-screen pb-24">
-  
-  <!-- Back Navigation -->
-  <div class="container-max py-8">
-    <button (click)="goBack()" class="flex items-center gap-2 label-caps text-neutral-500 hover:text-neutral-900 transition-colors">
-      <mat-icon style="font-size: 16px; width: 16px; height: 16px;">arrow_back</mat-icon>
-      BACK TO MARKETPLACE
+<div class="min-h-screen bg-gray-50">
+
+  <!-- ===== LOADING SKELETON ===== -->
+  <div *ngIf="isLoading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-pulse">
+    <div class="h-4 bg-gray-200 rounded w-40 mb-8"></div>
+    <div class="w-full h-[55vh] bg-gray-200 rounded-2xl mb-6"></div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="lg:col-span-2 space-y-4">
+        <div class="h-8 bg-gray-200 rounded w-1/4"></div>
+        <div class="h-10 bg-gray-200 rounded w-3/4"></div>
+        <div class="h-5 bg-gray-200 rounded w-1/2"></div>
+        <div class="h-24 bg-gray-200 rounded w-full mt-6"></div>
+      </div>
+      <div class="h-80 bg-gray-200 rounded-2xl"></div>
+    </div>
+  </div>
+
+  <!-- ===== ERROR STATE ===== -->
+  <div *ngIf="errorMessage && !isLoading" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <div class="w-16 h-16 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+      <mat-icon class="text-red-400" style="font-size:32px;width:32px;height:32px;">error_outline</mat-icon>
+    </div>
+    <h3 class="text-xl font-bold text-gray-800 mb-2">Failed to Load Property</h3>
+    <p class="text-gray-500 mb-6">{{ errorMessage }}</p>
+    <button (click)="loadProperty()"
+      class="px-6 py-3 bg-blue-600 text-white font-semibold rounded-xl hover:bg-blue-700 transition-colors">
+      Try Again
     </button>
   </div>
 
-  <!-- Loading State -->
-  <div *ngIf="isLoading" class="container-max animate-pulse">
-    <div class="w-full h-[60vh] bg-neutral-200 mb-16"></div>
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-16">
-      <div class="lg:col-span-8">
-        <div class="h-10 bg-neutral-200 w-1/3 mb-6"></div>
-        <div class="h-6 bg-neutral-200 w-1/4 mb-12"></div>
-        <div class="h-24 bg-neutral-200 w-full mb-12"></div>
-      </div>
-      <div class="lg:col-span-4">
-        <div class="h-96 bg-neutral-200 w-full"></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Error State -->
-  <div *ngIf="errorMessage && !isLoading" class="container-max py-12">
-    <div class="bg-error-container text-on-error-container p-6 caption border border-error-container flex flex-col items-start gap-4">
-      <p>{{ errorMessage }}</p>
-      <button (click)="loadProperty()" class="label-caps underline">Try again</button>
-    </div>
-  </div>
-
-  <!-- Property Content -->
+  <!-- ===== MAIN CONTENT ===== -->
   <div *ngIf="property && !isLoading">
-    
-    <!-- Hero Image Section -->
-    <div class="w-full bg-neutral-200 mb-8 overflow-hidden">
-      <div class="h-[60vh] md:h-[75vh] w-full overflow-hidden">
-        <img 
-          [src]="getPropertyHeroImage()" 
-          alt="Property Hero" 
-          class="w-full h-full object-cover"
-        >
+
+    <!-- Back Nav -->
+    <div class="bg-white border-b border-gray-100">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+        <button (click)="goBack()"
+          class="flex items-center gap-1.5 text-sm text-gray-500 hover:text-blue-600 transition-colors font-medium">
+          <mat-icon style="font-size:18px;width:18px;height:18px;">arrow_back</mat-icon>
+          Back to Browse
+        </button>
       </div>
     </div>
 
-    <!-- Image Thumbnails (if multiple images) -->
-    <div *ngIf="property.imageUrls && property.imageUrls.length > 1" class="container-max mb-16">
-      <div class="flex gap-4 overflow-x-auto pb-4">
-        <div 
-          *ngFor="let image of property.imageUrls; let i = index"
-          (click)="selectImage(i)"
-          class="flex-shrink-0 cursor-pointer border-2 transition-colors"
-          [class]="selectedImageIndex === i ? 'border-neutral-900' : 'border-transparent hover:border-neutral-400'"
-        >
-          <img 
-            [src]="getNormalizedImage(image)" 
-            alt="Property thumbnail" 
-            class="w-20 h-20 object-cover"
-          >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+      <!-- ===== IMAGE GALLERY ===== -->
+      <div class="mb-8" data-aos="fade-up">
+
+        <!-- Main Image -->
+        <div class="relative w-full h-[55vh] rounded-2xl overflow-hidden bg-gray-200 shadow-lg mb-3">
+          <img
+            [src]="getPropertyHeroImage()"
+            [alt]="property.title"
+            class="w-full h-full object-cover transition-all duration-500"
+          />
+          <!-- Category + Status overlays -->
+          <div class="absolute top-4 left-4 flex gap-2">
+            <span class="px-3 py-1.5 rounded-full text-xs font-bold text-white backdrop-blur-sm"
+                  [ngClass]="getCategoryBadgeClass(property.propertyCategoryId)">
+              {{ property.categoryName }}
+            </span>
+            <span *ngIf="property.status || property.type"
+                  class="px-3 py-1.5 rounded-full text-xs font-semibold bg-white/80 backdrop-blur-sm text-gray-700 capitalize">
+              {{ property.status || property.type }}
+            </span>
+          </div>
+          <!-- Image count pill -->
+          <div *ngIf="property.imageUrls && property.imageUrls.length > 1"
+               class="absolute bottom-4 right-4 px-3 py-1.5 bg-black/50 backdrop-blur-sm rounded-full text-white text-xs font-semibold">
+            <mat-icon style="font-size:14px;width:14px;height:14px;" class="mr-1">photo_library</mat-icon>
+            {{ selectedImageIndex + 1 }} / {{ property.imageUrls.length }}
+          </div>
+        </div>
+
+        <!-- Thumbnails -->
+        <div *ngIf="property.imageUrls && property.imageUrls.length > 1"
+             class="flex gap-3 overflow-x-auto pb-1 hide-scrollbar">
+          <button
+            *ngFor="let image of property.imageUrls; let i = index"
+            (click)="selectImage(i)"
+            class="shrink-0 w-20 h-20 rounded-xl overflow-hidden border-2 transition-all duration-200"
+            [class.border-blue-600]="selectedImageIndex === i"
+            [class.border-transparent]="selectedImageIndex !== i"
+            [class.opacity-60]="selectedImageIndex !== i">
+            <img [src]="getNormalizedImage(image)" alt="Thumbnail" class="w-full h-full object-cover" />
+          </button>
         </div>
       </div>
-    </div>
 
-    <div class="container-max grid grid-cols-1 lg:grid-cols-12 gap-16">
-      
-      <!-- Main Content (Left) -->
-      <div class="lg:col-span-8">
-        
-        <!-- Headers -->
-        <div class="mb-12">
-          <p class="label-caps text-neutral-500 mb-4 tracking-widest">{{ property.categoryName | uppercase }}</p>
-          <h1 class="display-lg text-neutral-900 mb-4">{{ property.title }}</h1>
-          <p class="body-lg text-neutral-500 flex items-center gap-2">
-            <mat-icon style="font-size: 20px; width: 20px; height: 20px;">location_on</mat-icon>
-            {{ property.location }}
-          </p>
+      <!-- ===== TWO COLUMN LAYOUT ===== -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+        <!-- LEFT: Property Info -->
+        <div class="lg:col-span-2 space-y-6">
+
+          <!-- Title & Location -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="100">
+            <p class="text-xs font-bold text-blue-600 uppercase tracking-widest mb-2">{{ property.categoryName }}</p>
+            <h1 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3 leading-tight">{{ property.title }}</h1>
+            <div class="flex items-center gap-1.5 text-gray-500 text-sm">
+              <mat-icon style="font-size:16px;width:16px;height:16px;" class="text-blue-500">location_on</mat-icon>
+              <span>{{ property.location }}<span *ngIf="property.district">, {{ property.district }}</span></span>
+            </div>
+          </div>
+
+          <!-- Key Stats -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="150">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+
+              <!-- Price -->
+              <div class="stat-card bg-blue-50 border border-blue-100">
+                <div class="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center mb-3">
+                  <mat-icon class="text-white" style="font-size:18px;width:18px;height:18px;">payments</mat-icon>
+                </div>
+                <p class="text-lg font-extrabold text-gray-900 leading-tight">{{ getPropertyPrice(property) }}</p>
+                <p class="text-xs text-gray-500 mt-1">Listing Price</p>
+              </div>
+
+              <!-- Bedrooms -->
+              <div *ngIf="getPropertyBedrooms(property)" class="stat-card bg-purple-50 border border-purple-100">
+                <div class="w-9 h-9 rounded-xl bg-purple-500 flex items-center justify-center mb-3">
+                  <mat-icon class="text-white" style="font-size:18px;width:18px;height:18px;">bed</mat-icon>
+                </div>
+                <p class="text-lg font-extrabold text-gray-900">{{ getPropertyBedrooms(property) }}</p>
+                <p class="text-xs text-gray-500 mt-1">Bedrooms</p>
+              </div>
+
+              <!-- Bathrooms -->
+              <div *ngIf="getPropertyBathrooms(property)" class="stat-card bg-cyan-50 border border-cyan-100">
+                <div class="w-9 h-9 rounded-xl bg-cyan-500 flex items-center justify-center mb-3">
+                  <mat-icon class="text-white" style="font-size:18px;width:18px;height:18px;">bathtub</mat-icon>
+                </div>
+                <p class="text-lg font-extrabold text-gray-900">{{ getPropertyBathrooms(property) }}</p>
+                <p class="text-xs text-gray-500 mt-1">Bathrooms</p>
+              </div>
+
+              <!-- Floor Size -->
+              <div *ngIf="property.floorSize" class="stat-card bg-green-50 border border-green-100">
+                <div class="w-9 h-9 rounded-xl bg-green-500 flex items-center justify-center mb-3">
+                  <mat-icon class="text-white" style="font-size:18px;width:18px;height:18px;">square_foot</mat-icon>
+                </div>
+                <p class="text-lg font-extrabold text-gray-900">{{ property.floorSize }}</p>
+                <p class="text-xs text-gray-500 mt-1">Sq. Ft.</p>
+              </div>
+
+              <!-- Plot Count (Land) -->
+              <div *ngIf="property.plotCount && !property.floorSize" class="stat-card bg-amber-50 border border-amber-100">
+                <div class="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center mb-3">
+                  <mat-icon class="text-white" style="font-size:18px;width:18px;height:18px;">landscape</mat-icon>
+                </div>
+                <p class="text-lg font-extrabold text-gray-900">{{ property.plotCount }}</p>
+                <p class="text-xs text-gray-500 mt-1">Plots</p>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="200">
+            <h2 class="text-base font-bold text-gray-900 mb-4 flex items-center gap-2">
+              <span class="w-1 h-5 bg-blue-600 rounded-full inline-block"></span>
+              Overview
+            </h2>
+            <p class="text-gray-600 leading-relaxed text-sm">
+              {{ property.description || 'No description available for this property.' }}
+            </p>
+          </div>
+
+          <!-- Property Details Table -->
+          <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100" data-aos="fade-up" data-aos-delay="250">
+            <h2 class="text-base font-bold text-gray-900 mb-5 flex items-center gap-2">
+              <span class="w-1 h-5 bg-blue-600 rounded-full inline-block"></span>
+              Property Details
+            </h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="detail-row">
+                <span class="detail-label">Property ID</span>
+                <span class="detail-value">#{{ property.propertyId }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Category</span>
+                <span class="detail-value">{{ property.categoryName }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">District</span>
+                <span class="detail-value">{{ property.district || '—' }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Location</span>
+                <span class="detail-value truncate">{{ property.location }}</span>
+              </div>
+              <div *ngIf="property.type" class="detail-row">
+                <span class="detail-label">Type</span>
+                <span class="detail-value capitalize">{{ property.type }}</span>
+              </div>
+              <div *ngIf="property.status" class="detail-row">
+                <span class="detail-label">Status</span>
+                <span class="detail-value capitalize">{{ property.status }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Total Visits</span>
+                <span class="detail-value">{{ property.visitCount }}</span>
+              </div>
+              <div class="detail-row">
+                <span class="detail-label">Total Inquiries</span>
+                <span class="detail-value">{{ property.inquiryCount }}</span>
+              </div>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Key Metrics -->
-        <div class="flex flex-wrap gap-x-16 gap-y-8 py-8 border-t border-b border-neutral-200 mb-16">
-          <div>
-            <p class="display-md text-neutral-900 tracking-wide">{{ formatPrice(getPropertyPrice(property)) }}</p>
-            <p class="label-caps text-neutral-500 mt-2">LISTING PRICE</p>
-          </div>
-          <div>
-            <p class="display-md text-neutral-900 tracking-wide">{{ getPropertyBedrooms(property) }}</p>
-            <p class="label-caps text-neutral-500 mt-2">BEDS</p>
-          </div>
-          <div>
-            <p class="display-md text-neutral-900 tracking-wide">{{ getPropertyBathrooms(property) }}</p>
-            <p class="label-caps text-neutral-500 mt-2">BATHS</p>
-          </div>
-          <div>
-            <p class="body-lg text-neutral-900 tracking-wide">{{ property.floorSize || 'N/A' }}</p>
-            <p class="label-caps text-neutral-500 mt-2">SQFT</p>
-          </div>
-        </div>
+        <!-- RIGHT: Action Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="sticky top-24 space-y-4" data-aos="fade-left" data-aos-delay="200">
 
-        <!-- Description -->
-        <div class="mb-16">
-          <h2 class="label-caps text-neutral-900 mb-6 tracking-widest">OVERVIEW</h2>
-          <p class="body-lg text-neutral-600 leading-relaxed max-w-3xl">
-            An architectural masterpiece situated in the most desirable neighborhood. 
-            This property redefines modern living with its flawless integration of indoor and outdoor spaces.
-            Featuring floor-to-ceiling glass, custom finishes, and breathtaking views, this is a rare opportunity 
-            to acquire a property of this caliber.
-          </p>
-        </div>
+            <!-- Price Card -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <p class="text-xs text-gray-500 uppercase tracking-widest mb-1">Listing Price</p>
+              <p class="text-2xl font-extrabold text-blue-600 mb-4">{{ getPropertyPrice(property) }}</p>
 
-        <!-- Details Grid -->
-        <div class="mb-16">
-          <h2 class="label-caps text-neutral-900 mb-6 tracking-widest">PROPERTY DETAILS</h2>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-6 gap-x-12 border-t border-neutral-200 pt-6">
-            <div class="flex justify-between border-b border-neutral-100 pb-2">
-              <span class="label-caps text-neutral-500">PROPERTY ID</span>
-              <span class="body-md text-neutral-900 font-medium">{{ property.propertyId }}</span>
+              <!-- Action Buttons -->
+              <div class="flex flex-col gap-3">
+                <button
+                  (click)="toggleInquiryForm()"
+                  class="action-btn-primary"
+                  [class.action-btn-primary-active]="showInquiryForm">
+                  <mat-icon style="font-size:18px;width:18px;height:18px;">mail_outline</mat-icon>
+                  {{ showInquiryForm ? 'Close Inquiry' : 'Send Inquiry' }}
+                </button>
+                <button
+                  (click)="toggleVisitForm()"
+                  class="action-btn-secondary"
+                  [class.action-btn-secondary-active]="showVisitForm">
+                  <mat-icon style="font-size:18px;width:18px;height:18px;">event</mat-icon>
+                  {{ showVisitForm ? 'Close Booking' : 'Schedule a Visit' }}
+                </button>
+              </div>
             </div>
-            <div class="flex justify-between border-b border-neutral-100 pb-2">
-              <span class="label-caps text-neutral-500">CATEGORY</span>
-              <span class="body-md text-neutral-900 font-medium">{{ property.categoryName }}</span>
+
+            <!-- Success Message -->
+            <div *ngIf="submitSuccess"
+                 class="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-xl text-sm text-green-700">
+              <mat-icon class="text-green-500 shrink-0" style="font-size:20px;width:20px;height:20px;">check_circle</mat-icon>
+              {{ submitSuccess }}
             </div>
-            <div class="flex justify-between border-b border-neutral-100 pb-2">
-              <span class="label-caps text-neutral-500">VISITS</span>
-              <span class="body-md text-neutral-900 font-medium">{{ property.visitCount }}</span>
+
+            <!-- Error Message -->
+            <div *ngIf="submitError"
+                 class="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700">
+              <mat-icon class="text-red-500 shrink-0" style="font-size:20px;width:20px;height:20px;">error_outline</mat-icon>
+              {{ submitError }}
             </div>
-            <div class="flex justify-between border-b border-neutral-100 pb-2">
-              <span class="label-caps text-neutral-500">INQUIRIES</span>
-              <span class="body-md text-neutral-900 font-medium">{{ property.inquiryCount }}</span>
+
+            <!-- Inquiry Form -->
+            <div *ngIf="showInquiryForm"
+                 class="bg-white rounded-2xl p-6 shadow-sm border border-blue-100 form-slide-in">
+              <h3 class="text-sm font-bold text-gray-900 mb-1">Send an Inquiry</h3>
+              <p class="text-xs text-gray-500 mb-4">We'll connect you with the seller directly.</p>
+              <form [formGroup]="inquiryForm" (ngSubmit)="submitInquiry()">
+                <div class="mb-4">
+                  <label class="block text-xs font-semibold text-gray-700 mb-1.5">Your Message</label>
+                  <textarea
+                    formControlName="message"
+                    rows="4"
+                    placeholder="I'm interested in this property and would like to know more..."
+                    class="form-textarea">
+                  </textarea>
+                  <p *ngIf="inquiryForm.get('message')?.touched && inquiryForm.get('message')?.hasError('required')"
+                     class="text-xs text-red-500 mt-1">Message is required.</p>
+                  <p *ngIf="inquiryForm.get('message')?.touched && inquiryForm.get('message')?.hasError('minlength')"
+                     class="text-xs text-red-500 mt-1">Minimum 10 characters.</p>
+                </div>
+                <button type="submit"
+                  [disabled]="inquiryForm.invalid || isSubmittingInquiry"
+                  class="w-full py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm">
+                  <mat-icon *ngIf="!isSubmittingInquiry" style="font-size:16px;width:16px;height:16px;">send</mat-icon>
+                  {{ isSubmittingInquiry ? 'Sending...' : 'Submit Inquiry' }}
+                </button>
+              </form>
             </div>
+
+            <!-- Visit Form -->
+            <div *ngIf="showVisitForm"
+                 class="bg-white rounded-2xl p-6 shadow-sm border border-purple-100 form-slide-in">
+              <h3 class="text-sm font-bold text-gray-900 mb-1">Schedule a Visit</h3>
+              <p class="text-xs text-gray-500 mb-4">Pick a date and time for your property tour.</p>
+              <form [formGroup]="visitForm" (ngSubmit)="submitVisit()">
+                <div class="mb-4">
+                  <label class="block text-xs font-semibold text-gray-700 mb-1.5">Preferred Date & Time</label>
+                  <input
+                    type="datetime-local"
+                    formControlName="visitPlannedDate"
+                    class="form-input"
+                  />
+                  <p *ngIf="visitForm.get('visitPlannedDate')?.touched && visitForm.get('visitPlannedDate')?.hasError('required')"
+                     class="text-xs text-red-500 mt-1">Date is required.</p>
+                </div>
+                <button type="submit"
+                  [disabled]="visitForm.invalid || isSubmittingVisit"
+                  class="w-full py-3 bg-purple-600 text-white font-bold rounded-xl hover:bg-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2 text-sm">
+                  <mat-icon *ngIf="!isSubmittingVisit" style="font-size:16px;width:16px;height:16px;">event_available</mat-icon>
+                  {{ isSubmittingVisit ? 'Scheduling...' : 'Confirm Visit' }}
+                </button>
+              </form>
+            </div>
+
+            <!-- Not logged in hint -->
+            <div *ngIf="!isAuthenticated"
+                 class="bg-amber-50 border border-amber-200 rounded-2xl p-4 text-center">
+              <mat-icon class="text-amber-500 mb-2" style="font-size:28px;width:28px;height:28px;">lock_outline</mat-icon>
+              <p class="text-xs text-amber-700 font-medium mb-3">Login to send inquiries or schedule visits</p>
+              <a routerLink="/login"
+                 class="inline-block px-4 py-2 bg-amber-500 text-white text-xs font-bold rounded-xl hover:bg-amber-600 transition-colors">
+                Login Now
+              </a>
+            </div>
+
           </div>
         </div>
 
       </div>
-
-      <!-- Sidebar (Right) -->
-      <div class="lg:col-span-4">
-        <div class="bg-surface-container-lowest p-8 border border-neutral-200 sticky top-24">
-          
-          <h3 class="label-caps text-neutral-900 mb-8 tracking-widest">ACQUIRE THIS PROPERTY</h3>
-          
-          <div class="flex flex-col gap-4 mb-8">
-            <button 
-              (click)="toggleInquiryForm()"
-              class="w-full py-4 border border-neutral-900 text-neutral-900 label-caps tracking-widest hover:bg-neutral-900 hover:text-surface transition-colors"
-              [class.bg-neutral-900]="showInquiryForm"
-              [class.text-surface]="showInquiryForm"
-            >
-              SEND INQUIRY
-            </button>
-            <button 
-              (click)="toggleVisitForm()"
-              class="w-full py-4 border border-neutral-200 text-neutral-900 label-caps tracking-widest hover:border-neutral-900 transition-colors"
-              [class.border-neutral-900]="showVisitForm"
-            >
-              SCHEDULE A VIEWING
-            </button>
-          </div>
-
-          <!-- Success/Error Messages -->
-          <div *ngIf="submitSuccess" class="mb-6 p-4 bg-primary-container text-on-primary-container caption">
-            {{ submitSuccess }}
-          </div>
-          <div *ngIf="submitError" class="mb-6 p-4 bg-error-container text-on-error-container caption">
-            {{ submitError }}
-          </div>
-
-          <!-- Inquiry Form -->
-          <div *ngIf="showInquiryForm" class="border-t border-neutral-200 pt-6 animate-fade-in">
-            <p class="caption text-neutral-500 mb-6">Connect directly with our brokerage team regarding this listing.</p>
-            <form [formGroup]="inquiryForm" (ngSubmit)="submitInquiry()">
-              <mat-form-field appearance="outline" class="w-full mb-2">
-                <mat-label>Message</mat-label>
-                <textarea matInput formControlName="message" rows="4" placeholder="I am interested in learning more about..."></textarea>
-                <mat-error *ngIf="inquiryForm.get('message')?.hasError('required')">Message is required</mat-error>
-                <mat-error *ngIf="inquiryForm.get('message')?.hasError('minlength')">Min 10 characters</mat-error>
-              </mat-form-field>
-
-              <button 
-                mat-flat-button color="primary" 
-                class="w-full py-6" 
-                type="submit" 
-                [disabled]="inquiryForm.invalid || isSubmittingInquiry"
-              >
-                {{ isSubmittingInquiry ? 'SENDING...' : 'SUBMIT INQUIRY' }}
-              </button>
-            </form>
-          </div>
-
-          <!-- Visit Form -->
-          <div *ngIf="showVisitForm" class="border-t border-neutral-200 pt-6 animate-fade-in">
-            <p class="caption text-neutral-500 mb-6">Arrange a private tour of this property.</p>
-            <form [formGroup]="visitForm" (ngSubmit)="submitVisit()">
-              <mat-form-field appearance="outline" class="w-full mb-2">
-                <mat-label>Preferred Date & Time</mat-label>
-                <input matInput type="datetime-local" formControlName="visitPlannedDate">
-                <mat-error *ngIf="visitForm.get('visitPlannedDate')?.hasError('required')">Date is required</mat-error>
-              </mat-form-field>
-
-              <button 
-                mat-flat-button color="primary" 
-                class="w-full py-6" 
-                type="submit" 
-                [disabled]="visitForm.invalid || isSubmittingVisit"
-              >
-                {{ isSubmittingVisit ? 'SCHEDULING...' : 'CONFIRM VIEWING' }}
-              </button>
-            </form>
-          </div>
-
-        </div>
-      </div>
-      
     </div>
   </div>
 </div>

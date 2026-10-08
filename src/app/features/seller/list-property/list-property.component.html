@@ -1,222 +1,315 @@
-<div class="py-12 px-4 sm:px-6 lg:px-8">
-  <div class="max-w-3xl mx-auto">
-    <h1 class="text-3xl font-bold text-gray-900 mb-2">List a Property</h1>
-    <p class="text-gray-600 mb-8">Fill in the details below to list your property on the marketplace.</p>
+<div class="lp-page">
 
-    <div class="bg-white rounded-lg shadow p-8">
-      <form [formGroup]="form" (ngSubmit)="onSubmit()">
-
-        <!-- Base Fields -->
-        <div class="space-y-5">
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Property Title</mat-label>
-            <input matInput formControlName="title" placeholder="e.g. Modern 3-Bedroom House in Colombo 7" maxlength="150">
-            <mat-error *ngIf="getControl('title')?.hasError('required')">Title is required</mat-error>
-            <mat-error *ngIf="getControl('title')?.hasError('maxlength')">Max 150 characters</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Description</mat-label>
-            <textarea matInput formControlName="description" rows="4" placeholder="Describe the property..." maxlength="1000"></textarea>
-            <mat-error *ngIf="getControl('description')?.hasError('required')">Description is required</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Location / Address</mat-label>
-            <input matInput formControlName="location" placeholder="e.g. 45 Galle Road, Colombo 3" maxlength="200">
-            <mat-error *ngIf="getControl('location')?.hasError('required')">Location is required</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>District</mat-label>
-            <mat-select formControlName="district">
-              <mat-option *ngFor="let d of districts" [value]="d">{{ d }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="getControl('district')?.hasError('required')">District is required</mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Property Category</mat-label>
-            <mat-select formControlName="propertyCategoryId" (selectionChange)="onCategoryChange($event.value)">
-              <mat-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</mat-option>
-            </mat-select>
-            <mat-error *ngIf="getControl('propertyCategoryId')?.hasError('required')">Category is required</mat-error>
-          </mat-form-field>
+  <!-- Page Header -->
+  <div class="lp-hero">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div class="flex items-center gap-3 mb-2">
+        <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+          <mat-icon class="text-white" style="font-size:22px;width:22px;height:22px;">add_home</mat-icon>
         </div>
-
-        <!-- Residential Fields -->
-        <div *ngIf="selectedCategory === PropertyCategory.RESIDENTIAL && residentialGroup" formGroupName="residential" class="mt-6 space-y-5 border-t pt-6">
-          <h3 class="text-lg font-semibold text-gray-800">Residential Details</h3>
-
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Price (LKR)</mat-label>
-            <input matInput type="number" formControlName="price" placeholder="e.g. 15000000" min="1">
-            <mat-error *ngIf="getSubControl('residential','price')?.hasError('required')">Price is required</mat-error>
-            <mat-error *ngIf="getSubControl('residential','price')?.hasError('min')">Must be a positive number</mat-error>
-          </mat-form-field>
-
-          <div class="grid grid-cols-2 gap-4">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Bedrooms</mat-label>
-              <input matInput type="number" formControlName="bedroomCount" min="1" max="20">
-              <mat-error *ngIf="getSubControl('residential','bedroomCount')?.hasError('required')">Required</mat-error>
-              <mat-error *ngIf="getSubControl('residential','bedroomCount')?.hasError('max')">Max 20</mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Bathrooms</mat-label>
-              <input matInput type="number" formControlName="bathroomCount" min="1" max="20">
-              <mat-error *ngIf="getSubControl('residential','bathroomCount')?.hasError('required')">Required</mat-error>
-              <mat-error *ngIf="getSubControl('residential','bathroomCount')?.hasError('max')">Max 20</mat-error>
-            </mat-form-field>
-          </div>
-
-          <div class="grid grid-cols-2 gap-4">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Type</mat-label>
-              <mat-select formControlName="residentialType">
-                <mat-option *ngFor="let t of residentialTypes" [value]="t">{{ t | titlecase }}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="getSubControl('residential','residentialType')?.hasError('required')">Required</mat-error>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="residentialStatus">
-                <mat-option *ngFor="let s of residentialStatuses" [value]="s">{{ s | titlecase }}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="getSubControl('residential','residentialStatus')?.hasError('required')">Required</mat-error>
-            </mat-form-field>
-          </div>
+        <div>
+          <h1 class="text-2xl font-extrabold text-white">List a Property</h1>
+          <p class="text-blue-200 text-sm">Fill in the details to publish your listing</p>
         </div>
+      </div>
+    </div>
+  </div>
 
-        <!-- Commercial Fields -->
-        <div *ngIf="selectedCategory === PropertyCategory.COMMERCIAL && commercialGroup" formGroupName="commercial" class="mt-6 space-y-5 border-t pt-6">
-          <h3 class="text-lg font-semibold text-gray-800">Commercial Details</h3>
+  <!-- Form Card -->
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 -mt-4 pb-16">
+    <div class="lp-card" data-aos="fade-up" data-aos-duration="500">
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Price (LKR)</mat-label>
-            <input matInput type="number" formControlName="price" placeholder="e.g. 50000000" min="1">
-            <mat-error *ngIf="getSubControl('commercial','price')?.hasError('required')">Price is required</mat-error>
-            <mat-error *ngIf="getSubControl('commercial','price')?.hasError('min')">Must be a positive number</mat-error>
-          </mat-form-field>
+      <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-6">
 
-          <mat-form-field appearance="outline" class="w-full">
-            <mat-label>Floor Size (m²)</mat-label>
-            <input matInput type="number" formControlName="floorSize" placeholder="e.g. 500" min="1">
-            <mat-error *ngIf="getSubControl('commercial','floorSize')?.hasError('required')">Floor size is required</mat-error>
-            <mat-error *ngIf="getSubControl('commercial','floorSize')?.hasError('min')">Must be a positive number</mat-error>
-          </mat-form-field>
+        <!-- ===== SECTION: Basic Info ===== -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <span class="section-dot bg-blue-600"></span>
+            Basic Information
+          </h2>
 
-          <div class="grid grid-cols-2 gap-4">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Type</mat-label>
-              <mat-select formControlName="commercialType">
-                <mat-option *ngFor="let t of commercialTypes" [value]="t">{{ t | titlecase }}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="getSubControl('commercial','commercialType')?.hasError('required')">Required</mat-error>
-            </mat-form-field>
+          <div class="space-y-4">
+            <!-- Title -->
+            <div class="field-group">
+              <label class="field-label">Property Title <span class="text-red-400">*</span></label>
+              <div class="field-wrapper">
+                <mat-icon class="field-icon">title</mat-icon>
+                <input formControlName="title" type="text" maxlength="150"
+                       placeholder="e.g. Modern 3-Bedroom House in Colombo 7"
+                       class="field-input" />
+              </div>
+              <p *ngIf="getControl('title')?.touched && getControl('title')?.hasError('required')" class="field-error">Title is required</p>
+              <p *ngIf="getControl('title')?.touched && getControl('title')?.hasError('maxlength')" class="field-error">Max 150 characters</p>
+            </div>
 
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Status</mat-label>
-              <mat-select formControlName="commercialStatus">
-                <mat-option *ngFor="let s of commercialStatuses" [value]="s">{{ s | titlecase }}</mat-option>
-              </mat-select>
-              <mat-error *ngIf="getSubControl('commercial','commercialStatus')?.hasError('required')">Required</mat-error>
-            </mat-form-field>
-          </div>
-        </div>
+            <!-- Description -->
+            <div class="field-group">
+              <label class="field-label">Description <span class="text-red-400">*</span></label>
+              <div class="field-wrapper">
+                <mat-icon class="field-icon" style="top:0.85rem;align-self:flex-start;">description</mat-icon>
+                <textarea formControlName="description" rows="4" maxlength="1000"
+                          placeholder="Describe the property in detail..."
+                          class="field-input field-textarea"></textarea>
+              </div>
+              <p *ngIf="getControl('description')?.touched && getControl('description')?.hasError('required')" class="field-error">Description is required</p>
+            </div>
 
-        <!-- Land Fields -->
-        <div *ngIf="selectedCategory === PropertyCategory.LAND && landGroup" formGroupName="land" class="mt-6 space-y-5 border-t pt-6">
-          <h3 class="text-lg font-semibold text-gray-800">Land Details</h3>
+            <!-- Location -->
+            <div class="field-group">
+              <label class="field-label">Location / Address <span class="text-red-400">*</span></label>
+              <div class="field-wrapper">
+                <mat-icon class="field-icon">location_on</mat-icon>
+                <input formControlName="location" type="text" maxlength="200"
+                       placeholder="e.g. 45 Galle Road, Colombo 3"
+                       class="field-input" />
+              </div>
+              <p *ngIf="getControl('location')?.touched && getControl('location')?.hasError('required')" class="field-error">Location is required</p>
+            </div>
 
-          <div class="grid grid-cols-2 gap-4">
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Plot Count</mat-label>
-              <input matInput type="number" formControlName="plotCount" placeholder="e.g. 10" min="1">
-              <mat-error *ngIf="getSubControl('land','plotCount')?.hasError('required')">Required</mat-error>
-              <mat-error *ngIf="getSubControl('land','plotCount')?.hasError('min')">Must be at least 1</mat-error>
-            </mat-form-field>
+            <!-- District + Category row -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="field-group">
+                <label class="field-label">District <span class="text-red-400">*</span></label>
+                <div class="field-wrapper">
+                  <mat-icon class="field-icon">map</mat-icon>
+                  <select formControlName="district" class="field-input field-select">
+                    <option value="" disabled>Select district</option>
+                    <option *ngFor="let d of districts" [value]="d">{{ d }}</option>
+                  </select>
+                </div>
+                <p *ngIf="getControl('district')?.touched && getControl('district')?.hasError('required')" class="field-error">Required</p>
+              </div>
 
-            <mat-form-field appearance="outline" class="w-full">
-              <mat-label>Unit Price per Plot (LKR)</mat-label>
-              <input matInput type="number" formControlName="unitPrice" placeholder="e.g. 2000000" min="1">
-              <mat-error *ngIf="getSubControl('land','unitPrice')?.hasError('required')">Required</mat-error>
-              <mat-error *ngIf="getSubControl('land','unitPrice')?.hasError('min')">Must be a positive number</mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <!-- Images Section -->
-        <div class="mt-6 space-y-5 border-t pt-6">
-          <h3 class="text-lg font-semibold text-gray-800">Property Images</h3>
-          
-          <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 bg-gray-50">
-            <input 
-              type="file" 
-              #fileInput 
-              multiple 
-              accept="image/*" 
-              (change)="onImagesSelected($event)"
-              style="display: none"
-            >
-            
-            <div class="text-center cursor-pointer" (click)="fileInput.click()">
-              <mat-icon class="text-gray-400 text-4xl">image</mat-icon>
-              <p class="mt-2 text-sm text-gray-600">Click to select images or drag and drop</p>
-              <p class="text-xs text-gray-500 mt-1">Supported formats: JPG, PNG, GIF, WebP</p>
+              <div class="field-group">
+                <label class="field-label">Property Category <span class="text-red-400">*</span></label>
+                <div class="field-wrapper">
+                  <mat-icon class="field-icon">category</mat-icon>
+                  <select formControlName="propertyCategoryId" class="field-input field-select"
+                          (change)="onCategoryChange(+$any($event.target).value)">
+                    <option value="" disabled>Select category</option>
+                    <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+                  </select>
+                </div>
+                <p *ngIf="getControl('propertyCategoryId')?.touched && getControl('propertyCategoryId')?.hasError('required')" class="field-error">Required</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          <!-- Selected Files List -->
-          <div *ngIf="selectedFiles && selectedFiles.length > 0" class="space-y-2">
-            <h4 class="font-medium text-gray-700">Selected Files ({{ selectedFiles.length }})</h4>
-            <div *ngFor="let file of selectedFiles" class="flex items-center justify-between bg-blue-50 p-3 rounded-lg border border-blue-200">
-              <div class="flex items-center space-x-2">
-                <mat-icon class="text-blue-500">image</mat-icon>
+        <!-- ===== SECTION: Residential ===== -->
+        <div *ngIf="selectedCategory === PropertyCategory.RESIDENTIAL && residentialGroup"
+             formGroupName="residential" class="form-section">
+          <h2 class="section-title">
+            <span class="section-dot bg-purple-500"></span>
+            Residential Details
+          </h2>
+
+          <div class="space-y-4">
+            <div class="field-group">
+              <label class="field-label">Price (LKR) <span class="text-red-400">*</span></label>
+              <div class="field-wrapper">
+                <mat-icon class="field-icon">payments</mat-icon>
+                <input formControlName="price" type="number" min="1" placeholder="e.g. 15000000" class="field-input" />
+              </div>
+              <p *ngIf="getSubControl('residential','price')?.touched && getSubControl('residential','price')?.hasError('required')" class="field-error">Price is required</p>
+              <p *ngIf="getSubControl('residential','price')?.touched && getSubControl('residential','price')?.hasError('min')" class="field-error">Must be a positive number</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="field-group">
+                <label class="field-label">Bedrooms <span class="text-red-400">*</span></label>
+                <div class="field-wrapper">
+                  <mat-icon class="field-icon">bed</mat-icon>
+                  <input formControlName="bedroomCount" type="number" min="1" max="20" placeholder="e.g. 3" class="field-input" />
+                </div>
+                <p *ngIf="getSubControl('residential','bedroomCount')?.touched && getSubControl('residential','bedroomCount')?.hasError('required')" class="field-error">Required</p>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Bathrooms <span class="text-red-400">*</span></label>
+                <div class="field-wrapper">
+                  <mat-icon class="field-icon">bathtub</mat-icon>
+                  <input formControlName="bathroomCount" type="number" min="1" max="20" placeholder="e.g. 2" class="field-input" />
+                </div>
+                <p *ngIf="getSubControl('residential','bathroomCount')?.touched && getSubControl('residential','bathroomCount')?.hasError('required')" class="field-error">Required</p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="field-group">
+                <label class="field-label">Type <span class="text-red-400">*</span></label>
+                <div class="field-wrapper">
+                  <mat-icon class="field-icon">home</mat-icon>
+                  <select formControlName="residentialType" class="field-input field-select">
+                    <option value="" disabled>Select type</option>
+                    <option *ngFor="let t of residentialTypes" [value]="t">{{ t | titlecase }}</option>
+                  </select>
+                </div>
+                <p *ngIf="getSubControl('residential','residentialType')?.touched && getSubControl('residential','residentialType')?.hasError('required')" class="field-error">Required</p>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Status <span class="text-red-400">*</span></label>
+                <div class="field-wrapper">
+                  <mat-icon class="field-icon">info_outline</mat-icon>
+                  <select formControlName="residentialStatus" class="field-input field-select">
+                    <option value="" disabled>Select status</option>
+                    <option *ngFor="let s of residentialStatuses" [value]="s">{{ s | titlecase }}</option>
+                  </select>
+                </div>
+                <p *ngIf="getSubControl('residential','residentialStatus')?.touched && getSubControl('residential','residentialStatus')?.hasError('required')" class="field-error">Required</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SECTION: Commercial ===== -->
+        <div *ngIf="selectedCategory === PropertyCategory.COMMERCIAL && commercialGroup"
+             formGroupName="commercial" class="form-section">
+          <h2 class="section-title">
+            <span class="section-dot bg-amber-500"></span>
+            Commercial Details
+          </h2>
+
+          <div class="space-y-4">
+            <div class="field-group">
+              <label class="field-label">Price (LKR) <span class="text-red-400">*</span></label>
+              <div class="field-wrapper">
+                <mat-icon class="field-icon">payments</mat-icon>
+                <input formControlName="price" type="number" min="1" placeholder="e.g. 50000000" class="field-input" />
+              </div>
+              <p *ngIf="getSubControl('commercial','price')?.touched && getSubControl('commercial','price')?.hasError('required')" class="field-error">Required</p>
+            </div>
+
+            <div class="field-group">
+              <label class="field-label">Floor Size (m²) <span class="text-red-400">*</span></label>
+              <div class="field-wrapper">
+                <mat-icon class="field-icon">square_foot</mat-icon>
+                <input formControlName="floorSize" type="number" min="1" placeholder="e.g. 500" class="field-input" />
+              </div>
+              <p *ngIf="getSubControl('commercial','floorSize')?.touched && getSubControl('commercial','floorSize')?.hasError('required')" class="field-error">Required</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div class="field-group">
+                <label class="field-label">Type <span class="text-red-400">*</span></label>
+                <div class="field-wrapper">
+                  <mat-icon class="field-icon">business</mat-icon>
+                  <select formControlName="commercialType" class="field-input field-select">
+                    <option value="" disabled>Select type</option>
+                    <option *ngFor="let t of commercialTypes" [value]="t">{{ t | titlecase }}</option>
+                  </select>
+                </div>
+                <p *ngIf="getSubControl('commercial','commercialType')?.touched && getSubControl('commercial','commercialType')?.hasError('required')" class="field-error">Required</p>
+              </div>
+              <div class="field-group">
+                <label class="field-label">Status <span class="text-red-400">*</span></label>
+                <div class="field-wrapper">
+                  <mat-icon class="field-icon">info_outline</mat-icon>
+                  <select formControlName="commercialStatus" class="field-input field-select">
+                    <option value="" disabled>Select status</option>
+                    <option *ngFor="let s of commercialStatuses" [value]="s">{{ s | titlecase }}</option>
+                  </select>
+                </div>
+                <p *ngIf="getSubControl('commercial','commercialStatus')?.touched && getSubControl('commercial','commercialStatus')?.hasError('required')" class="field-error">Required</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SECTION: Land ===== -->
+        <div *ngIf="selectedCategory === PropertyCategory.LAND && landGroup"
+             formGroupName="land" class="form-section">
+          <h2 class="section-title">
+            <span class="section-dot bg-green-500"></span>
+            Land Details
+          </h2>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="field-group">
+              <label class="field-label">Plot Count <span class="text-red-400">*</span></label>
+              <div class="field-wrapper">
+                <mat-icon class="field-icon">landscape</mat-icon>
+                <input formControlName="plotCount" type="number" min="1" placeholder="e.g. 10" class="field-input" />
+              </div>
+              <p *ngIf="getSubControl('land','plotCount')?.touched && getSubControl('land','plotCount')?.hasError('required')" class="field-error">Required</p>
+              <p *ngIf="getSubControl('land','plotCount')?.touched && getSubControl('land','plotCount')?.hasError('min')" class="field-error">At least 1</p>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Unit Price / Plot (LKR) <span class="text-red-400">*</span></label>
+              <div class="field-wrapper">
+                <mat-icon class="field-icon">payments</mat-icon>
+                <input formControlName="unitPrice" type="number" min="1" placeholder="e.g. 2000000" class="field-input" />
+              </div>
+              <p *ngIf="getSubControl('land','unitPrice')?.touched && getSubControl('land','unitPrice')?.hasError('required')" class="field-error">Required</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== SECTION: Images ===== -->
+        <div class="form-section">
+          <h2 class="section-title">
+            <span class="section-dot bg-pink-500"></span>
+            Property Images
+          </h2>
+
+          <!-- Drop zone -->
+          <input type="file" #fileInput multiple accept="image/*"
+                 (change)="onImagesSelected($event)" style="display:none" />
+
+          <div class="upload-zone" (click)="fileInput.click()">
+            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-3">
+              <mat-icon class="text-blue-500" style="font-size:26px;width:26px;height:26px;">cloud_upload</mat-icon>
+            </div>
+            <p class="text-sm font-semibold text-gray-700">Click to upload images</p>
+            <p class="text-xs text-gray-400 mt-1">JPG, PNG, GIF, WebP · Max 10MB each · Up to 10 images</p>
+          </div>
+
+          <!-- Selected files -->
+          <div *ngIf="selectedFiles && selectedFiles.length > 0" class="mt-4 space-y-2">
+            <p class="text-xs font-semibold text-gray-500 uppercase tracking-wider">Selected ({{ selectedFiles.length }})</p>
+            <div *ngFor="let file of selectedFiles; let i = index"
+                 class="flex items-center justify-between px-4 py-3 bg-blue-50 border border-blue-100 rounded-xl">
+              <div class="flex items-center gap-3">
+                <div class="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <mat-icon class="text-blue-500" style="font-size:16px;width:16px;height:16px;">image</mat-icon>
+                </div>
                 <div>
-                  <p class="text-sm font-medium text-gray-800">{{ file.name }}</p>
-                  <p class="text-xs text-gray-500">{{ (file.size / 1024).toFixed(2) }} KB</p>
+                  <p class="text-sm font-medium text-gray-800 truncate max-w-xs">{{ file.name }}</p>
+                  <p class="text-xs text-gray-400">{{ (file.size / 1024).toFixed(1) }} KB</p>
                 </div>
               </div>
-              <button 
-                type="button" 
-                mat-icon-button 
-                (click)="removeFile(selectedFiles.indexOf(file))"
-                matTooltip="Remove file"
-              >
-                <mat-icon class="text-red-500">close</mat-icon>
+              <button type="button" (click)="removeFile(i)"
+                      class="w-7 h-7 rounded-lg flex items-center justify-center text-red-400 hover:bg-red-50 transition-colors">
+                <mat-icon style="font-size:16px;width:16px;height:16px;">close</mat-icon>
               </button>
             </div>
           </div>
 
-          <!-- Validation Error -->
-          <div *ngIf="imageValidationError" class="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-            <mat-icon class="align-middle mr-1" style="font-size:16px;width:16px;height:16px;">error_outline</mat-icon>
+          <!-- Image validation error -->
+          <div *ngIf="imageValidationError"
+               class="mt-3 flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+            <mat-icon style="font-size:16px;width:16px;height:16px;" class="shrink-0">error_outline</mat-icon>
             {{ imageValidationError }}
           </div>
         </div>
 
-        <!-- Error Message -->
-        <div *ngIf="errorMessage" class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-          <mat-icon class="align-middle mr-1" style="font-size:18px;width:18px;height:18px;">error_outline</mat-icon>
+        <!-- ===== ERROR ===== -->
+        <div *ngIf="errorMessage"
+             class="flex items-center gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-600 text-sm">
+          <mat-icon style="font-size:20px;width:20px;height:20px;" class="shrink-0">error_outline</mat-icon>
           {{ errorMessage }}
         </div>
 
-        <!-- Submit Button -->
-        <div class="mt-8">
-          <button
-            type="submit"
-            mat-flat-button
-            color="primary"
-            class="w-full py-3 text-base font-semibold"
-            [disabled]="isSubmitting"
-          >
-            <mat-spinner *ngIf="isSubmitting" diameter="20" class="inline-block mr-2"></mat-spinner>
-            {{ isSubmitting ? 'Submitting...' : 'List Property' }}
-          </button>
-        </div>
+        <!-- ===== SUBMIT ===== -->
+        <button type="submit" [disabled]="isSubmitting" class="submit-btn">
+          <span *ngIf="!isSubmitting" class="flex items-center justify-center gap-2">
+            <mat-icon style="font-size:20px;width:20px;height:20px;">add_home</mat-icon>
+            List Property
+          </span>
+          <span *ngIf="isSubmitting" class="flex items-center justify-center gap-2">
+            <span class="btn-spinner"></span>
+            Submitting...
+          </span>
+        </button>
 
       </form>
     </div>

@@ -1,220 +1,215 @@
-<div class="py-8 px-4 sm:px-6 lg:px-8 bg-neutral-50 min-h-screen">
-  <div class="max-w-7xl mx-auto">
-    <!-- Header -->
-    <div class="mb-8 flex justify-between items-center">
+<div class="min-h-screen buyer-bg pb-16">
+
+  <!-- ===== HEADER BANNER ===== -->
+  <div class="buyer-hero px-4 sm:px-6 lg:px-8 pt-10 pb-20">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div>
-        <h1 class="text-4xl font-bold text-neutral-900 flex items-center gap-2">Welcome, {{ userName }}! <mat-icon>waving_hand</mat-icon></h1>
-        <p class="text-neutral-600 mt-1">Manage your property inquiries, visits, and deals</p>
+        <p class="text-blue-200 text-sm font-semibold uppercase tracking-widest mb-1">Buyer Dashboard</p>
+        <h1 class="text-3xl font-extrabold text-white">Welcome back, {{ userName }}! 👋</h1>
+        <p class="text-blue-200 mt-1 text-sm">Track your inquiries, visits, and deals</p>
       </div>
-      <button
-        (click)="refreshData()"
-        class="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center gap-2"
-      >
-        <mat-icon style="font-size: 20px; width: 20px; height: 20px;">refresh</mat-icon>
+      <button (click)="refreshData()"
+        class="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/15 border border-white/25 text-white text-sm font-semibold hover:bg-white/25 transition-all backdrop-blur-sm">
+        <mat-icon style="font-size:18px;width:18px;height:18px;">refresh</mat-icon>
         Refresh
       </button>
     </div>
+  </div>
 
-    <!-- Error Message -->
-    <div *ngIf="errorMessage" class="mb-6 p-4 bg-error-100 border border-error-300 rounded-lg text-error-700">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-12">
+
+    <!-- ===== STAT CARDS (glass) ===== -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+
+      <!-- Inquiries -->
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="0">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-11 h-11 rounded-xl bg-blue-100 flex items-center justify-center">
+            <mat-icon class="text-blue-600" style="font-size:22px;width:22px;height:22px;">mail</mat-icon>
+          </div>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Inquiries</span>
+        </div>
+        <p class="text-4xl font-extrabold text-gray-900 mb-1">{{ inquiries.length }}</p>
+        <p class="text-sm text-gray-500">
+          <span class="text-amber-500 font-semibold">{{ getInquiryStats().pending }}</span> pending ·
+          <span class="text-green-500 font-semibold">{{ getInquiryStats().replied }}</span> replied
+        </p>
+      </div>
+
+      <!-- Visits -->
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="80">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-11 h-11 rounded-xl bg-purple-100 flex items-center justify-center">
+            <mat-icon class="text-purple-600" style="font-size:22px;width:22px;height:22px;">calendar_today</mat-icon>
+          </div>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Visits</span>
+        </div>
+        <p class="text-4xl font-extrabold text-gray-900 mb-1">{{ visits.length }}</p>
+        <p class="text-sm text-gray-500">
+          <span class="text-blue-500 font-semibold">{{ getVisitStats().scheduled }}</span> scheduled ·
+          <span class="text-green-500 font-semibold">{{ getVisitStats().completed }}</span> completed
+        </p>
+      </div>
+
+      <!-- Deals -->
+      <div class="glass-stat-card" data-aos="fade-up" data-aos-delay="160">
+        <div class="flex items-center justify-between mb-4">
+          <div class="w-11 h-11 rounded-xl bg-green-100 flex items-center justify-center">
+            <mat-icon class="text-green-600" style="font-size:22px;width:22px;height:22px;">handshake</mat-icon>
+          </div>
+          <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Deals</span>
+        </div>
+        <p class="text-4xl font-extrabold text-gray-900 mb-1">{{ deals.length }}</p>
+        <p class="text-sm text-gray-500">Active negotiations</p>
+      </div>
+
+    </div>
+
+    <!-- ===== ERROR ===== -->
+    <div *ngIf="errorMessage" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-center gap-3">
+      <mat-icon class="text-red-400" style="font-size:20px;width:20px;height:20px;">error_outline</mat-icon>
       {{ errorMessage }}
-      <button (click)="refreshData()" class="ml-2 underline font-medium hover:text-error-800">
-        Try again
-      </button>
+      <button (click)="refreshData()" class="ml-auto underline font-semibold">Try again</button>
     </div>
 
-    <!-- Stats Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <!-- Inquiries Card -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-neutral-900">Inquiries</h3>
-          <mat-icon style="font-size: 40px; width: 40px; height: 40px;">mail</mat-icon>
-        </div>
-        <p class="text-4xl font-bold text-primary-600 mb-2">{{ inquiries.length }}</p>
-        <p class="text-sm text-neutral-600">
-          {{ getInquiryStats().pending }} pending, {{ getInquiryStats().replied }} replied
-        </p>
-      </div>
-
-      <!-- Visits Card -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-neutral-900">Scheduled Visits</h3>
-          <mat-icon style="font-size: 40px; width: 40px; height: 40px;">calendar_today</mat-icon>
-        </div>
-        <p class="text-4xl font-bold text-secondary-600 mb-2">{{ visits.length }}</p>
-        <p class="text-sm text-neutral-600">
-          {{ getVisitStats().scheduled }} scheduled, {{ getVisitStats().completed }} completed
-        </p>
-      </div>
-
-      <!-- Deals Card -->
-      <div class="bg-white rounded-lg shadow-sm p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h3 class="text-lg font-bold text-neutral-900">Active Deals</h3>
-          <mat-icon style="font-size: 40px; width: 40px; height: 40px;">handshake</mat-icon>
-        </div>
-        <p class="text-4xl font-bold text-success-600 mb-2">{{ deals.length }}</p>
-        <p class="text-sm text-neutral-600">Active negotiations</p>
-      </div>
+    <!-- ===== LOADING ===== -->
+    <div *ngIf="isLoading" class="dashboard-card p-8 animate-pulse space-y-4">
+      <div class="h-5 bg-gray-200 rounded w-1/4"></div>
+      <div class="h-4 bg-gray-200 rounded w-full"></div>
+      <div class="h-4 bg-gray-200 rounded w-3/4"></div>
     </div>
 
-    <!-- Loading State -->
-    <div *ngIf="isLoading" class="bg-white rounded-lg shadow-sm p-8">
-      <div class="animate-pulse space-y-4">
-        <div class="h-10 bg-neutral-200 rounded w-1/4"></div>
-        <div class="h-6 bg-neutral-200 rounded"></div>
-        <div class="h-6 bg-neutral-200 rounded w-3/4"></div>
-      </div>
-    </div>
+    <!-- ===== TABS + CONTENT ===== -->
+    <div *ngIf="!isLoading" class="dashboard-card" data-aos="fade-up" data-aos-delay="200">
 
-    <!-- Tabs -->
-    <div *ngIf="!isLoading" class="bg-white rounded-lg shadow-sm overflow-hidden">
-      <!-- Tab Navigation -->
-      <div class="flex border-b border-neutral-200">
-        <button
-          (click)="setActiveTab('inquiries')"
-          [class.border-b-2]="activeTab === 'inquiries'"
-          [class.border-primary-600]="activeTab === 'inquiries'"
-          [class.text-primary-600]="activeTab === 'inquiries'"
-          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
-        >
-          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">mail</mat-icon>
-          Inquiries ({{ inquiries.length }})
+      <!-- Tab Bar -->
+      <div class="flex border-b border-gray-100">
+        <button (click)="setActiveTab('inquiries')" class="tab-btn" [class.tab-active]="activeTab === 'inquiries'">
+          <mat-icon style="font-size:18px;width:18px;height:18px;">mail</mat-icon>
+          Inquiries
+          <span class="tab-count">{{ inquiries.length }}</span>
         </button>
-        <button
-          (click)="setActiveTab('visits')"
-          [class.border-b-2]="activeTab === 'visits'"
-          [class.border-primary-600]="activeTab === 'visits'"
-          [class.text-primary-600]="activeTab === 'visits'"
-          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
-        >
-          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">calendar_today</mat-icon>
-          Visits ({{ visits.length }})
+        <button (click)="setActiveTab('visits')" class="tab-btn" [class.tab-active]="activeTab === 'visits'">
+          <mat-icon style="font-size:18px;width:18px;height:18px;">calendar_today</mat-icon>
+          Visits
+          <span class="tab-count">{{ visits.length }}</span>
         </button>
-        <button
-          (click)="setActiveTab('deals')"
-          [class.border-b-2]="activeTab === 'deals'"
-          [class.border-primary-600]="activeTab === 'deals'"
-          [class.text-primary-600]="activeTab === 'deals'"
-          class="flex-1 px-6 py-4 font-medium text-neutral-700 hover:text-neutral-900 transition-colors flex items-center justify-center gap-2"
-        >
-          <mat-icon style="font-size: 20px; width: 20px; height: 20px;">handshake</mat-icon>
-          Deals ({{ deals.length }})
+        <button (click)="setActiveTab('deals')" class="tab-btn" [class.tab-active]="activeTab === 'deals'">
+          <mat-icon style="font-size:18px;width:18px;height:18px;">handshake</mat-icon>
+          Deals
+          <span class="tab-count">{{ deals.length }}</span>
         </button>
       </div>
 
-      <!-- Tab Content -->
       <div class="p-6">
-        <!-- Inquiries Tab -->
+
+        <!-- INQUIRIES -->
         <div *ngIf="activeTab === 'inquiries'">
-          <div *ngIf="inquiries.length === 0" class="text-center py-12">
-            <mat-icon style="font-size: 80px; width: 80px; height: 80px;" class="mx-auto mb-4">mail_outline</mat-icon>
-            <h3 class="text-2xl font-bold text-neutral-900 mb-2">No Inquiries Yet</h3>
-            <p class="text-neutral-600">Start exploring properties to send inquiries</p>
-            <a
-              routerLink="/marketplace/browse"
-              class="inline-block mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
-            >
-              Browse Properties
-            </a>
+          <div *ngIf="inquiries.length === 0" class="empty-state">
+            <div class="empty-icon-wrap bg-blue-50">
+              <mat-icon class="text-blue-300" style="font-size:36px;width:36px;height:36px;">mail_outline</mat-icon>
+            </div>
+            <h3 class="empty-title">No Inquiries Yet</h3>
+            <p class="empty-sub">Start exploring properties and send your first inquiry</p>
+            <a routerLink="/marketplace/browse" class="empty-cta">Browse Properties</a>
           </div>
 
-          <div *ngIf="inquiries.length > 0" class="space-y-4">
-            <div *ngFor="let inquiry of inquiries" class="border border-neutral-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-              <div class="flex items-start justify-between mb-2">
-                <h3 class="font-bold text-neutral-900">Property ID: {{ inquiry.propertyId }}</h3>
-                <span
-                  [class.bg-warning-100]="!inquiry.isReplied"
-                  [class.text-warning-700]="!inquiry.isReplied"
-                  [class.bg-success-100]="inquiry.isReplied"
-                  [class.text-success-700]="inquiry.isReplied"
-                  class="px-3 py-1 rounded-full text-sm font-medium"
-                >
-                  <span class="flex items-center gap-1"><mat-icon style="font-size: 16px; width: 16px; height: 16px;">{{ inquiry.isReplied ? 'check_circle' : 'schedule' }}</mat-icon>{{ inquiry.isReplied ? 'Replied' : 'Pending' }}</span>
-                </span>
+          <div *ngIf="inquiries.length > 0" class="space-y-3">
+            <a *ngFor="let inquiry of inquiries"
+               [routerLink]="['/marketplace/property', inquiry.propertyId]"
+               class="list-card group">
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <mat-icon class="text-blue-400" style="font-size:15px;width:15px;height:15px;">home</mat-icon>
+                    <span class="text-xs font-semibold text-gray-500">Property #{{ inquiry.propertyId }}</span>
+                    <span class="text-gray-300">·</span>
+                    <span class="text-xs text-gray-400">{{ formatDate(inquiry.inquiryDate) }}</span>
+                  </div>
+                  <p class="text-sm text-gray-700 line-clamp-2">{{ inquiry.message }}</p>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="status-badge" [class.badge-pending]="!inquiry.isReplied" [class.badge-success]="inquiry.isReplied">
+                    <mat-icon style="font-size:12px;width:12px;height:12px;">{{ inquiry.isReplied ? 'check_circle' : 'schedule' }}</mat-icon>
+                    {{ inquiry.isReplied ? 'Replied' : 'Pending' }}
+                  </span>
+                  <mat-icon class="text-gray-300 group-hover:text-blue-500 transition-colors" style="font-size:16px;width:16px;height:16px;">arrow_forward</mat-icon>
+                </div>
               </div>
-              <p class="text-neutral-600 mb-2 line-clamp-2">{{ inquiry.message }}</p>
-              <p class="text-xs text-neutral-500">{{ formatDate(inquiry.inquiryDate) }}</p>
-            </div>
+            </a>
           </div>
         </div>
 
-        <!-- Visits Tab -->
+        <!-- VISITS -->
         <div *ngIf="activeTab === 'visits'">
-          <div *ngIf="visits.length === 0" class="text-center py-12">
-            <mat-icon style="font-size: 80px; width: 80px; height: 80px;" class="mx-auto mb-4">event_note</mat-icon>
-            <h3 class="text-2xl font-bold text-neutral-900 mb-2">No Visits Scheduled</h3>
-            <p class="text-neutral-600">Schedule a visit to properties you're interested in</p>
-            <a
-              routerLink="/marketplace/browse"
-              class="inline-block mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
-            >
-              Browse Properties
-            </a>
+          <div *ngIf="visits.length === 0" class="empty-state">
+            <div class="empty-icon-wrap bg-purple-50">
+              <mat-icon class="text-purple-300" style="font-size:36px;width:36px;height:36px;">event_note</mat-icon>
+            </div>
+            <h3 class="empty-title">No Visits Scheduled</h3>
+            <p class="empty-sub">Schedule a visit to properties you're interested in</p>
+            <a routerLink="/marketplace/browse" class="empty-cta">Browse Properties</a>
           </div>
 
-          <div *ngIf="visits.length > 0" class="space-y-4">
-            <div *ngFor="let visit of visits" class="border border-neutral-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-              <div class="flex items-start justify-between mb-2">
-                <h3 class="font-bold text-neutral-900">Property ID: {{ visit.propertyId }}</h3>
-                <span
-                  [class.bg-primary-100]="!visit.isVisited"
-                  [class.text-primary-700]="!visit.isVisited"
-                  [class.bg-success-100]="visit.isVisited"
-                  [class.text-success-700]="visit.isVisited"
-                  class="px-3 py-1 rounded-full text-sm font-medium"
-                >
-                  <span class="flex items-center gap-1"><mat-icon style="font-size: 16px; width: 16px; height: 16px;">{{ visit.isVisited ? 'check_circle' : 'location_on' }}</mat-icon>{{ visit.isVisited ? 'Completed' : 'Scheduled' }}</span>
-                </span>
+          <div *ngIf="visits.length > 0" class="space-y-3">
+            <a *ngFor="let visit of visits"
+               [routerLink]="['/marketplace/property', visit.propertyId]"
+               class="list-card group">
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <mat-icon class="text-purple-400" style="font-size:15px;width:15px;height:15px;">home</mat-icon>
+                    <span class="text-xs font-semibold text-gray-500">Property #{{ visit.propertyId }}</span>
+                  </div>
+                  <div class="flex items-center gap-1.5 text-sm text-gray-600">
+                    <mat-icon class="text-gray-400" style="font-size:14px;width:14px;height:14px;">calendar_today</mat-icon>
+                    {{ formatDate(visit.visitPlannedDate) }}
+                  </div>
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="status-badge" [class.badge-info]="!visit.isVisited" [class.badge-success]="visit.isVisited">
+                    <mat-icon style="font-size:12px;width:12px;height:12px;">{{ visit.isVisited ? 'check_circle' : 'location_on' }}</mat-icon>
+                    {{ visit.isVisited ? 'Completed' : 'Scheduled' }}
+                  </span>
+                  <mat-icon class="text-gray-300 group-hover:text-blue-500 transition-colors" style="font-size:16px;width:16px;height:16px;">arrow_forward</mat-icon>
+                </div>
               </div>
-              <p class="text-neutral-600 mb-2 flex items-center gap-1">
-                <mat-icon style="font-size: 16px; width: 16px; height: 16px;">calendar_today</mat-icon> {{ formatDate(visit.visitPlannedDate) }}
-              </p>
-              <button class="px-4 py-1 text-sm bg-primary-600 text-white rounded hover:bg-primary-700 transition-colors">
-                View Details
-              </button>
-            </div>
+            </a>
           </div>
         </div>
 
-        <!-- Deals Tab -->
+        <!-- DEALS -->
         <div *ngIf="activeTab === 'deals'">
-          <div *ngIf="deals.length === 0" class="text-center py-12">
-            <mat-icon style="font-size: 80px; width: 80px; height: 80px;" class="mx-auto mb-4">handshake</mat-icon>
-            <h3 class="text-2xl font-bold text-neutral-900 mb-2">No Active Deals</h3>
-            <p class="text-neutral-600">Deals will appear here once you initiate negotiations</p>
-            <a
-              routerLink="/marketplace/browse"
-              class="inline-block mt-4 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
-            >
-              Browse Properties
-            </a>
+          <div *ngIf="deals.length === 0" class="empty-state">
+            <div class="empty-icon-wrap bg-green-50">
+              <mat-icon class="text-green-300" style="font-size:36px;width:36px;height:36px;">handshake</mat-icon>
+            </div>
+            <h3 class="empty-title">No Active Deals</h3>
+            <p class="empty-sub">Deals will appear here once you initiate negotiations</p>
+            <a routerLink="/marketplace/browse" class="empty-cta">Browse Properties</a>
           </div>
 
-          <div *ngIf="deals.length > 0" class="space-y-4">
-            <div *ngFor="let deal of deals" class="border border-neutral-200 rounded-lg p-4 hover:shadow-md transition-shadow">
-              <div class="flex items-start justify-between mb-2">
-                <h3 class="font-bold text-neutral-900">Deal ID: {{ deal.dealId }}</h3>
-                <span class="px-3 py-1 bg-success-100 text-success-700 rounded-full text-sm font-medium flex items-center gap-1">
-                  <mat-icon style="font-size: 16px; width: 16px; height: 16px;">check_circle</mat-icon>Active
+          <div *ngIf="deals.length > 0" class="space-y-3">
+            <div *ngFor="let deal of deals" class="list-card">
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1">
+                    <mat-icon class="text-green-400" style="font-size:15px;width:15px;height:15px;">home</mat-icon>
+                    <span class="text-xs font-semibold text-gray-500">Property #{{ deal.propertyId }}</span>
+                    <span class="text-gray-300">·</span>
+                    <span class="text-xs text-gray-400">{{ formatDate(deal.dealDate) }}</span>
+                  </div>
+                  <p class="text-base font-bold text-green-600">{{ formatPrice(deal.agreedTotalAmount) }}</p>
+                </div>
+                <span class="status-badge badge-success">
+                  <mat-icon style="font-size:12px;width:12px;height:12px;">check_circle</mat-icon>
+                  Active
                 </span>
               </div>
-              <div class="grid grid-cols-2 gap-4 mb-2">
-                <div>
-                  <p class="text-xs text-neutral-600">Property</p>
-                  <p class="font-semibold text-neutral-900">Property {{ deal.propertyId }}</p>
-                </div>
-                <div>
-                  <p class="text-xs text-neutral-600">Amount</p>
-                  <p class="font-semibold text-success-600">{{ formatPrice(deal.agreedTotalAmount) }}</p>
-                </div>
-              </div>
-              <p class="text-xs text-neutral-500">{{ formatDate(deal.dealDate) }}</p>
             </div>
           </div>
         </div>
+
       </div>
     </div>
   </div>

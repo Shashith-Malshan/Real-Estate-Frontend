@@ -1,42 +1,219 @@
-:host {
-  display: block;
+:host { display: block; }
+
+/* =============================================
+   FULL PAGE — background image + dark overlay
+   ============================================= */
+.auth-page {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
 }
 
-.animate-spin {
-  animation: spin 1s linear infinite;
+.auth-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.auth-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.auth-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(10, 18, 40, 0.65);
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.30;
+}
+.blob-1 {
+  width: 450px;
+  height: 450px;
+  background: #3b82f6;
+  top: -120px;
+  right: -120px;
+}
+.blob-2 {
+  width: 380px;
+  height: 380px;
+  background: #6366f1;
+  bottom: -100px;
+  left: -100px;
 }
 
-/* Focus states */
-input:focus {
+.auth-container {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 680px;
+  padding: 1.5rem;
+}
+
+/* =============================================
+   GLASS CARD
+   ============================================= */
+.glass-card {
+  background: rgba(255, 255, 255, 0.10);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  border: 1px solid rgba(255, 255, 255, 0.20);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2.25rem;
+  box-shadow: 0 32px 64px rgba(0, 0, 0, 0.40),
+              inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+/* =============================================
+   ROLE BUTTONS
+   ============================================= */
+.role-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1.5px solid rgba(255, 255, 255, 0.20);
+  border-radius: 0.875rem;
+  color: rgba(255, 255, 255, 0.65);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.role-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+}
+.role-btn-active {
+  background: #1d4ed8 !important;
+  border-color: #3b82f6 !important;
+  color: #ffffff !important;
+  box-shadow: 0 4px 16px rgba(29, 78, 216, 0.45);
+}
+
+/* =============================================
+   FORM INPUTS
+   ============================================= */
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.input-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.75);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon {
+  position: absolute;
+  left: 0.85rem;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 18px !important;
+  width: 18px !important;
+  height: 18px !important;
+  pointer-events: none;
+}
+
+.glass-input {
+  width: 100%;
+  padding: 0.75rem 0.85rem 0.75rem 2.75rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1.5px solid rgba(255, 255, 255, 0.22);
+  border-radius: 0.875rem;
+  color: #ffffff;
+  font-size: 0.875rem;
   outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+.glass-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+.glass-input:focus {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(96, 165, 250, 0.80);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
 }
 
-/* Password toggle button */
-button[type="button"] {
-  user-select: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
+.input-eye-btn {
+  position: absolute;
+  right: 0.75rem;
+  color: rgba(255, 255, 255, 0.45);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+  border-radius: 0.4rem;
+  transition: color 0.2s ease;
+}
+.input-eye-btn:hover {
+  color: rgba(255, 255, 255, 0.85);
 }
 
-/* Smooth transitions */
-.transition-colors {
-  transition-property: color, background-color, border-color;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+.input-error {
+  font-size: 0.72rem;
+  color: #fca5a5;
+  margin-top: 0.1rem;
 }
 
-.transition-all {
-  transition-property: all;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 200ms;
+/* =============================================
+   SUBMIT BUTTON
+   ============================================= */
+.auth-submit-btn {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  background: #1d4ed8;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 20px rgba(29, 78, 216, 0.50);
 }
+.auth-submit-btn:hover:not(:disabled) {
+  background: #1e40af;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 24px rgba(29, 78, 216, 0.60);
+}
+.auth-submit-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-spinner {
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }

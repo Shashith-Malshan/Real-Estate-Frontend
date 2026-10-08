@@ -4,14 +4,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractContro
 import { Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil, finalize } from 'rxjs/operators';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { PropertyService } from '../../../shared/services/property.service';
 import { AuthService } from '../../../shared/services/auth.service';
 import { PropertyCreateDTO, PropertyCategory } from '../../../shared/models';
@@ -30,14 +24,8 @@ export const SRI_LANKA_DISTRICTS = [
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatInputModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatButtonModule,
     MatIconModule,
-    MatSnackBarModule,
-    MatProgressSpinnerModule,
-    MatTooltipModule
+    MatSnackBarModule
   ],
   templateUrl: './list-property.component.html',
   styleUrl: './list-property.component.css'
@@ -95,7 +83,8 @@ export class ListPropertyComponent implements OnInit, OnDestroy {
   }
 
   get selectedCategory(): number | null {
-    return this.form.get('propertyCategoryId')?.value ?? null;
+    const val = this.form.get('propertyCategoryId')?.value;
+    return val != null ? Number(val) : null;
   }
 
   get residentialGroup(): FormGroup | null {
@@ -111,13 +100,17 @@ export class ListPropertyComponent implements OnInit, OnDestroy {
   }
 
   onCategoryChange(categoryId: number): void {
+    const id = Number(categoryId);
+    // Patch the form control so selectedCategory getter stays in sync
+    this.form.patchValue({ propertyCategoryId: id });
+
     // Remove all sub-groups
     this.form.removeControl('residential');
     this.form.removeControl('commercial');
     this.form.removeControl('land');
 
     // Add the appropriate sub-group
-    if (categoryId === PropertyCategory.RESIDENTIAL) {
+    if (id === PropertyCategory.RESIDENTIAL) {
       this.form.addControl('residential', this.fb.group({
         price: [null, [Validators.required, Validators.min(0.01)]],
         bedroomCount: [null, [Validators.required, Validators.min(1), Validators.max(20)]],
@@ -125,14 +118,14 @@ export class ListPropertyComponent implements OnInit, OnDestroy {
         residentialType: ['', Validators.required],
         residentialStatus: ['', Validators.required]
       }));
-    } else if (categoryId === PropertyCategory.COMMERCIAL) {
+    } else if (id === PropertyCategory.COMMERCIAL) {
       this.form.addControl('commercial', this.fb.group({
         price: [null, [Validators.required, Validators.min(0.01)]],
         floorSize: [null, [Validators.required, Validators.min(0.01)]],
         commercialType: ['', Validators.required],
         commercialStatus: ['', Validators.required]
       }));
-    } else if (categoryId === PropertyCategory.LAND) {
+    } else if (id === PropertyCategory.LAND) {
       this.form.addControl('land', this.fb.group({
         plotCount: [null, [Validators.required, Validators.min(1)]],
         unitPrice: [null, [Validators.required, Validators.min(0.01)]]
@@ -158,7 +151,7 @@ export class ListPropertyComponent implements OnInit, OnDestroy {
     // Convert selected files to base64 and submit
     this.convertFilesToBase64(this.selectedFiles).then((base64Images) => {
       const formValue = this.form.value;
-      const categoryId: number = formValue.propertyCategoryId;
+      const categoryId: number = Number(formValue.propertyCategoryId);
 
       const dto: PropertyCreateDTO = {
         title: formValue.title,

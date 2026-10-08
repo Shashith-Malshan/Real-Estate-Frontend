@@ -1,163 +1,243 @@
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen bg-white">
 
   <!-- ===== HERO SECTION ===== -->
-  <section class="relative min-h-[90vh] flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-700 to-indigo-800">
-    <div class="absolute inset-0 opacity-10 bg-[url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1600')] bg-cover bg-center"></div>
+  <section class="hero-section relative min-h-[92vh] flex items-center justify-center overflow-hidden">
+
+    <!-- Full background image with dark overlay -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=80"
+        alt="Luxury property"
+        class="w-full h-full object-cover object-center"
+      />
+      <!-- Dark gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-blue-900/60"></div>
+    </div>
+
+    <!-- Decorative blurred blobs -->
+    <div class="absolute top-20 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl z-0 pointer-events-none"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl z-0 pointer-events-none"></div>
+
+    <!-- Hero Content -->
     <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
-      <div class="inline-block mb-6 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full">
-        <p class="text-sm font-semibold text-white">🏡 Sri Lanka's Premier Real Estate Marketplace</p>
+
+      <!-- Badge -->
+      <div data-aos="fade-down" data-aos-delay="100"
+           class="inline-flex items-center gap-2 mb-6 px-5 py-2 rounded-full glass-badge">
+        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+        <p class="text-sm font-semibold text-white tracking-wide">🏡 Sri Lanka's Premier Real Estate Marketplace</p>
       </div>
-      <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight">
+
+      <!-- Headline -->
+      <h1 data-aos="fade-up" data-aos-delay="200"
+          class="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight">
         Find Your
-        <span class="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 to-orange-300">
+        <span class="block text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300">
           Dream Property
         </span>
       </h1>
-      <p class="text-xl text-white/85 mb-10 max-w-2xl mx-auto leading-relaxed">
+
+      <!-- Subtext -->
+      <p data-aos="fade-up" data-aos-delay="300"
+         class="text-xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
         Connect with trusted sellers across Sri Lanka. Browse residential homes, commercial spaces, and land — all in one place.
       </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+
+      <!-- CTA Buttons -->
+      <div data-aos="fade-up" data-aos-delay="400"
+           class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
         <a routerLink="/marketplace/browse"
-           class="px-10 py-4 bg-white text-blue-700 font-bold rounded-xl hover:bg-gray-100 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 text-lg">
-          <mat-icon>search</mat-icon>
+           class="group px-10 py-4 bg-white text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center gap-2 text-lg">
+          <mat-icon class="group-hover:rotate-12 transition-transform">search</mat-icon>
           Browse Properties
         </a>
         <a routerLink="/register"
-           class="px-10 py-4 border-2 border-white text-white font-bold rounded-xl hover:bg-white/10 transition-all duration-300 flex items-center justify-center gap-2 text-lg">
+           class="px-10 py-4 glass-btn text-white font-bold rounded-xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-lg">
           <mat-icon>arrow_forward</mat-icon>
-          Get Started
+          Get Started Free
         </a>
       </div>
+
+      <!-- Glassmorphic Search Bar -->
+      <div data-aos="fade-up" data-aos-delay="500"
+           class="glass-search-bar max-w-3xl mx-auto rounded-2xl p-4">
+        <div class="flex flex-col sm:flex-row gap-3">
+          <div class="flex-1 flex items-center gap-2 bg-white/10 rounded-xl px-4 py-3 border border-white/20">
+            <mat-icon class="text-white/60 text-sm">location_on</mat-icon>
+            <select class="bg-transparent text-white text-sm w-full outline-none cursor-pointer">
+              <option class="text-gray-900" value="">All Districts</option>
+              <option class="text-gray-900">Colombo</option>
+              <option class="text-gray-900">Gampaha</option>
+              <option class="text-gray-900">Kandy</option>
+              <option class="text-gray-900">Galle</option>
+              <option class="text-gray-900">Matara</option>
+            </select>
+          </div>
+          <div class="flex-1 flex items-center gap-2 bg-white/10 rounded-xl px-4 py-3 border border-white/20">
+            <mat-icon class="text-white/60 text-sm">home</mat-icon>
+            <select class="bg-transparent text-white text-sm w-full outline-none cursor-pointer">
+              <option class="text-gray-900" value="">All Types</option>
+              <option class="text-gray-900">Residential</option>
+              <option class="text-gray-900">Commercial</option>
+              <option class="text-gray-900">Land</option>
+            </select>
+          </div>
+          <a routerLink="/marketplace/browse"
+             class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all duration-200 flex items-center gap-2 justify-center whitespace-nowrap">
+            <mat-icon style="font-size:20px;width:20px;height:20px;">search</mat-icon>
+            Search
+          </a>
+        </div>
+      </div>
     </div>
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-      <mat-icon class="text-white/60" style="font-size:36px;width:36px;height:36px;">expand_more</mat-icon>
+
+    <!-- Scroll indicator -->
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-10">
+      <div class="w-6 h-10 rounded-full border-2 border-white/40 flex items-start justify-center pt-2">
+        <div class="w-1 h-2 bg-white/60 rounded-full animate-scroll-dot"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== STATS SECTION — Glass Cards on Gradient ===== -->
+  <section class="relative py-20 px-4 sm:px-6 lg:px-8 overflow-hidden stats-gradient">
+
+    <!-- Decorative blobs -->
+    <div class="absolute top-0 left-1/4 w-64 h-64 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-0 right-1/4 w-64 h-64 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-12" data-aos="fade-up">
+        <h2 class="text-3xl font-bold text-white mb-2">Trusted by Thousands</h2>
+        <p class="text-white/70">Numbers that speak for themselves</p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+
+        <!-- Stat Card 1 -->
+        <div data-aos="fade-up" data-aos-delay="100"
+             class="glass-stat-card rounded-2xl p-8 text-center group hover:scale-105 transition-transform duration-300">
+          <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-colors">
+            <mat-icon class="text-white" style="font-size:28px;width:28px;height:28px;">apartment</mat-icon>
+          </div>
+          <div class="text-5xl font-extrabold text-white mb-2">1,000+</div>
+          <p class="text-white/75 font-medium">Active Listings</p>
+        </div>
+
+        <!-- Stat Card 2 -->
+        <div data-aos="fade-up" data-aos-delay="200"
+             class="glass-stat-card rounded-2xl p-8 text-center group hover:scale-105 transition-transform duration-300">
+          <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-colors">
+            <mat-icon class="text-white" style="font-size:28px;width:28px;height:28px;">people</mat-icon>
+          </div>
+          <div class="text-5xl font-extrabold text-white mb-2">5,000+</div>
+          <p class="text-white/75 font-medium">Registered Users</p>
+        </div>
+
+        <!-- Stat Card 3 -->
+        <div data-aos="fade-up" data-aos-delay="300"
+             class="glass-stat-card rounded-2xl p-8 text-center group hover:scale-105 transition-transform duration-300">
+          <div class="w-14 h-14 rounded-full bg-white/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-white/30 transition-colors">
+            <mat-icon class="text-white" style="font-size:28px;width:28px;height:28px;">handshake</mat-icon>
+          </div>
+          <div class="text-5xl font-extrabold text-white mb-2">500+</div>
+          <p class="text-white/75 font-medium">Successful Deals</p>
+        </div>
+
+      </div>
     </div>
   </section>
 
   <!-- ===== HOW IT WORKS ===== -->
-  <section class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+  <section class="py-24 px-4 sm:px-6 lg:px-8 bg-white">
     <div class="max-w-7xl mx-auto">
-      <div class="text-center mb-14">
+
+      <div class="text-center mb-16" data-aos="fade-up">
+        <span class="inline-block px-4 py-1.5 bg-blue-50 text-blue-700 text-sm font-semibold rounded-full mb-4 tracking-wide uppercase">Simple Process</span>
         <h2 class="text-4xl font-bold text-gray-900 mb-3">How It Works</h2>
         <p class="text-lg text-gray-500 max-w-xl mx-auto">Three simple steps to your next property</p>
       </div>
+
       <div class="grid md:grid-cols-3 gap-8">
-        <div class="group text-center p-8 rounded-2xl bg-blue-50 border border-blue-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-          <div class="w-16 h-16 rounded-full bg-blue-600 text-white font-bold text-2xl flex items-center justify-center mx-auto mb-5 group-hover:bg-blue-700 transition-colors">1</div>
-          <mat-icon class="text-blue-500 mb-4" style="font-size:48px;width:48px;height:48px;">search</mat-icon>
-          <h3 class="text-xl font-bold text-gray-900 mb-2">Browse & Search</h3>
-          <p class="text-gray-600">Explore verified listings by district, category, and price range across all 25 districts of Sri Lanka.</p>
-        </div>
-        <div class="group text-center p-8 rounded-2xl bg-purple-50 border border-purple-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-          <div class="w-16 h-16 rounded-full bg-purple-600 text-white font-bold text-2xl flex items-center justify-center mx-auto mb-5 group-hover:bg-purple-700 transition-colors">2</div>
-          <mat-icon class="text-purple-500 mb-4" style="font-size:48px;width:48px;height:48px;">event</mat-icon>
-          <h3 class="text-xl font-bold text-gray-900 mb-2">Schedule Visits</h3>
-          <p class="text-gray-600">Book property tours at your convenience and manage all your visits from your personal dashboard.</p>
-        </div>
-        <div class="group text-center p-8 rounded-2xl bg-green-50 border border-green-100 hover:shadow-xl transition-all duration-300 hover:-translate-y-2">
-          <div class="w-16 h-16 rounded-full bg-green-600 text-white font-bold text-2xl flex items-center justify-center mx-auto mb-5 group-hover:bg-green-700 transition-colors">3</div>
-          <mat-icon class="text-green-500 mb-4" style="font-size:48px;width:48px;height:48px;">handshake</mat-icon>
-          <h3 class="text-xl font-bold text-gray-900 mb-2">Make a Deal</h3>
-          <p class="text-gray-600">Negotiate directly with sellers, finalize transactions securely, and complete your purchase with confidence.</p>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ===== FEATURED PROPERTIES ===== -->
-  <section *ngIf="!propertiesLoadFailed" class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-center justify-between mb-10">
-        <div>
-          <h2 class="text-4xl font-bold text-gray-900 mb-2">Featured Properties</h2>
-          <p class="text-gray-500">Handpicked listings from across Sri Lanka</p>
-        </div>
-        <a routerLink="/marketplace/browse" mat-stroked-button color="primary">View All</a>
-      </div>
-
-      <!-- Skeleton Loading -->
-      <div *ngIf="isLoadingProperties" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let _ of skeletonItems" class="bg-white rounded-2xl shadow overflow-hidden animate-pulse">
-          <div class="h-48 bg-gray-200"></div>
-          <div class="p-5 space-y-3">
-            <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-            <div class="h-3 bg-gray-200 rounded w-1/2"></div>
-            <div class="h-3 bg-gray-200 rounded w-2/3"></div>
-            <div class="h-5 bg-gray-200 rounded w-1/3 mt-2"></div>
+        <!-- Step 1 -->
+        <div data-aos="fade-up" data-aos-delay="100"
+             class="how-card group relative p-8 rounded-2xl bg-white border border-gray-100 hover:shadow-2xl transition-all duration-400 hover:-translate-y-2 overflow-hidden">
+          <!-- Gradient border top accent -->
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 rounded-t-2xl"></div>
+          <!-- Step number -->
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-400 text-white font-bold text-xl flex items-center justify-center mb-5 shadow-lg shadow-blue-200 group-hover:scale-110 transition-transform">1</div>
+          <!-- Icon -->
+          <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-5 group-hover:bg-blue-100 transition-colors">
+            <mat-icon class="text-blue-600" style="font-size:32px;width:32px;height:32px;">search</mat-icon>
           </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Browse & Search</h3>
+          <p class="text-gray-500 leading-relaxed">Explore verified listings by district, category, and price range across all 25 districts of Sri Lanka.</p>
+          <!-- Hover glow -->
+          <div class="absolute inset-0 bg-gradient-to-br from-blue-50/0 to-blue-50/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none"></div>
         </div>
-      </div>
 
-      <!-- Empty State -->
-      <div *ngIf="!isLoadingProperties && featuredProperties.length === 0" class="text-center py-16 text-gray-500">
-        <mat-icon style="font-size:64px;width:64px;height:64px;" class="mb-4">home_work</mat-icon>
-        <p class="text-lg">No featured properties available at the moment.</p>
-        <a routerLink="/marketplace/browse" class="mt-4 inline-block text-blue-600 hover:underline">Browse all listings</a>
-      </div>
-
-      <!-- Property Cards -->
-      <div *ngIf="!isLoadingProperties && featuredProperties.length > 0" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let p of featuredProperties"
-             (click)="navigateToProperty(p.propertyId)"
-             class="bg-white rounded-2xl shadow hover:shadow-xl transition-all duration-300 cursor-pointer overflow-hidden group hover:-translate-y-1">
-          <!-- Property Image Placeholder -->
-          <div class="h-48 bg-gradient-to-br from-blue-100 to-indigo-200 flex items-center justify-center relative overflow-hidden">
-            <mat-icon class="text-blue-300 group-hover:scale-110 transition-transform duration-300" style="font-size:64px;width:64px;height:64px;">home</mat-icon>
-            <span class="absolute top-3 left-3 px-2 py-1 bg-white/90 text-blue-700 text-xs font-semibold rounded-full">
-              {{ p.categoryName }}
-            </span>
+        <!-- Step 2 -->
+        <div data-aos="fade-up" data-aos-delay="200"
+             class="how-card group relative p-8 rounded-2xl bg-white border border-gray-100 hover:shadow-2xl transition-all duration-400 hover:-translate-y-2 overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 to-pink-400 rounded-t-2xl"></div>
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500 to-pink-400 text-white font-bold text-xl flex items-center justify-center mb-5 shadow-lg shadow-purple-200 group-hover:scale-110 transition-transform">2</div>
+          <div class="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center mb-5 group-hover:bg-purple-100 transition-colors">
+            <mat-icon class="text-purple-600" style="font-size:32px;width:32px;height:32px;">event</mat-icon>
           </div>
-          <!-- Card Content -->
-          <div class="p-5">
-            <h3 class="font-bold text-gray-900 text-lg mb-1 truncate">{{ p.title }}</h3>
-            <p class="text-gray-500 text-sm flex items-center gap-1 mb-1">
-              <mat-icon style="font-size:14px;width:14px;height:14px;">location_on</mat-icon>
-              {{ p.location }}
-            </p>
-            <p class="text-gray-400 text-xs mb-3">{{ p.district }}</p>
-            <p class="text-blue-700 font-bold text-lg">{{ getPropertyPrice(p) }}</p>
-          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Schedule Visits</h3>
+          <p class="text-gray-500 leading-relaxed">Book property tours at your convenience and manage all your visits from your personal dashboard.</p>
+          <div class="absolute inset-0 bg-gradient-to-br from-purple-50/0 to-purple-50/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none"></div>
         </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ===== STATS SECTION ===== -->
-  <section class="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-blue-700 to-indigo-800">
-    <div class="max-w-7xl mx-auto grid md:grid-cols-3 gap-8 text-white text-center">
-      <div class="hover:scale-110 transition-transform duration-300">
-        <div class="text-5xl font-extrabold mb-2">1,000+</div>
-        <p class="text-lg text-white/80">Active Listings</p>
-      </div>
-      <div class="hover:scale-110 transition-transform duration-300">
-        <div class="text-5xl font-extrabold mb-2">5,000+</div>
-        <p class="text-lg text-white/80">Registered Users</p>
-      </div>
-      <div class="hover:scale-110 transition-transform duration-300">
-        <div class="text-5xl font-extrabold mb-2">500+</div>
-        <p class="text-lg text-white/80">Successful Deals</p>
+        <!-- Step 3 -->
+        <div data-aos="fade-up" data-aos-delay="300"
+             class="how-card group relative p-8 rounded-2xl bg-white border border-gray-100 hover:shadow-2xl transition-all duration-400 hover:-translate-y-2 overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 to-emerald-400 rounded-t-2xl"></div>
+          <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-green-500 to-emerald-400 text-white font-bold text-xl flex items-center justify-center mb-5 shadow-lg shadow-green-200 group-hover:scale-110 transition-transform">3</div>
+          <div class="w-14 h-14 rounded-2xl bg-green-50 flex items-center justify-center mb-5 group-hover:bg-green-100 transition-colors">
+            <mat-icon class="text-green-600" style="font-size:32px;width:32px;height:32px;">handshake</mat-icon>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">Make a Deal</h3>
+          <p class="text-gray-500 leading-relaxed">Negotiate directly with sellers, finalize transactions securely, and complete your purchase with confidence.</p>
+          <div class="absolute inset-0 bg-gradient-to-br from-green-50/0 to-green-50/60 opacity-0 group-hover:opacity-100 transition-opacity rounded-2xl pointer-events-none"></div>
+        </div>
+
       </div>
     </div>
   </section>
 
   <!-- ===== FINAL CTA ===== -->
-  <section class="py-24 px-4 sm:px-6 lg:px-8 bg-white">
-    <div class="max-w-3xl mx-auto text-center">
-      <h2 class="text-4xl font-bold text-gray-900 mb-5">Ready to Find Your Dream Property?</h2>
-      <p class="text-lg text-gray-500 mb-10">
-        Join thousands of buyers and sellers on Sri Lanka's most trusted real estate platform.
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a routerLink="/register"
-           class="px-10 py-4 bg-blue-700 text-white font-bold rounded-xl hover:bg-blue-800 transition-all duration-300 transform hover:scale-105 shadow-lg flex items-center justify-center gap-2 text-lg">
-          <mat-icon>rocket_launch</mat-icon>
-          Start Exploring Now
-        </a>
-        <a routerLink="/marketplace/browse"
-           class="px-10 py-4 border-2 border-blue-700 text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition-all duration-300 flex items-center justify-center gap-2 text-lg">
-          <mat-icon>search</mat-icon>
-          Browse Listings
-        </a>
+  <section class="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden cta-gradient">
+
+    <!-- Blobs -->
+    <div class="absolute -top-20 -left-20 w-80 h-80 bg-blue-400/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-20 -right-20 w-80 h-80 bg-indigo-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-3xl mx-auto text-center relative z-10" data-aos="fade-up">
+
+      <!-- Glass card wrapping the CTA -->
+      <div class="glass-cta-card rounded-3xl p-12">
+        <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/20 rounded-full mb-6">
+          <mat-icon class="text-yellow-300" style="font-size:18px;width:18px;height:18px;">star</mat-icon>
+          <span class="text-sm font-semibold text-white">Join 5,000+ happy users</span>
+        </div>
+        <h2 class="text-4xl font-bold text-white mb-5 leading-tight">Ready to Find Your<br/>Dream Property?</h2>
+        <p class="text-lg text-white/75 mb-10">
+          Join thousands of buyers and sellers on Sri Lanka's most trusted real estate platform.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a routerLink="/register"
+             class="group px-10 py-4 bg-white text-blue-700 font-bold rounded-xl hover:bg-blue-50 transition-all duration-300 transform hover:scale-105 shadow-xl flex items-center justify-center gap-2 text-lg">
+            <mat-icon class="group-hover:rotate-12 transition-transform">rocket_launch</mat-icon>
+            Start Exploring Now
+          </a>
+          <a routerLink="/marketplace/browse"
+             class="px-10 py-4 glass-btn text-white font-bold rounded-xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2 text-lg">
+            <mat-icon>search</mat-icon>
+            Browse Listings
+          </a>
+        </div>
       </div>
     </div>
   </section>

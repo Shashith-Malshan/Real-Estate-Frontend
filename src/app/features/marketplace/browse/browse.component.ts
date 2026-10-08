@@ -8,6 +8,7 @@ import { PropertyService } from '../../../shared/services/property.service';
 import { PropertyDTO, PropertyCategory } from '../../../shared/models';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import AOS from 'aos';
 
 @Component({
   selector: 'app-browse-properties',
@@ -22,14 +23,14 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
   isLoading = true;
   errorMessage: string | null = null;
 
-  // Filter properties
+  // Filter state
   searchTerm = '';
   selectedCategory: number | null = null;
+  selectedStatus = '';
   minPrice: number | null = null;
   maxPrice: number | null = null;
   minBedrooms: number | null = null;
 
-  // Categories for dropdown
   categories = [
     { id: PropertyCategory.RESIDENTIAL, name: 'Residential' },
     { id: PropertyCategory.COMMERCIAL, name: 'Commercial' },
@@ -37,7 +38,6 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
   ];
 
   private destroy$ = new Subject<void>();
-
   private searchSubject = new Subject<string>();
 
   constructor(
@@ -46,14 +46,13 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Setup search debounce
+    AOS.init({ duration: 600, easing: 'ease-out-cubic', once: true, offset: 60 });
+
     this.searchSubject.pipe(
       takeUntil(this.destroy$),
       debounceTime(400),
       distinctUntilChanged()
-    ).subscribe(() => {
-      this.loadProperties();
-    });
+    ).subscribe(() => this.loadProperties());
 
     this.loadProperties();
   }
@@ -77,48 +76,54 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
       request$ = this.propertyService.getAllProperties();
     }
 
-    request$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.properties = data;
-          this.applyFilters();
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        },
-        error: (err) => {
-          this.errorMessage = 'Failed to load properties. Please try again.';
-          console.error('Error loading properties:', err);
-          this.isLoading = false;
-          this.cdr.detectChanges();
-        }
-      });
+    request$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => {
+        this.properties = data;
+        this.applyFilters();
+        this.isLoading = false;
+        this.cdr.detectChanges();
+        // Re-init AOS after new cards render
+        setTimeout(() => AOS.refresh(), 100);
+      },
+      error: (err) => {
+        this.errorMessage = 'Failed to load properties. Please try again.';
+        console.error('Error loading properties:', err);
+        this.isLoading = false;
+        this.cdr.detectChanges();
+      }
+    });
   }
 
   applyFilters(): void {
     this.filteredProperties = this.properties.filter((property) => {
-      // Local fallback for title search if searchByLocation didn't cover it
-      if (this.searchTerm && !property.location.toLowerCase().includes(this.searchTerm.toLowerCase())) {
-        if (!property.title.toLowerCase().includes(this.searchTerm.toLowerCase())) {
-          return false;
-        }
+      // Search term
+      if (this.searchTerm) {
+        const term = this.searchTerm.toLowerCase();
+        const matchesLocation = property.location.toLowerCase().includes(term);
+        const matchesTitle = property.title.toLowerCase().includes(term);
+        if (!matchesLocation && !matchesTitle) return false;
       }
 
-      // Category filter
+      // Category
       if (this.selectedCategory && property.propertyCategoryId !== this.selectedCategory) {
         return false;
       }
 
-      // Price range filter
-      if (this.minPrice && (property.price === undefined || property.price < this.minPrice)) {
-        return false;
-      }
-      if (this.maxPrice && (property.price === undefined || property.price > this.maxPrice)) {
-        return false;
+      // Status
+      if (this.selectedStatus) {
+        const propStatus = (property.status || property.type || '').toLowerCase();
+        if (!propStatus.includes(this.selectedStatus.toLowerCase())) return false;
       }
 
-      // Bedrooms filter
-      if (this.minBedrooms && (property.bedroomCount === undefined || property.bedroomCount < this.minBedrooms)) {
+      // Price range
+      const price = property.propertyCategoryId === PropertyCategory.LAND
+        ? property.unitPrice
+        : property.price;
+      if (this.minPrice != null && (price == null || price < this.minPrice)) return false;
+      if (this.maxPrice != null && (price == null || price > this.maxPrice)) return false;
+
+      // Bedrooms
+      if (this.minBedrooms != null && (property.bedroomCount == null || property.bedroomCount < this.minBedrooms)) {
         return false;
       }
 
@@ -126,12 +131,19 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSearchChange(): void {
-    this.searchSubject.next(this.searchTerm);
+  hasActiveFilters(): boolean {
+    return !!(
+      this.searchTerm ||
+      this.selectedCategory ||
+      this.selectedStatus ||
+      this.minPrice ||
+      this.maxPrice ||
+      this.minBedrooms
+    );
   }
 
-  onCategoryChange(): void {
-    this.loadProperties();
+  onSearchChange(): void {
+    this.searchSubject.next(this.searchTerm);
   }
 
   onPriceChange(): void {
@@ -145,6 +157,7 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
   resetFilters(): void {
     this.searchTerm = '';
     this.selectedCategory = null;
+    this.selectedStatus = '';
     this.minPrice = null;
     this.maxPrice = null;
     this.minBedrooms = null;
@@ -153,7 +166,16 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
 
   getCategoryName(categoryId: number): string {
     const category = this.categories.find((c) => c.id === categoryId);
-    return category ? category.name : 'Unknown';
+    return category ? category.name : 'Property';
+  }
+
+  getCategoryClass(categoryId: number): string {
+    switch (categoryId) {
+      case PropertyCategory.RESIDENTIAL: return 'badge-residential';
+      case PropertyCategory.COMMERCIAL:  return 'badge-commercial';
+      case PropertyCategory.LAND:        return 'badge-land';
+      default:                           return 'badge-residential';
+    }
   }
 
   getPropertyBedrooms(property: PropertyDTO): number {
@@ -164,8 +186,14 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
     return property.bathroomCount ?? 0;
   }
 
-  getPropertyPrice(property: PropertyDTO): number {
-    return property.price ?? 0;
+  getPropertyPrice(property: PropertyDTO): string {
+    const amount = property.propertyCategoryId === PropertyCategory.LAND
+      ? property.unitPrice
+      : property.price;
+    if (amount == null) return 'Price N/A';
+    return property.propertyCategoryId === PropertyCategory.LAND
+      ? `${this.formatPrice(amount)}/plot`
+      : this.formatPrice(amount);
   }
 
   getPropertyImage(property: PropertyDTO): string {
@@ -176,29 +204,16 @@ export class BrowsePropertiesComponent implements OnInit, OnDestroy {
   }
 
   private normalizeImageUrl(imageValue: string): string {
-    const placeholder = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80';
+    const placeholder = 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80';
     const normalized = (imageValue || '').trim();
-
-    if (!normalized) {
-      return placeholder;
-    }
-
-    if (
-      normalized.startsWith('data:image/') ||
-      normalized.startsWith('http://') ||
-      normalized.startsWith('https://')
-    ) {
+    if (!normalized) return placeholder;
+    if (normalized.startsWith('data:image/') || normalized.startsWith('http://') || normalized.startsWith('https://')) {
       return normalized;
     }
-
     return `data:image/jpeg;base64,${normalized}`;
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(price);
+    return `Rs. ${new Intl.NumberFormat('en-LK', { maximumFractionDigits: 0 }).format(price)}`;
   }
 }

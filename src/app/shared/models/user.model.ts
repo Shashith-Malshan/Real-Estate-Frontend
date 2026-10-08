@@ -13,6 +13,7 @@ export interface UserResponseDTO {
   roleName: string;
   token?: string;
   sellerId?: number;
+  customerId?: number;
 }
 
 export interface UserRegistrationDTO {

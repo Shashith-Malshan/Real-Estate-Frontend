@@ -13,16 +13,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import AOS from 'aos';
 
 @Component({
   selector: 'app-property-detail',
   standalone: true,
   imports: [
-    CommonModule, 
-    ReactiveFormsModule, 
-    MatIconModule, 
-    MatButtonModule, 
-    MatInputModule, 
+    CommonModule,
+    RouterLink,
+    ReactiveFormsModule,
+    MatIconModule,
+    MatButtonModule,
+    MatInputModule,
     MatFormFieldModule
   ],
   templateUrl: './property-detail.component.html',
@@ -34,8 +36,22 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   errorMessage: string | null = null;
   selectedImageIndex = 0;
 
-  getPropertyPrice(property: PropertyDTO | null): number {
-    return property?.price ?? 0;
+  getPropertyPrice(property: PropertyDTO | null): string {
+    if (!property) {
+      return '—';
+    }
+
+    const amount = property.propertyCategoryId === PropertyCategory.LAND
+      ? property.unitPrice
+      : property.price;
+
+    if (amount == null) {
+      return '—';
+    }
+
+    return property.propertyCategoryId === PropertyCategory.LAND
+      ? `${this.formatPrice(amount)}/plot`
+      : this.formatPrice(amount);
   }
 
   getPropertyBedrooms(property: PropertyDTO | null): number {
@@ -58,6 +74,7 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
 
   isAuthenticated = false;
   currentUserId: number | null = null;
+  currentCustomerId: number | null = null;
 
   categories = [
     { id: PropertyCategory.RESIDENTIAL, name: 'Residential' },
@@ -87,15 +104,19 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    AOS.init({ duration: 700, easing: 'ease-out-cubic', once: true, offset: 60 });
+
     // Subscribe to auth state to get current user ID
     this.authService.currentUser$
       .pipe(takeUntil(this.destroy$))
       .subscribe(user => {
         if (user) {
           this.currentUserId = user.userId;
+          this.currentCustomerId = user.customerId ?? null;
           this.isAuthenticated = true;
         } else {
           this.currentUserId = null;
+          this.currentCustomerId = null;
           this.isAuthenticated = false;
         }
       });
@@ -141,11 +162,9 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   }
 
   formatPrice(price: number): string {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0
-    }).format(price);
+    return `Rs. ${new Intl.NumberFormat('en-LK', {
+      maximumFractionDigits: 0
+    }).format(price)}`;
   }
 
   getPropertyHeroImage(): string {
@@ -204,14 +223,15 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   }
 
   submitInquiry(): void {
-    if (this.inquiryForm.invalid || !this.property || !this.currentUserId) {
+    if (this.inquiryForm.invalid || !this.property || !this.currentCustomerId) {
+      this.submitError = 'You must be logged in as a buyer to send an inquiry.';
       return;
     }
 
     this.isSubmittingInquiry = true;
 
     const inquiryRequest: InquiryCreateRequest = {
-      customerId: this.currentUserId,
+      customerId: this.currentCustomerId,
       propertyId: this.property.propertyId,
       message: this.inquiryForm.get('message')?.value
     };
@@ -238,14 +258,15 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
   }
 
   submitVisit(): void {
-    if (this.visitForm.invalid || !this.property || !this.currentUserId) {
+    if (this.visitForm.invalid || !this.property || !this.currentCustomerId) {
+      this.submitError = 'You must be logged in as a buyer to schedule a visit.';
       return;
     }
 
     this.isSubmittingVisit = true;
 
     const visitRequest: VisitCreateRequest = {
-      customerId: this.currentUserId,
+      customerId: this.currentCustomerId,
       propertyId: this.property.propertyId,
       visitPlannedDate: this.visitForm.get('visitPlannedDate')?.value
     };
@@ -269,6 +290,15 @@ export class PropertyDetailComponent implements OnInit, OnDestroy {
           this.isSubmittingVisit = false;
         }
       });
+  }
+
+  getCategoryBadgeClass(categoryId: number): string {
+    switch (categoryId) {
+      case PropertyCategory.RESIDENTIAL: return 'bg-emerald-500/90';
+      case PropertyCategory.COMMERCIAL:  return 'bg-amber-500/90';
+      case PropertyCategory.LAND:        return 'bg-violet-500/90';
+      default:                           return 'bg-blue-500/90';
+    }
   }
 
   goBack(): void {
