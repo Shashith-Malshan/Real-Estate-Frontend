@@ -1,6 +1,9 @@
 # Real Estate Frontend
 
 A comprehensive Angular 21 frontend for a direct Customer-to-Seller real estate marketplace. This application allows users to browse properties, manage listings, schedule visits, create inquiries, finalize deals, and administer the platform.
+Backend Repository: https://github.com/Shashith-Malshan/Real-Estate-Backend
+
+This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 21.1.4.
 
 **Version**: 1.0.0  
 **Build**: Angular 21.1 | TypeScript 5.9 | Tailwind CSS 4.1  
